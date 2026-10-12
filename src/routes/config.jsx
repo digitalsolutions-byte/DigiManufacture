@@ -1,0 +1,324 @@
+import Login from '../pages/Login';
+import ForgotPassword from '../pages/ForgotPassword';
+import ResetPasswordConfirm from '../pages/ResetPasswordConfirm';
+import Welcome from '../pages/Welcome';
+import Registration from '../pages/Registration';
+import RegisterCustomer from '../pages/RegisterCustomer';
+import CustomerList from '../pages/CustomerList';
+import ShipTo from '../pages/ShipTo';
+import EmployeeList from '../pages/EmployeeList';
+import DashboardWizard from '../pages/AddStore';
+import OrderWizard from '../pages/OrderWizard';
+import DraftsList from '../pages/DraftsList';
+import ApprovalsList from '../pages/ApprovalsList';
+import CorrectionsList from '../pages/CorrectionsList';
+import AllOrdersList from '../pages/AllOrdersList';
+import DraftOrders from '../pages/DraftOrders';
+import RxOrders from '../pages/RxOrders';
+import OrderDetails from '../pages/OrderDetails';
+import PublicOrderStatus from '../pages/PublicOrderStatus';
+import PlaceholderPage from '../pages/PlaceholderPage';
+import AuthWrapper from '../components/AuthWrapper';
+import MainLayout from '../components/layout/MainLayout';
+
+import AddRepair from '../pages/repair/AddRepair';
+import RepairList from '../pages/repair/RepairList';
+import ReturnRefund from '../pages/returns/ReturnRefund';
+import Exchange from '../pages/returns/Exchange';
+import DailyReport from '../pages/reports/DailyReport';
+import MainReport from '../pages/reports/MainReport';
+import AddVendor from '../pages/vendor/AddVendor';
+import VendorList from '../pages/vendor/VendorList';
+import VendorOrder from '../pages/vendor/VendorOrder';
+import PurchaseItems from '../pages/vendor/PurchaseItems';
+import PurchaseItemDetails from '../pages/vendor/PurchaseItemDetails';
+import InwardList from '../pages/vendor/InwardList';
+import InwardDetails from '../pages/vendor/InwardDetails';
+import QCList from '../pages/vendor/QCList';
+import QCDetails from '../pages/vendor/QCDetails';
+import PurchaseReturnList from '../pages/vendor/PurchaseReturnList';
+import QCFailedReport from '../pages/vendor/QCFailedReport';
+import AllInwardedItems from '../pages/vendor/AllInwardedItems';
+import PendingInward from '../pages/vendor/PendingInward';
+import QcPending from '../pages/vendor/QcPending';
+import QcPassed from '../pages/vendor/QcPassed';
+import ReplacementOrderList from '../pages/vendor/ReplacementOrderList';
+import ReplacementOrderDetail from '../pages/vendor/ReplacementOrderDetail';
+import BuyProduct from '../pages/vendor/BuyProduct';
+import ProposalList from '../pages/vendor/ProposalList';
+import ProposalDetails from '../pages/vendor/ProposalDetails';
+import DamagedItems from '../pages/vendor/DamagedItems';
+import ShrinkageItems from '../pages/vendor/ShrinkageItems';
+import SalesList from '../pages/sales/SalesList';
+import RegisterTenant from '../pages/tenants/RegisterTenant';
+import TenantList from '../pages/tenants/TenantList';
+import TenantDetails from '../pages/tenants/TenantDetails';
+import WholesalerSettings from '../pages/owner/WholesalerSettings';
+import IncomingRetailerOrders from '../pages/IncomingRetailerOrders';
+
+import ChartOfAccounts from '../pages/accounting/ChartOfAccounts';
+import CustomerLedgers from '../pages/accounting/CustomerLedgers';
+import CustomerKhataStatement from '../pages/accounting/CustomerKhataStatement';
+import VendorLedgers from '../pages/accounting/VendorLedgers';
+import VendorStatement from '../pages/accounting/VendorStatement';
+import PaymentList from '../pages/accounting/PaymentList';
+import ChequeManagement from '../pages/accounting/ChequeManagement';
+import AgingReport from '../pages/accounting/AgingReport';
+
+import CustomerLogin from '../pages/CustomerLogin';
+import CustomerLayout from '../components/layout/CustomerLayout';
+import CustomerDashboard from '../pages/CustomerDashboard';
+
+import { PATHS } from './paths';
+import Inventory from '../pages/Inventory';
+import Dashboard from '../components/Dashboard';
+import Settings from '../pages/Settings';
+import OtherSales from '../pages/OtherSales';
+import EcommerceCatalog from '../pages/ecommerce/EcommerceCatalog';
+import { useFeatureFlags } from '../context/FeatureFlagsContext';
+import { Navigate } from 'react-router-dom';
+
+const FeatureFlagRoute = ({ flag, element }) => {
+    const { flags, loading } = useFeatureFlags();
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-[500px]">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#2980B9]" />
+            </div>
+        );
+    }
+    const isEnabled = Boolean(flags[flag]);
+    return isEnabled ? element : <Navigate to="/" replace />;
+};
+
+export { PATHS };
+
+import CustomerProfile from '../pages/CustomerProfile';
+
+// ── Staff ─────────────────────────────────────────────────────────────────────
+const STAFF_MODULE = [
+    { path: 'staff/register', element: Registration, page: 'REGISTER_STAFF', props: { title: 'Register Staff' } },
+    { path: 'staff/list', element: EmployeeList, page: 'STAFF_LIST' },
+];
+
+// ── Customer ──────────────────────────────────────────────────────────────────
+const CUSTOMER_MODULE = [
+    { path: 'customer/register', element: RegisterCustomer, page: 'REGISTER_CUSTOMER' },
+    { path: 'customer/list', element: CustomerList, page: 'CUSTOMER_LIST' },
+    { path: 'customer/profile/:id', element: CustomerProfile, page: 'CUSTOMER_LIST' },
+    { path: 'customer/ship-to', element: ShipTo, page: 'SHIP_TO' },
+];
+
+// ── Orders / Customer Care ────────────────────────────────────────────────────
+const CUSTOMER_CARE_MODULE = [
+    { path: PATHS.CUSTOMER_CARE.NEW_ORDER, element: OrderWizard, page: 'NEW_ORDER' },
+    { path: PATHS.CUSTOMER_CARE.ALL_ORDERS, element: AllOrdersList, page: 'ALL_ORDERS' },
+    { path: PATHS.CUSTOMER_CARE.RETAILER_ORDERS, element: IncomingRetailerOrders, page: 'ALL_ORDERS' },
+    { path: PATHS.CUSTOMER_CARE.DRAFT_ORDERS, element: DraftOrders, page: 'ALL_ORDERS' },
+    { path: PATHS.CUSTOMER_CARE.RX_ORDERS, element: RxOrders, page: 'ALL_ORDERS' },
+    { path: PATHS.CUSTOMER_CARE.PENDING_ORDERS, element: AllOrdersList, page: 'PENDING_ORDERS', props: { isPendingOnly: true, defaultStatus: 'Processing' } },
+    { path: PATHS.CUSTOMER_CARE.SERVICE_GOODS, element: OtherSales, page: 'OTHER_SALES' },
+    { path: PATHS.CUSTOMER_CARE.VIEW_ORDERS, element: PlaceholderPage, page: 'ALL_ORDERS', props: { title: 'View Orders' } },
+    { path: PATHS.CUSTOMER_CARE.UPGRADE_ORDERS, element: PlaceholderPage, page: 'ALL_ORDERS', props: { title: 'Upgrade Orders' } },
+    { path: PATHS.CUSTOMER_CARE.UPDATE_CUSTOMERS, element: CustomerList, page: 'CUSTOMER_LIST' },
+    { path: PATHS.CUSTOMER_CARE.EDIT_ORDER, element: OrderWizard },
+    { path: PATHS.CUSTOMER_CARE.ORDER_DETAILS, element: OrderDetails },
+];
+
+// ── Operations ────────────────────────────────────────────────────────────────
+const OPERATIONS_MODULE = [
+    { path: 'inventory', element: Inventory, page: 'INVENTORY' },
+    { path: 'qc', element: PlaceholderPage, page: 'QUALITY', props: { title: 'QC' } },
+    { path: 'fitting', element: PlaceholderPage, page: 'FITTING', props: { title: 'Fitting' } },
+    { path: 'dispatch', element: PlaceholderPage, page: 'SHIPPING', props: { title: 'Shipping' } },
+    { path: 'surfacing', element: PlaceholderPage, page: 'INVENTORY', props: { title: 'Surfacing' } },
+    { path: 'process-1', element: PlaceholderPage, page: 'QUALITY', props: { title: 'Process 1' } },
+    { path: 'process-2', element: PlaceholderPage, page: 'QUALITY', props: { title: 'Process 2' } },
+    { path: 'process-3', element: PlaceholderPage, page: 'QUALITY', props: { title: 'Process 3' } },
+    { path: 'dms', element: PlaceholderPage, page: 'INVENTORY', props: { title: 'DMS' } },
+    { path: 'finance', element: PlaceholderPage, page: 'MAIN_REPORT', props: { title: 'F&A' } },
+    { path: 'reports', element: PlaceholderPage, page: 'MAIN_REPORT', props: { title: 'Reports' } },
+    { path: 'stores', element: DashboardWizard, page: 'INVENTORY' },
+    { path: 'new-order', element: OrderWizard, page: 'NEW_ORDER' },
+];
+
+// ── Repair ────────────────────────────────────────────────────────────────────
+const REPAIR_MODULE = [
+    { path: PATHS.REPAIR.ADD, element: AddRepair, page: 'ADD_REPAIR' },
+    { path: PATHS.REPAIR.LIST, element: RepairList, page: 'REPAIR_LIST' },
+];
+
+// ── Returns & Exchanges ───────────────────────────────────────────────────────
+const RETURNS_MODULE = [
+    { path: PATHS.RETURNS.RETURN_REFUND, element: ReturnRefund, page: 'RETURN_REFUND' },
+    { path: PATHS.RETURNS.EXCHANGE, element: Exchange, page: 'EXCHANGE_REQUESTS' },
+];
+
+// ── Vendor ────────────────────────────────────────────────────────────────────
+const VENDOR_MODULE = [
+    { path: PATHS.VENDOR.ADD, element: AddVendor, page: 'ADD_VENDOR' },
+    { path: PATHS.VENDOR.LIST, element: VendorList, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.ORDER, element: VendorOrder, page: 'VENDOR_ORDER' },
+    { path: PATHS.VENDOR.PURCHASE_ITEMS, element: PurchaseItems, page: 'VENDOR_LIST' },
+    { path: '/vendor/purchase-items/:id', element: PurchaseItemDetails, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.INWARD_LIST, element: InwardList, page: 'VENDOR_LIST' },
+    { path: '/vendor/inward/:id', element: InwardDetails, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.QC_LIST, element: QCList, page: 'VENDOR_LIST' },
+    { path: '/vendor/qc/:id', element: QCDetails, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.PURCHASE_RETURNS, element: PurchaseReturnList, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.QC_FAILED_REPORT, element: QCFailedReport, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.ALL_INWARDED_ITEMS, element: AllInwardedItems, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.PENDING_INWARD, element: PendingInward, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.QC_PENDING, element: QcPending, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.QC_PASSED, element: QcPassed, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.REPLACEMENT_ORDERS, element: ReplacementOrderList, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.REPLACEMENT_ORDER_DETAILS, element: ReplacementOrderDetail, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.PROPOSAL_CREATE, element: BuyProduct, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.PROPOSAL_LIST, element: ProposalList, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.PROPOSAL_DETAILS, element: ProposalDetails, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.DAMAGED_ITEMS, element: DamagedItems, page: 'VENDOR_LIST' },
+    { path: PATHS.VENDOR.SHRINKAGE_ITEMS, element: ShrinkageItems, page: 'VENDOR_LIST' },
+];
+
+// ── Sales ─────────────────────────────────────────────────────────────────────
+const SALES_MODULE = [
+    { path: PATHS.SALES.LIST, element: SalesList, page: 'SALES_LIST' },
+];
+
+// ── Reports ───────────────────────────────────────────────────────────────────
+const REPORTS_MODULE = [
+    { path: PATHS.REPORTS.DAILY, element: DailyReport, page: 'DAILY_REPORT' },
+    { path: PATHS.REPORTS.MAIN, element: MainReport, page: 'MAIN_REPORT' },
+];
+
+// ── Tenants (Platform Owner) ──────────────────────────────────────────────────
+const TENANTS_MODULE = [
+    { path: PATHS.TENANTS.REGISTER, element: RegisterTenant, page: 'TENANTS' },
+    { path: PATHS.TENANTS.LIST, element: TenantList, page: 'TENANTS' },
+    { path: PATHS.TENANTS.DETAILS, element: TenantDetails, page: 'TENANTS' },
+    { path: PATHS.TENANTS.EDIT, element: TenantDetails, page: 'TENANTS' },
+    { path: PATHS.TENANTS.SETTINGS, element: WholesalerSettings },
+];
+
+
+const EXTERNAL_MODULE = [
+    {
+        path: PATHS.EXTERNAL?.RETAILER_ORDERS || '/external/retailer-orders',
+        element: IncomingRetailerOrders,
+    },
+];
+
+// ── Full config ───────────────────────────────────────────────────────────────
+const ACCOUNTING_MODULE = [
+    { path: PATHS.ACCOUNTING.COA, element: ChartOfAccounts },
+    { path: PATHS.ACCOUNTING.CUSTOMER_LEDGERS, element: CustomerLedgers },
+    { path: PATHS.ACCOUNTING.CUSTOMER_STATEMENT, element: CustomerKhataStatement },
+    { path: PATHS.ACCOUNTING.VENDOR_LEDGERS, element: VendorLedgers },
+    { path: PATHS.ACCOUNTING.VENDOR_STATEMENT, element: VendorStatement },
+    { path: PATHS.ACCOUNTING.PAYMENTS, element: PaymentList },
+    { path: PATHS.ACCOUNTING.CHEQUES, element: ChequeManagement },
+    { path: PATHS.ACCOUNTING.AGING, element: AgingReport },
+];
+
+export const routesConfig = [
+    // Public routes
+    { path: PATHS.LOGIN, element: Login, isPublic: true },
+    { path: PATHS.CUSTOMER_LOGIN, element: CustomerLogin, isPublic: true },
+    { path: PATHS.FORGOT_PASSWORD, element: ForgotPassword, isPublic: true },
+    { path: PATHS.CUSTOMER_FORGOT_PASSWORD, element: ForgotPassword, isPublic: true, props: { type: 'customer' } },
+    { path: PATHS.RESET_PASSWORD_CONFIRM, element: ResetPasswordConfirm, isPublic: true },
+    { path: PATHS.CUSTOMER_CARE.ORDER_STATUS, element: PublicOrderStatus, isPublic: true },
+
+    // Authenticated scope
+    {
+        element: AuthWrapper,
+        isProtected: true,
+        children: [
+            // Customer-facing portal — no pageAccess check needed
+            {
+                path: PATHS.CUSTOMER_PORTAL,
+                element: CustomerLayout,
+                children: [{ index: true, element: CustomerDashboard }],
+            },
+
+            // Splash / welcome — open to all authenticated users
+            { path: PATHS.WELCOME, element: Welcome },
+
+            // Main ERP shell
+            {
+                path: PATHS.ROOT,
+                element: MainLayout,
+                children: [
+                    { index: true, element: Dashboard, page: 'DASHBOARD', props: { title: 'Dashboard' } },
+
+                    { path: PATHS.DRAFTS, element: DraftsList, page: 'DRAFTS' },
+                    { path: PATHS.APPROVALS, element: ApprovalsList, page: 'APPROVALS' },
+                    { path: PATHS.CORRECTIONS, element: CorrectionsList, page: 'CORRECTIONS' },
+
+                    ...STAFF_MODULE,
+                    ...CUSTOMER_MODULE,
+                    ...CUSTOMER_CARE_MODULE,
+                    ...OPERATIONS_MODULE,
+                    ...REPAIR_MODULE,
+                    ...RETURNS_MODULE,
+                    ...VENDOR_MODULE,
+                    ...SALES_MODULE,
+                    ...REPORTS_MODULE,
+                    ...TENANTS_MODULE,
+                    ...ACCOUNTING_MODULE,
+                    ...EXTERNAL_MODULE,
+                    {
+                        path: PATHS.ECOMMERCE.SUNGLASSES,
+                        element: FeatureFlagRoute,
+                        props: { flag: 'ecomFramesSunglasses', element: <EcommerceCatalog defaultCategory="SUNGLASS" /> },
+                    },
+                    {
+                        path: PATHS.ECOMMERCE.FRAMES,
+                        element: FeatureFlagRoute,
+                        props: { flag: 'ecomFramesSunglasses', element: <EcommerceCatalog defaultCategory="FRAME" /> },
+                    },
+                    { path: PATHS.SETTINGS, element: Settings },
+                ],
+            },
+        ],
+    },
+];
+
+// ── Helper to find the first allowed route ────────────────────────────────────
+export const getFirstAllowedRoute = (user) => {
+    if (!user) return PATHS.LOGIN;
+    if (user.EmployeeType === 'SUPERADMIN' || user.EmployeeType === 'PLATFORM_OWNER') return PATHS.ROOT;
+
+    const pageAccess = Array.isArray(user.pageAccess) ? user.pageAccess : [];
+    
+    // If they have DASHBOARD access, just return ROOT to be safe
+    if (pageAccess.includes('DASHBOARD')) return PATHS.ROOT;
+
+    const findRoute = (routeList, basePath = '') => {
+        for (const route of routeList) {
+            if (route.isPublic) continue;
+            
+            let currentPath = basePath;
+            if (route.path) {
+                currentPath = route.path.startsWith('/') 
+                    ? route.path 
+                    : `${basePath}/${route.path}`.replace(/\/+/g, '/');
+            }
+            
+            // if it has a page requirement and the user has it, return this path
+            // (or if it's an index route, return basePath)
+            if (route.page && pageAccess.includes(route.page)) {
+                return currentPath || PATHS.ROOT;
+            }
+            
+            if (route.children) {
+                const childPath = findRoute(route.children, currentPath);
+                if (childPath) return childPath;
+            }
+        }
+        return null;
+    };
+
+    const firstAllowed = findRoute(routesConfig);
+    return firstAllowed || PATHS.UNAUTHORIZED; 
+};

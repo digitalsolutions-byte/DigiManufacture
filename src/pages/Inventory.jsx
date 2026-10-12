@@ -1,0 +1,6612 @@
+import api from "../services/apiInstance";
+import { Icon } from "@iconify/react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchSettings } from "../store/slices/settingsSlice";
+import {
+    useReactTable, getCoreRowModel, getPaginationRowModel,
+    getFilteredRowModel, flexRender,
+} from "@tanstack/react-table";
+import { toast } from "react-toastify";
+import {
+    FiInfo, FiShoppingCart, FiEdit2, FiTrash2, FiX, FiRefreshCw,
+    FiImage, FiSearch, FiPlus, FiChevronLeft, FiChevronRight,
+    FiPackage, FiCalendar, FiPrinter, FiTag, FiCheckSquare, FiLayout, FiBox, FiLayers, FiAward, FiAlignLeft, FiDollarSign, FiEyeOff, FiSave, FiBarChart2, FiGrid, FiSliders, FiHash, FiEye, FiMove, FiArrowDown, FiColumns
+} from "react-icons/fi";
+import Swal from "sweetalert2";
+import { v4 as uuidv4 } from "uuid";
+import { BsUpcScan, BsQrCode } from "react-icons/bs";
+import JsBarcode from "jsbarcode";
+import QRCode from "qrcode"; // npm install qrcode
+
+import * as XLSX from "xlsx";
+import { FiUpload, FiDownload, FiCheckCircle, FiAlertCircle, FiAlertTriangle, FiTrendingUp, FiTruck, FiUser, FiClock, FiFileText, FiPaperclip } from "react-icons/fi";
+
+import { createPortal } from "react-dom";
+import { getProductDisplayImage } from "../utils/productUtils";
+import { getBatchesForProduct, allocateManualBatch } from "../services/batchService";
+import { uploadMultipleDocuments } from "../services/bucketService";
+import LensMatrixModal from "../components/ui/LensMatrixModal";
+
+const Modal = ({ children, onClose, maxWidth = "max-w-5xl" }) => {
+    return createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className={`bg-white w-full ${maxWidth} max-h-[95vh] rounded-2xl shadow-2xl flex flex-col animate-fadeIn overflow-hidden`}>
+                {children}
+            </div>
+        </div>,
+        document.body
+    );
+};
+
+const ModalHeader = ({ title, subtitle, onClose, icon: Icon }) => (
+    <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
+        <div className="flex items-center gap-3">
+            {Icon && (
+                <div className="w-10 h-10 rounded-xl bg-[#2980b9]/10 flex items-center justify-center">
+                    <Icon size={18} className="text-[#2980b9]" />
+                </div>
+            )}
+            <div>
+                <h2 className="text-base font-bold text-gray-800">{title}</h2>
+                {subtitle && <p className="text-sm text-gray-400 mt-0.5">{subtitle}</p>}
+            </div>
+        </div>
+        <button onClick={onClose} className="p-2 rounded-full text-gray-400 hover:bg-gray-100 transition">
+            <FiX size={18} />
+        </button>
+    </div>
+);
+
+const ModalFooter = ({ children }) => (
+    <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50/60 rounded-b-2xl flex-shrink-0">
+        {children}
+    </div>
+);
+
+const SectionTitle = ({ children }) => (
+    <div className="flex items-center gap-2 mb-4">
+        <div className="w-0.5 h-4 bg-[#2980b9] rounded-full" />
+        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{children}</span>
+    </div>
+);
+
+const FieldInput = ({ label, children }) => (
+    <div>
+        <label className="text-[10px] font-semibold text-gray-700 uppercase   block mb-1">{label}</label>
+        {children}
+    </div>
+);
+
+const inputCls = "w-full px-3 py-2 text-sm border border-gray-300 rounded-xl outline-none focus:border-[#2980b9]/40 focus:ring-2 focus:ring-[#2980b9]/20 hover:border-gray-400 bg-gray-50 text-gray-700 transition placeholder:text-gray-300";
+const selectCls = inputCls;
+
+const FETCH_LIMIT = 100;
+const PAGE_SIZE = 100;
+
+// ─── Checkbox cell component ──────────────────────────────────────────────────
+function RowCheckbox({ checked, onChange, indeterminate = false }) {
+    const ref = useRef(null);
+    useEffect(() => {
+        if (ref.current) ref.current.indeterminate = indeterminate;
+    }, [indeterminate]);
+    return (
+        <input
+            ref={ref}
+            type="checkbox"
+            checked={checked}
+            onChange={onChange}
+            onClick={(e) => e.stopPropagation()}
+            className="w-3.5 h-3.5 rounded accent-[#2980b9] cursor-pointer"
+        />
+    );
+}
+
+// ─── Product Keyword Suggestion Input ────────────────────────────────────────
+function ProductKeywordInput({ value, onChange }) {
+    const [suggestions, setSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [searching, setSearching] = useState(false);
+    const debounceRef = useRef(null);
+    const containerRef = useRef(null);
+
+    const fetchSuggestions = async (q) => {
+        if (!q || q.trim().length < 2) { setSuggestions([]); setShowSuggestions(false); return; }
+        try {
+            setSearching(true);
+            const res = await api.get("/api/digi/product/suggestion", { params: { q } });
+            if (res.data.success) { setSuggestions(res.data.data || []); setShowSuggestions(true); }
+        } catch { /* silent */ }
+        finally { setSearching(false); }
+    };
+
+    const handleChange = (e) => {
+        onChange(e.target.value);
+        clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => fetchSuggestions(e.target.value), 320);
+    };
+
+    const handleSelect = (s) => {
+        const q = value.trim().toLowerCase();
+        let filled = s.productCode || "";
+        if (s.category?.toLowerCase().includes(q)) filled = s.category;
+        else if (s.brand?.toLowerCase().includes(q)) filled = s.brand;
+        else if (s.type?.toLowerCase().includes(q)) filled = s.type;
+        else if (s.color?.toLowerCase().includes(q)) filled = s.color;
+        else filled = s.productCode || s.category || "";
+        onChange(filled);
+        setSuggestions([]);
+        setShowSuggestions(false);
+    };
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (containerRef.current && !containerRef.current.contains(e.target))
+                setShowSuggestions(false);
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, []);
+
+    return (
+        <div ref={containerRef} className="relative flex flex-col flex-1 sm:w-48">
+            <label className="text-[10px] font-semibold text-gray-400 uppercase   mb-1">Keyword</label>
+            <div className="relative">
+                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none" size={12} />
+                {searching && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-[#2980b9]/40 border-t-transparent rounded-full animate-spin pointer-events-none" />
+                )}
+                <input
+                    type="text"
+                    value={value}
+                    onChange={handleChange}
+                    onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+                    placeholder="Code, brand, category..."
+                    className="w-full pl-8 pr-8 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-[#2980b9]/40 focus:ring-2 focus:ring-[#2980b9]/20 bg-gray-50 text-gray-700 transition placeholder:text-gray-300"
+                />
+                {value && !searching && (
+                    <button onClick={() => { onChange(""); setSuggestions([]); setShowSuggestions(false); }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition">
+                        <FiX size={12} />
+                    </button>
+                )}
+            </div>
+            {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+                    <div className="px-3 py-2 bg-[#2980b9]/10 border-b border-gray-100">
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Suggestions</p>
+                    </div>
+                    <ul className="max-h-52 overflow-y-auto">
+                        {suggestions.map((s, i) => (
+                            <li key={i}>
+                                <button onMouseDown={() => handleSelect(s)}
+                                    className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[#2980b9]/10 transition text-left">
+                                    <div className="w-7 h-7 rounded-full bg-[#2980b9]/10 border border-[#2980b9]/20 flex items-center justify-center flex-shrink-0">
+                                        <FiPackage size={11} className="text-[#2980b9]" />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="text-sm font-semibold text-gray-800 truncate">
+                                            {s.productCode || "—"}
+                                            {s.brand ? <span className="text-gray-400 font-normal"> · {s.brand}</span> : ""}
+                                        </p>
+                                        <p className="text-xs text-gray-400 truncate">
+                                            {[s.category, s.type].filter(Boolean).join(" · ")}
+                                        </p>
+                                    </div>
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+export default function Inventory() {
+    const dispatch = useDispatch();
+    const [showAddProductModal, setShowAddProductModal] = useState(false);
+    const [showLensRangeModal, setShowLensRangeModal] = useState(false);
+    const [showLensMatrixModal, setShowLensMatrixModal] = useState(false);
+    const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
+    const [vendors, setVendors] = useState([]);
+    const settings = useSelector((state) => state.settings.data);
+    // Increment this to tell InventoryTable to re-fetch without a page reload
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+    const triggerInventoryRefresh = () => setRefreshTrigger(prev => prev + 1);
+
+    useEffect(() => {
+        dispatch(fetchSettings());
+    }, [dispatch]);
+
+    const [fromDate, setFromDate] = useState("");
+    const [toDate, setToDate] = useState("");
+    const [keyword, setKeyword] = useState("");
+    const [triggerSearch, setTriggerSearch] = useState(0);
+
+    const fetchAllVendors = async () => {
+        try {
+            const res = await api.get("/api/vendor");
+            if (res.data.success) setVendors(res.data.vendors);
+        } catch (err) { console.error(err); }
+    };
+    useEffect(() => { fetchAllVendors(); }, []);
+
+    const handleRefresh = () => {
+        Swal.fire({
+            title: "Are you sure?", text: "The page will be refreshed.", icon: "warning",
+            showCancelButton: true, confirmButtonColor: "#ea580c", cancelButtonColor: "#6b7280",
+            confirmButtonText: "Yes, refresh it!",
+        }).then((result) => { if (result.isConfirmed) window.location.reload(); });
+    };
+
+    const createEmptyColor = () => ({
+        color: "",
+        qty: "",
+        productColorImage: "",
+        imageFile: null,
+        previewUrl: ""
+    });
+
+    const emptyRow = {
+        id: uuidv4(), date: "", productCode: "", productName: "", category: "",
+        brand: "", color: "", size: "", type: "", shape: "", sph: "", cyl: "",
+        index: "", axis: "", addition: "", coating: "", disposability: "", expiry: "", pairOrSingle: "Single",
+        price: "", buyingPrice: "", sellingPrice: "", gst: "0", hsnSac: "", mrp: "", discount: "0", qty: "", vendor: "",
+        material: "", dimensions: "",
+        colors: [createEmptyColor()],
+        // Batch allocation fields
+        allocateBatch: true,
+        batchNumber: "",
+        batchQty: "",
+        batchRemarks: "",
+        invoices: []  // File[] — invoice/challan files for this product batch
+    };
+
+    const [rows, setRows] = useState([emptyRow]);
+    const cleanupColorPreviews = (rowsList) => {
+        if (!Array.isArray(rowsList)) return;
+        rowsList.forEach(r => {
+            if (Array.isArray(r?.colors)) {
+                r.colors.forEach(c => {
+                    if (c?.previewUrl) {
+                        try { URL.revokeObjectURL(c.previewUrl); } catch (e) { /* ignore */ }
+                    }
+                });
+            }
+        });
+    };
+
+    const addRow = () => setRows([...rows, { ...emptyRow, id: uuidv4(), colors: [createEmptyColor()] }]);
+    const removeRow = (id) => {
+        if (rows.length === 1) return;
+        setRows(prev => {
+            const toRemove = prev.find(r => r.id === id);
+            if (toRemove) cleanupColorPreviews([toRemove]);
+            return prev.filter(r => r.id !== id);
+        });
+    };
+
+    const handleCloseAddProductModal = () => {
+        cleanupColorPreviews(rows);
+        setShowAddProductModal(false);
+        triggerInventoryRefresh();
+    };
+
+    const LENS_FIELDS = ["sph", "cyl", "index", "axis", "coating", "disposability", "expiry", "pairOrSingle"];
+    const isLensCategory = (v) => Boolean(v && (v.toLowerCase().includes("lens") || v.toLowerCase().includes("glass") || v.toLowerCase().includes("contact lens")));
+    const isContactLens = (v) => Boolean(v && v.trim().toUpperCase().replace(/[\s_]+/g, "_") === "CONTACT_LENS");
+    const isFrameCategory = (v) => Boolean(v && v.toLowerCase().includes("frame"));
+    const isRequireImageCategory = (v) => Boolean(v && (v.toLowerCase().includes("frame") || v.toLowerCase().includes("sunglass")));
+
+    const handleChange = (i, key, value) => {
+        const copy = [...rows];
+        if (key === "category") {
+            copy[i].category = value;
+            if (!isLensCategory(value)) LENS_FIELDS.forEach(f => { copy[i][f] = ""; });
+        } else if (key === "gst") {
+            copy[i].gst = Number(value) || "0";
+        } else {
+            copy[i][key] = value;
+        }
+        setRows(copy);
+    };
+
+    const colorDebounceRef = useRef(null);
+
+    const parseColorToHex = (str) => {
+        if (!str || typeof str !== 'string') return '#3B82F6';
+        const trimmed = str.trim().toLowerCase();
+
+        if (/^#?([0-9a-fA-F]{3}){1,2}$/.test(trimmed)) {
+            let hex = trimmed.startsWith('#') ? trimmed : `#${trimmed}`;
+            if (hex.length === 4) {
+                hex = `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`;
+            }
+            return hex;
+        }
+
+        try {
+            const ctx = document.createElement('canvas').getContext('2d');
+            if (ctx) {
+                ctx.fillStyle = trimmed;
+                const computed = ctx.fillStyle;
+                if (computed && computed.startsWith('#')) return computed;
+            }
+        } catch (e) {
+            // ignore
+        }
+
+        return '#3B82F6';
+    };
+
+    const handleColorChange = (rowIndex, colorIndex, field, value) => {
+        const copy = [...rows];
+        const colorsCopy = [...(copy[rowIndex].colors || [])];
+        const currentColor = colorsCopy[colorIndex] || createEmptyColor();
+
+        if (field === "imageFile") {
+            if (currentColor.previewUrl) {
+                try { URL.revokeObjectURL(currentColor.previewUrl); } catch (e) { /* ignore */ }
+            }
+            const file = value;
+            const previewUrl = file ? URL.createObjectURL(file) : "";
+            colorsCopy[colorIndex] = {
+                ...currentColor,
+                imageFile: file,
+                previewUrl: previewUrl,
+                productColorImage: ""
+            };
+        } else if (field === "removeImage") {
+            if (currentColor.previewUrl) {
+                try { URL.revokeObjectURL(currentColor.previewUrl); } catch (e) { /* ignore */ }
+            }
+            colorsCopy[colorIndex] = {
+                ...currentColor,
+                imageFile: null,
+                previewUrl: "",
+                productColorImage: ""
+            };
+        } else {
+            colorsCopy[colorIndex] = { ...currentColor, [field]: value };
+        }
+
+        copy[rowIndex].colors = colorsCopy;
+        
+        const totalQty = colorsCopy.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+        if (totalQty > 0 || colorsCopy.some(item => item.qty !== "")) {
+            copy[rowIndex].qty = totalQty;
+        }
+        setRows(copy);
+    };
+
+    const handleDebouncedColorChange = (rowIndex, colorIndex, field, value) => {
+        if (colorDebounceRef.current) clearTimeout(colorDebounceRef.current);
+        colorDebounceRef.current = setTimeout(() => {
+            handleColorChange(rowIndex, colorIndex, field, value);
+        }, 50);
+    };
+
+    const addColorRow = (rowIndex) => {
+        const copy = [...rows];
+        copy[rowIndex].colors = [...(copy[rowIndex].colors || []), createEmptyColor()];
+        setRows(copy);
+    };
+
+    const removeColorRow = (rowIndex, colorIndex) => {
+        const copy = [...rows];
+        if (copy[rowIndex].colors?.length > 1) {
+            const toRemove = copy[rowIndex].colors[colorIndex];
+            if (toRemove?.previewUrl) {
+                try { URL.revokeObjectURL(toRemove.previewUrl); } catch (e) { /* ignore */ }
+            }
+            copy[rowIndex].colors = copy[rowIndex].colors.filter((_, idx) => idx !== colorIndex);
+            const totalQty = copy[rowIndex].colors.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+            copy[rowIndex].qty = totalQty;
+            setRows(copy);
+        }
+    };
+
+    const validateProductsRows = (rows) => {
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            if (!row.productCode?.trim()) return `Product Code is required (Row ${i + 1})`;
+            if (!row.productName?.trim()) return `Product Name is required (Row ${i + 1})`;
+            if (!row.category) return `Category is required (Row ${i + 1})`;
+            if (!row.brand) return `Brand is required (Row ${i + 1})`;
+            const buyingP = row.buyingPrice !== "" && row.buyingPrice != null ? Number(row.buyingPrice) : (row.price !== "" ? Number(row.price) : NaN);
+            if (isNaN(buyingP) || buyingP < 0) return `Buying Price must be >= 0 (Row ${i + 1})`;
+            const mrpVal = Number(row.mrp);
+            if (isNaN(mrpVal) || mrpVal <= 0) return `MRP must be > 0 (Row ${i + 1})`;
+            const sellingP = row.sellingPrice !== "" && row.sellingPrice != null ? Number(row.sellingPrice) : mrpVal;
+            if (isNaN(sellingP) || sellingP <= 0) return `Selling Price must be > 0 (Row ${i + 1})`;
+            if (row.qty === "" || Number(row.qty) <= 0) return `Quantity must be > 0 (Row ${i + 1})`;
+
+            if (isRequireImageCategory(row.category) && Array.isArray(row.colors)) {
+                for (let cIdx = 0; cIdx < row.colors.length; cIdx++) {
+                    const c = row.colors[cIdx];
+                    if (!c.color || !c.color.trim()) {
+                        return `Color is required for row ${cIdx + 1} (Product #${i + 1})`;
+                    }
+                    if (c.qty === "" || Number(c.qty) <= 0) {
+                        return `Valid quantity (> 0) is required for color "${c.color}" (Product #${i + 1})`;
+                    }
+                }
+            }
+            if (isContactLens(row.category)) {
+                if (!row.coating?.trim()) return `Coating is required for Contact Lens (Row ${i + 1})`;
+                if (!row.disposability?.trim()) return `Disposability is required for Contact Lens (Row ${i + 1})`;
+                if (!row.expiry) return `Expiry Date is required for Contact Lens (Row ${i + 1})`;
+            }
+        }
+        return null;
+    };
+
+    const submitAddProductForm = async (e) => {
+        e.preventDefault();
+        const errorMessage = validateProductsRows(rows);
+        if (errorMessage) { toast.error(errorMessage); return; }
+        try {
+            const formData = new FormData();
+
+            // Step 1: Upload invoices per row (files → GCS urls)
+            const invoiceUploadResults = await Promise.all(
+                rows.map(async (product) => {
+                    if (Array.isArray(product.invoices) && product.invoices.length > 0) {
+                        return await uploadMultipleDocuments(product.invoices);
+                    }
+                    return [];
+                })
+            );
+
+            // Step 2: Clean products JSON (omit imageFile, previewUrl, invoices File objects)
+            const sanitizedProducts = rows.map((product, pIndex) => {
+                const { image, invoices: _invoiceFiles, ...rest } = product;
+                const buyingVal = Number(product.buyingPrice !== "" && product.buyingPrice != null ? product.buyingPrice : (product.price || 0));
+                const mrpVal = Number(product.mrp || 0);
+                const sellingVal = Number(product.sellingPrice !== "" && product.sellingPrice != null ? product.sellingPrice : (product.price || mrpVal));
+
+                return {
+                    ...rest,
+                    price: buyingVal,
+                    buyingPrice: buyingVal,
+                    sellingPrice: sellingVal,
+                    mrp: mrpVal,
+                    colors: (product.colors || []).map((c) => ({
+                        color: c.color,
+                        qty: Number(c.qty) || 0,
+                        productColorImage: typeof c.productColorImage === 'string' ? c.productColorImage : ""
+                    })),
+                    // Batch allocation
+                    allocateBatch: product.allocateBatch !== false,
+                    batchNumber: product.batchNumber?.trim() || "",
+                    batchQty: product.batchQty !== "" && product.batchQty !== null && product.batchQty !== undefined
+                        ? Number(product.batchQty) : "",
+                    batchRemarks: product.batchRemarks?.trim() || "",
+                    invoices: invoiceUploadResults[pIndex] || []
+                };
+            });
+            formData.append("products", JSON.stringify(sanitizedProducts));
+
+            // Step 3: Append color binary images using indexed keys: productColorImage_${pIndex}_${cIndex}
+            rows.forEach((product, pIndex) => {
+                if (Array.isArray(product.colors)) {
+                    product.colors.forEach((colorItem, cIndex) => {
+                        if (colorItem.imageFile instanceof File) {
+                            formData.append(`productColorImage_${pIndex}_${cIndex}`, colorItem.imageFile);
+                        }
+                    });
+                }
+            });
+
+            // Step 4: Send POST request
+            const res = await api.post("/api/digi/product", formData, { headers: { "Content-Type": "multipart/form-data" } });
+            if (res.data.success) {
+                toast.success("Products added successfully");
+                cleanupColorPreviews(rows);
+                setRows([{ ...emptyRow, id: uuidv4(), colors: [createEmptyColor()] }]);
+                setShowAddProductModal(false);
+                // Refresh the table immediately — no page reload needed
+                triggerInventoryRefresh();
+            } else { toast.error(res.data.message || "Something went wrong"); }
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to save products");
+        }
+    };
+
+    return (
+        <div className="p-3 sm:p-6 bg-gray-50 min-h-screen">
+
+            {/* ── Filter bar ── */}
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5 mb-5">
+                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
+                        <button onClick={() => setShowAddProductModal(true)}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm">
+                            <FiPlus size={13} /> Add Product
+                        </button>
+                        <button onClick={() => setShowBulkUploadModal(true)}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 bg-white border border-[#2980b9]/40 hover:bg-[#2980b9]/10 text-[#2980b9]/90 text-xs font-semibold rounded-xl transition shadow-sm">
+                            <FiUpload size={13} /> Bulk Upload
+                        </button>
+                        <button onClick={handleRefresh}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white px-3.5 py-2 text-xs font-semibold rounded-xl transition shadow-sm">
+                            <FiRefreshCw size={13} /> Refresh
+                        </button>
+                        <button onClick={() => setShowLensRangeModal(true)}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 bg-white border border-blue-300 hover:bg-blue-50 text-blue-600 text-xs font-semibold rounded-xl transition shadow-sm">
+                            <FiPlus size={13} /> Lens Range
+                        </button>
+                        <button onClick={() => setShowLensMatrixModal(true)}
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 bg-white border border-emerald-300 hover:bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-xl transition shadow-sm">
+                            <FiGrid size={13} /> Lens Matrix & History
+                        </button>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-end gap-3 w-full lg:w-auto">
+                        <div className="flex gap-2.5 w-full sm:w-auto">
+                            <div className="flex flex-col flex-1 sm:w-36">
+                                <label className="text-[10px] font-semibold text-gray-400 uppercase mb-1">From Date</label>
+                                <div className="relative">
+                                    <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" size={12} />
+                                    <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)}
+                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-[#2980b9]/40 focus:ring-2 focus:ring-[#2980b9]/20 bg-gray-50 text-gray-700 transition" />
+                                </div>
+                            </div>
+                            <div className="flex flex-col flex-1 sm:w-36">
+                                <label className="text-[10px] font-semibold text-gray-400 uppercase mb-1">To Date</label>
+                                <div className="relative">
+                                    <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" size={12} />
+                                    <input type="date" value={toDate} onChange={e => setToDate(e.target.value)}
+                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-[#2980b9]/40 focus:ring-2 focus:ring-[#2980b9]/20 bg-gray-50 text-gray-700 transition" />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="w-full sm:w-auto flex-1">
+                            <ProductKeywordInput value={keyword} onChange={setKeyword} />
+                        </div>
+                        <div className="flex gap-2 w-full sm:w-auto flex-shrink-0">
+                            <button onClick={() => setTriggerSearch(prev => prev + 1)}
+                                className="w-full sm:w-auto px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* ── Inventory Table ── */}
+            <InventoryTable
+                fromDate={fromDate} setFromDate={setFromDate}
+                toDate={toDate} setToDate={setToDate}
+                keyword={keyword} setKeyword={setKeyword}
+                triggerSearch={triggerSearch} setTriggerSearch={setTriggerSearch}
+                refreshTrigger={refreshTrigger}
+            />
+
+            {/* ── Add Product Modal ── */}
+            {showAddProductModal && (
+                <Modal onClose={handleCloseAddProductModal} maxWidth="max-w-7xl">
+                    <ModalHeader title="Add Product" subtitle="Fill in product details below" icon={FiPlus} onClose={handleCloseAddProductModal} />
+                    <form onSubmit={submitAddProductForm} className="flex-1 min-h-0 flex flex-col">
+                        <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-4">
+                            {rows.map((row, i) => {
+                                const isLens = isLensCategory(row.category);
+                                const isContactLensRow = isContactLens(row.category);
+                                const isFrame = isFrameCategory(row.category);
+
+                                return (
+                                    <div key={row.id} className="bg-gray-50 rounded-2xl border border-gray-100 p-4">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className="text-[10px] font-bold text-[#2980b9] uppercase tracking-widest">Product #{i + 1}</span>
+                                            {rows.length > 1 && (
+                                                <button type="button" onClick={() => removeRow(row.id)}
+                                                    className="p-1.5 rounded-lg hover:bg-red-50 text-red-400 transition">
+                                                    <FiTrash2 size={13} />
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                                            <FieldInput label="Date">
+                                                <input type="date" value={row.date} className={inputCls} onChange={e => handleChange(i, "date", e.target.value)} />
+                                            </FieldInput>
+                                            <FieldInput label="Code *">
+                                                <input type="text" value={row.productCode} className={inputCls} placeholder="e.g. PRD001" onChange={e => handleChange(i, "productCode", e.target.value)} />
+                                            </FieldInput>
+                                            <FieldInput label="Product Name *">
+                                                <input type="text" value={row.productName} className={inputCls} placeholder="Product name" onChange={e => handleChange(i, "productName", e.target.value)} />
+                                            </FieldInput>
+                                            <FieldInput label="Category *">
+                                                <select value={row.category} className={selectCls} onChange={e => handleChange(i, "category", e.target.value)}>
+                                                    <option value="">Select</option>
+                                                    {settings?.allCategories?.map((cat, idx) => <option key={idx} value={cat}>{cat}</option>)}
+                                                </select>
+                                            </FieldInput>
+                                            <FieldInput label="Brand *">
+                                                <input type="text" value={row.brand} className={inputCls} placeholder="Brand" onChange={e => handleChange(i, "brand", e.target.value)} />
+                                            </FieldInput>
+                                            <FieldInput label="Size">
+                                                <input type="text" value={row.size} className={inputCls} placeholder="Size" onChange={e => handleChange(i, "size", e.target.value)} />
+                                            </FieldInput>
+                                            <FieldInput label="Type">
+                                                <input type="text" value={row.type} className={inputCls} placeholder="Type" onChange={e => handleChange(i, "type", e.target.value)} />
+                                            </FieldInput>
+                                            <FieldInput label="Shape">
+                                                <input type="text" value={row.shape} className={inputCls} placeholder="Shape" onChange={e => handleChange(i, "shape", e.target.value)} />
+                                            </FieldInput>
+
+                                            <FieldInput label="Material">
+                                                <input type="text" value={row.material} className={inputCls} placeholder="Material" onChange={e => handleChange(i, "material", e.target.value)} />
+                                            </FieldInput>
+                                            <FieldInput label="Dimensions">
+                                                <input type="text" value={row.dimensions} className={inputCls} placeholder="Dimensions" onChange={e => handleChange(i, "dimensions", e.target.value)} />
+                                            </FieldInput>
+
+
+                                            {isLens && (<>
+                                                <FieldInput label="SPH"><input type="number" step="0.01" value={row.sph} className={inputCls} onChange={e => handleChange(i, "sph", e.target.value)} /></FieldInput>
+                                                <FieldInput label="CYL"><input type="number" step="0.01" value={row.cyl} className={inputCls} onChange={e => handleChange(i, "cyl", e.target.value)} /></FieldInput>
+                                                <FieldInput label="Index"><input type="number" step="0.01" value={row.index} className={inputCls} onChange={e => handleChange(i, "index", e.target.value)} /></FieldInput>
+                                                <FieldInput label="Axis"><input type="number" step="1" value={row.axis} className={inputCls} onChange={e => handleChange(i, "axis", e.target.value)} /></FieldInput>
+
+                                                <FieldInput label="Addition"><input type="number" step="0.01" value={row.addition} className={inputCls} onChange={e => handleChange(i, "addition", e.target.value)} /></FieldInput>
+
+                                                <FieldInput label={isContactLensRow ? "Coating *" : "Coating"}><input type="text" value={row.coating} className={inputCls} onChange={e => handleChange(i, "coating", e.target.value)} /></FieldInput>
+                                                {isContactLensRow && (
+                                                    <FieldInput label="Disposability *"><input type="text" placeholder="Daily / Monthly" value={row.disposability} className={inputCls} onChange={e => handleChange(i, "disposability", e.target.value)} /></FieldInput>
+                                                )}
+                                                <FieldInput label={isContactLensRow ? "Expiry *" : "Expiry"}><input type="date" value={row.expiry} className={inputCls} onChange={e => handleChange(i, "expiry", e.target.value)} /></FieldInput>
+                                                <FieldInput label="Pair / Single">
+                                                    <select value={row.pairOrSingle || "Single"} className={selectCls} onChange={e => handleChange(i, "pairOrSingle", e.target.value)}>
+                                                        <option value="Single">Single</option>
+                                                        <option value="Pair">Pair</option>
+                                                    </select>
+                                                </FieldInput>
+                                            </>)}
+
+                                            <FieldInput label="Buying Price (₹) *">
+                                                <input
+                                                    type="number"
+                                                    value={row.buyingPrice !== "" ? row.buyingPrice : row.price}
+                                                    className={inputCls}
+                                                    placeholder="e.g. 50"
+                                                    onChange={e => {
+                                                        handleChange(i, "buyingPrice", e.target.value);
+                                                        handleChange(i, "price", e.target.value);
+                                                    }}
+                                                />
+                                            </FieldInput>
+                                            <FieldInput label="Selling Price (₹) *">
+                                                <input
+                                                    type="number"
+                                                    value={row.sellingPrice}
+                                                    className={inputCls}
+                                                    placeholder="e.g. 90"
+                                                    onChange={e => handleChange(i, "sellingPrice", e.target.value)}
+                                                />
+                                            </FieldInput>
+                                            <FieldInput label="MRP (₹) *">
+                                                <input
+                                                    type="number"
+                                                    value={row.mrp}
+                                                    className={inputCls}
+                                                    placeholder="e.g. 100"
+                                                    onChange={e => handleChange(i, "mrp", e.target.value)}
+                                                />
+                                            </FieldInput>
+                                            <FieldInput label="Discount (₹)">
+                                                <input type="number" value={row.discount} className={inputCls} placeholder="0" onChange={e => handleChange(i, "discount", e.target.value)} />
+                                            </FieldInput>
+                                            <FieldInput label="Qty *">
+                                                <input type="number" value={row.qty} className={inputCls} placeholder="0" onChange={e => handleChange(i, "qty", e.target.value)} />
+                                            </FieldInput>
+                                            <FieldInput label="Vendor">
+                                                <select value={row.vendor} className={selectCls} onChange={e => handleChange(i, "vendor", e.target.value)}>
+                                                    <option value="">Select</option>
+                                                    {vendors.map((v) => (
+                                                        <option key={v._id || v.id} value={v._id || v.id || v.vendorName}>
+                                                            {v.vendorName || v.name || v.companyName}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </FieldInput>
+                                            <FieldInput label="HSN / SAC Code">
+                                                <input type="text" value={row.hsnSac} className={inputCls} placeholder="e.g. 9001" onChange={e => handleChange(i, "hsnSac", e.target.value)} />
+                                            </FieldInput>
+                                            <FieldInput label="GST %">
+                                                <select value={row.gst} className={selectCls} onChange={e => handleChange(i, "gst", e.target.value)}>
+                                                    <option value="0">0%</option>
+                                                    {(settings?.gst && settings.gst.length > 0 ? settings.gst : [5, 12, 18, 28]).map((p, idx) => <option key={idx} value={p}>{p}%</option>)}
+                                                </select>
+                                            </FieldInput>
+
+                                            {/* ── Batch Allocation Section ── */}
+                                            <div className="col-span-full mt-1">
+                                                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/70 rounded-2xl p-4">
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="w-2.5 h-2.5 rounded-full bg-[#2980b9]" />
+                                                            <label className="text-[11px] font-bold text-[#1a5276] uppercase tracking-wider">
+                                                                Batch Allocation <span className="text-gray-400 font-normal normal-case">(Optional)</span>
+                                                            </label>
+                                                        </div>
+                                                        <label className="flex items-center gap-2 cursor-pointer select-none">
+                                                            <span className="text-[11px] font-semibold text-gray-500">
+                                                                {row.allocateBatch ? 'Enabled' : 'Skip batch'}
+                                                            </span>
+                                                            <div
+                                                                onClick={() => handleChange(i, 'allocateBatch', !row.allocateBatch)}
+                                                                className={`relative w-9 h-5 rounded-full transition-colors duration-200 cursor-pointer ${
+                                                                    row.allocateBatch ? 'bg-[#2980b9]' : 'bg-gray-300'
+                                                                }`}
+                                                            >
+                                                                <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${
+                                                                    row.allocateBatch ? 'translate-x-4' : 'translate-x-0'
+                                                                }`} />
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    {row.allocateBatch && (
+                                                       <>
+                                                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                                            <FieldInput label="Batch Number">
+                                                                <input
+                                                                    type="text"
+                                                                    value={row.batchNumber}
+                                                                    className={inputCls}
+                                                                    placeholder="Auto-generated if blank"
+                                                                    onChange={e => handleChange(i, 'batchNumber', e.target.value)}
+                                                                />
+                                                            </FieldInput>
+                                                            <FieldInput label={`Batch Qty (Max: ${row.qty || 0})`}>
+                                                                <input
+                                                                    type="number"
+                                                                    min="1"
+                                                                    max={row.qty || undefined}
+                                                                    value={row.batchQty}
+                                                                    className={inputCls}
+                                                                    placeholder={`Default: full qty (${row.qty || 0})`}
+                                                                    onChange={e => handleChange(i, 'batchQty', e.target.value)}
+                                                                />
+                                                            </FieldInput>
+                                                            <FieldInput label="Batch Remarks">
+                                                                <input
+                                                                    type="text"
+                                                                    value={row.batchRemarks}
+                                                                    className={inputCls}
+                                                                    placeholder="e.g. Initial stock"
+                                                                    onChange={e => handleChange(i, 'batchRemarks', e.target.value)}
+                                                                />
+                                                            </FieldInput>
+                                                        </div>
+                                                    {/* Invoice / Challan Upload */}
+                                                    <div className="mt-3">
+                                                            <label className="text-[10px] font-bold text-gray-600 uppercase tracking-wide block mb-1.5 flex items-center gap-1.5">
+                                                                <FiFileText size={11} className="text-[#2980b9]" /> Invoice / Challan (optional, max 5)
+                                                            </label>
+                                                            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#eaf4fb] hover:bg-[#d5eaf6] border border-[#2980b9]/30 text-[#1F618D] text-[11px] font-semibold rounded-lg cursor-pointer transition">
+                                                                <FiUpload size={11} />
+                                                                Attach Files
+                                                                <input type="file" multiple accept="application/pdf,image/*" className="hidden"
+                                                                    onChange={e => {
+                                                                        const newFiles = Array.from(e.target.files || []);
+                                                                        handleChange(i, 'invoices', [...(row.invoices || []), ...newFiles].slice(0, 5));
+                                                                        e.target.value = '';
+                                                                    }}
+                                                                />
+                                                            </label>
+                                                            {(row.invoices || []).length > 0 && (
+                                                                <div className="flex flex-wrap gap-1.5 mt-2">
+                                                                    {row.invoices.map((f, fi) => (
+                                                                        <span key={fi} className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-medium rounded-full">
+                                                                            <FiFileText size={9} />
+                                                                            {f.name.length > 18 ? f.name.slice(0, 15) + '…' : f.name}
+                                                                            <button type="button" onClick={() => handleChange(i, 'invoices', row.invoices.filter((_, idx) => idx !== fi))} className="text-blue-400 hover:text-red-500 ml-0.5">×</button>
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        </>
+                                                        )}
+
+                                                    {!row.allocateBatch && (
+                                                        <p className="text-[11px] text-gray-400 mt-1">
+                                                            No batch will be created. You can allocate batches later from the Inventory section.
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {(isRequireImageCategory(row.category) || row.category) && (
+                                                <div className="col-span-full mt-3 pt-3 border-t border-gray-200/80">
+                                                    <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs space-y-3">
+                                                        <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="w-2.5 h-2.5 rounded-full bg-[#2980b9]"></span>
+                                                                <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider">
+                                                                    Colors & Variants
+                                                                </label>
+                                                                <span className="text-[10px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full font-medium hidden sm:inline-block">
+                                                                    {isRequireImageCategory(row.category) ? "Color, stock quantity & color-specific image" : "Optional — add color variants if applicable"}
+                                                                </span>
+                                                            </div>
+                                                            <span className="text-[10px] text-gray-500 font-semibold bg-gray-100/80 px-2.5 py-1 rounded-lg">
+                                                                Total: <strong className="text-gray-800 font-bold">{row.colors?.reduce((sum, item) => sum + (Number(item.qty) || 0), 0) || 0}</strong> Pcs
+                                                            </span>
+                                                        </div>
+
+                                                        <div className="space-y-2.5">
+                                                            {row.colors?.map((cItem, cIdx) => (
+                                                                <div key={cIdx} className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 p-2.5 bg-gray-50/80 rounded-xl border border-gray-200/80 hover:border-gray-300 transition">
+                                                                    {/* Color Picker + Name/Hex */}
+                                                                    <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-xl p-1.5 pr-3 flex-1 min-w-[200px] focus-within:border-[#2980b9] focus-within:ring-2 focus-within:ring-[#2980b9]/20 transition">
+                                                                        <input
+                                                                            type="color"
+                                                                            value={parseColorToHex(cItem.color)}
+                                                                            onChange={e => handleDebouncedColorChange(i, cIdx, "color", e.target.value)}
+                                                                            className="w-7 h-7 rounded-lg cursor-pointer border-0 bg-transparent p-0 flex-shrink-0"
+                                                                            title="Pick a color"
+                                                                        />
+                                                                        <input
+                                                                            type="text"
+                                                                            className="w-full text-xs font-semibold bg-transparent text-gray-800 outline-none placeholder:text-gray-400"
+                                                                            placeholder="Color name or Hex (e.g. red, #3B82F6)"
+                                                                            value={cItem.color}
+                                                                            onChange={e => handleColorChange(i, cIdx, "color", e.target.value)}
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Qty Input */}
+                                                                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                                                                        <label className="text-[10px] font-bold text-gray-400 uppercase">Qty</label>
+                                                                        <input
+                                                                            type="number"
+                                                                            min="0"
+                                                                            className={`${inputCls} w-24 font-bold bg-white`}
+                                                                            placeholder="Qty"
+                                                                            value={cItem.qty}
+                                                                            onChange={e => handleColorChange(i, cIdx, "qty", e.target.value)}
+                                                                        />
+                                                                    </div>
+
+                                                                    {/* Color-specific Image Upload & Preview */}
+                                                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                                                        {(cItem.previewUrl || cItem.productColorImage) ? (
+                                                                            <div className="relative group w-10 h-10 rounded-xl overflow-hidden border border-gray-200 bg-white flex items-center justify-center shadow-xs">
+                                                                                <img
+                                                                                    src={cItem.previewUrl || cItem.productColorImage}
+                                                                                    alt={`Color ${cItem.color} preview`}
+                                                                                    className="w-full h-full object-contain p-0.5"
+                                                                                />
+                                                                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+                                                                                    <label className="p-1 text-white hover:text-[#2980b9] cursor-pointer transition" title="Change color image">
+                                                                                        <FiUpload size={12} />
+                                                                                        <input
+                                                                                            type="file"
+                                                                                            accept="image/*"
+                                                                                            className="hidden"
+                                                                                            onChange={e => {
+                                                                                                if (e.target.files && e.target.files[0]) {
+                                                                                                    handleColorChange(i, cIdx, "imageFile", e.target.files[0]);
+                                                                                                }
+                                                                                            }}
+                                                                                        />
+                                                                                    </label>
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        onClick={() => handleColorChange(i, cIdx, "removeImage")}
+                                                                                        className="p-1 text-white hover:text-red-400 transition"
+                                                                                        title="Remove color image"
+                                                                                    >
+                                                                                        <FiTrash2 size={12} />
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <label className="flex items-center gap-1.5 px-3 py-2 bg-white border border-dashed border-gray-300 hover:border-[#2980b9] hover:bg-[#2980b9]/5 rounded-xl text-xs font-semibold text-gray-600 hover:text-[#2980b9] cursor-pointer transition shadow-2xs">
+                                                                                <FiImage size={13} className="text-[#2980b9]" />
+                                                                                <span>Upload Image</span>
+                                                                                <input
+                                                                                    type="file"
+                                                                                    accept="image/*"
+                                                                                    className="hidden"
+                                                                                    onChange={e => {
+                                                                                        if (e.target.files && e.target.files[0]) {
+                                                                                            handleColorChange(i, cIdx, "imageFile", e.target.files[0]);
+                                                                                        }
+                                                                                    }}
+                                                                                />
+                                                                            </label>
+                                                                        )}
+                                                                    </div>
+
+                                                                    {/* Remove Color Row Button */}
+                                                                    {row.colors.length > 1 && (
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => removeColorRow(i, cIdx)}
+                                                                            className="p-2 rounded-xl text-red-400 hover:text-red-600 hover:bg-red-50 transition flex-shrink-0"
+                                                                            title="Remove variant"
+                                                                        >
+                                                                            <FiTrash2 size={14} />
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => addColorRow(i)}
+                                                            className="mt-1 px-3.5 py-1.5 border border-dashed border-[#2980b9] text-[#2980b9] hover:bg-blue-50 text-xs font-bold rounded-xl transition flex items-center gap-1.5"
+                                                        >
+                                                            <FiPlus size={13} /> + Color Variant
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            <button type="button" onClick={addRow}
+                                className="w-full py-3 border-2 border-dashed border-[#2980b9]/40 hover:border-[#2980b9]/60 text-[#2980b9] hover:text-[#2980b9]/90 text-xs font-semibold rounded-2xl transition flex items-center justify-center gap-2">
+                                <FiPlus size={14} /> Add Another Product
+                            </button>
+                        </div>
+                        <ModalFooter>
+                            <button type="button" onClick={handleCloseAddProductModal}
+                                className="px-4 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                className="px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm">
+                                Submit Products
+                            </button>
+                        </ModalFooter>
+                    </form>
+                </Modal>
+            )}
+
+            {showBulkUploadModal && (
+                <BulkUploadModal onClose={() => setShowBulkUploadModal(false)} />
+            )}
+
+            {showLensRangeModal && (
+                <LensRangeModal
+                    settings={settings}
+                    vendors={vendors}
+                    onClose={() => setShowLensRangeModal(false)}
+                    onSuccess={triggerInventoryRefresh}
+                />
+            )}
+
+            {showLensMatrixModal && (
+                <LensMatrixModal
+                    isOpen={showLensMatrixModal}
+                    onClose={() => setShowLensMatrixModal(false)}
+                    onRefreshInventory={triggerInventoryRefresh}
+                />
+            )}
+        </div>
+    );
+}
+
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  LensRangeModal — generate multiple lens products from SPH × CYL × Addition ranges
+// ─────────────────────────────────────────────────────────────────────────────
+
+
+
+
+const RangeCell = ({ row, field, placeholder, onRangeChange, onRangeBlur }) => {
+    const hasErr = !!row.errors[field];
+    return (
+        <div className="flex flex-col gap-0.5">
+            <input
+                type="number"
+                step={
+                    field.startsWith("sph") ? (row.sphStep || "0.25")
+                        : field.startsWith("cyl") ? (row.cylStep || "0.25")
+                            : (row.addStep || "0.25")
+                }
+                placeholder={placeholder}
+                value={row[field]}
+                onChange={e => onRangeChange(row.id, field, e.target.value)}
+                onBlur={e => onRangeBlur(row.id, field, e.target.value)}
+                className={`w-full px-2 py-1.5 text-xs border rounded-lg outline-none transition bg-gray-50 text-gray-700
+                    ${hasErr
+                        ? "border-red-400 focus:ring-red-100 focus:border-red-400"
+                        : "border-gray-300 focus:border-orange-300 focus:ring-2 focus:ring-orange-100 hover:border-gray-400"}`}
+            />
+            {hasErr && (
+                <span className="text-[9px] text-red-500 leading-tight">{row.errors[field]}</span>
+            )}
+        </div>
+    );
+};
+
+const StepCell = ({ row, field, label, onRangeChange }) => {
+    const hasErr = !!row.errors[field];
+    return (
+        <div className="flex flex-col gap-0.5">
+            <label className="text-[8px] font-bold text-gray-400 uppercase tracking-widest text-center">
+                {label}
+            </label>
+            <input
+                type="number"
+                min="0.01"
+                max="4.00"
+                step="0.01"
+                placeholder="0.25"
+                value={row[field]}
+                onChange={e => onRangeChange(row.id, field, e.target.value)}
+                className={`w-full px-2 py-1.5 text-xs border rounded-lg outline-none transition text-center font-mono
+                    ${hasErr
+                        ? "border-red-400 bg-red-50 text-red-700 focus:ring-red-100"
+                        : "border-violet-200 bg-violet-50 text-violet-700 focus:border-violet-400 focus:ring-2 focus:ring-violet-100 hover:border-violet-300"}`}
+            />
+            {hasErr && (
+                <span className="text-[9px] text-red-500 leading-tight text-center">{row.errors[field]}</span>
+            )}
+        </div>
+    );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+const makeEmptyRangeRow = () => ({
+    id: crypto.randomUUID(),
+    sphFrom: "", sphTo: "",
+    cylFrom: "", cylTo: "",
+    additionFrom: "", additionTo: "",
+    sphStep: "0.25", cylStep: "0.25", addStep: "0.25",
+    errors: {},
+});
+
+export function LensRangeModal({ settings, vendors, onClose, onSuccess }) {
+    const DEFAULT_STEP = 0.25;
+    const round2 = (n) => Math.round(n * 100) / 100;
+
+    const isValidStep = (val, step = DEFAULT_STEP) => {
+        if (val === "" || isNaN(parseFloat(val))) return true;
+        const s = parseFloat(step) || DEFAULT_STEP;
+        return Math.abs(Math.round(parseFloat(val) / s) * s - parseFloat(val)) < 0.0001;
+    };
+
+    const isPositiveStep = (val) => {
+        const n = parseFloat(val);
+        return !isNaN(n) && n > 0;
+    };
+
+    const isLensCat = (cat) => /lens|glass|contact/i.test(cat || "");
+    const lensCategories = (settings?.allCategories || []).filter(isLensCat);
+    const brandList = settings?.brands?.length ? settings.brands : [];
+
+    // ── Product / pricing form ──
+    const [form, setForm] = useState({
+        productName: "", category: "", brand: "",
+        coating: "", material: "", index: "",
+        price: "", buyingPrice: "", sellingPrice: "", mrp: "", gst: "12", hsnSac: "9001",
+        qty: "", discount: "0",
+        vendorNumber: "", vendorName: "",
+        prefix: "DO",
+    });
+    const [categoryError, setCategoryError] = useState("");
+
+    // ── Multiple range rows ──
+    const [rangeRows, setRangeRows] = useState([makeEmptyRangeRow()]);
+
+    // ── Preview state ──
+    const [previewRows, setPreviewRows] = useState([]);
+    const [showPreview, setShowPreview] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [previewSearch, setPreviewSearch] = useState("");
+
+    // ── Form handlers ──
+    const handleFormChange = (e) => {
+        const { name, value } = e.target;
+        setForm(prev => {
+            const next = {
+                ...prev,
+                [name]: value,
+                ...(name === "buyingPrice" ? { price: value } : {}),
+            };
+            if (name === "category") {
+                if (value && !isLensCat(value)) {
+                    setCategoryError("Only Lens, Glass, or Contact Lens categories are allowed here.");
+                } else {
+                    setCategoryError("");
+                }
+            }
+            return next;
+        });
+        setShowPreview(false);
+    };
+
+    // ── Range row handlers ──
+    const handleRangeRowChange = (rowId, field, value) => {
+        setRangeRows(prev => prev.map(row => {
+            if (row.id !== rowId) return row;
+            const errors = { ...row.errors };
+
+            if (field === "sphStep" || field === "cylStep" || field === "addStep") {
+                const num = parseFloat(value);
+                if (value !== "") {
+                    if (!isPositiveStep(value)) {
+                        errors[field] = "Step must be > 0";
+                    } else if (num > 4) {
+                        errors[field] = `Use decimal (e.g. 0.25, not ${value})`;
+                    } else {
+                        delete errors[field];
+                    }
+                } else {
+                    delete errors[field];
+                }
+
+                // Re-validate associated range fields immediately with the new step
+                const newStep = parseFloat(value) || DEFAULT_STEP;
+                const relatedFields = field === "sphStep"
+                    ? ["sphFrom", "sphTo"]
+                    : field === "cylStep"
+                        ? ["cylFrom", "cylTo"]
+                        : ["additionFrom", "additionTo"];
+
+                for (const rf of relatedFields) {
+                    const rVal = row[rf];
+                    if (rVal !== "" && !isNaN(parseFloat(rVal))) {
+                        if (!isValidStep(rVal, newStep)) {
+                            const nearest = (Math.round(parseFloat(rVal) / newStep) * newStep).toFixed(2);
+                            errors[rf] = `Must be a multiple of ${newStep} (nearest: ${nearest})`;
+                        } else {
+                            delete errors[rf];
+                        }
+                    } else {
+                        delete errors[rf];
+                    }
+                }
+
+                return { ...row, [field]: value, errors };
+            }
+
+            const stepField = field.startsWith("sph") ? "sphStep"
+                : field.startsWith("cyl") ? "cylStep"
+                    : "addStep";
+            const step = parseFloat(row[stepField]) || DEFAULT_STEP;
+
+            if (value !== "" && !isNaN(parseFloat(value))) {
+                if (!isValidStep(value, step)) {
+                    const nearest = (Math.round(parseFloat(value) / step) * step).toFixed(2);
+                    errors[field] = `Must be a multiple of ${step} (nearest: ${nearest})`;
+                } else {
+                    delete errors[field];
+                }
+            } else {
+                delete errors[field];
+            }
+            return { ...row, [field]: value, errors };
+        }));
+        setShowPreview(false);
+    };
+
+    const handleRangeRowBlur = (rowId, field, value) => {
+        const row = rangeRows.find(r => r.id === rowId);
+        if (!row) return;
+        const stepField = field.startsWith("sph") ? "sphStep"
+            : field.startsWith("cyl") ? "cylStep"
+                : "addStep";
+        const step = parseFloat(row[stepField]) || DEFAULT_STEP;
+        if (value !== "" && !isNaN(parseFloat(value)) && !isValidStep(value, step)) {
+            const nearest = (Math.round(parseFloat(value) / step) * step).toFixed(2);
+            toast.error(`${field.replace(/([A-Z])/g, ' $1').toUpperCase()}: Must be multiple of ${step} (nearest: ${nearest})`);
+        }
+    };
+
+    const addRangeRow = () => setRangeRows(prev => [...prev, makeEmptyRangeRow()]);
+
+    const removeRangeRow = (rowId) => {
+        if (rangeRows.length === 1) return;
+        setRangeRows(prev => prev.filter(r => r.id !== rowId));
+        setShowPreview(false);
+    };
+
+    // ── Per-row combination generator ──
+    const generateRowCombinations = (row) => {
+        const sphFrom = parseFloat(row.sphFrom);
+        const sphTo = parseFloat(row.sphTo);
+        const cylFrom = parseFloat(row.cylFrom);
+        const cylTo = parseFloat(row.cylTo);
+        const addFrom = row.additionFrom !== "" ? parseFloat(row.additionFrom) : null;
+        const addTo = row.additionTo !== "" ? parseFloat(row.additionTo) : null;
+
+        const sphStep = parseFloat(row.sphStep) || DEFAULT_STEP;
+        const cylStep = parseFloat(row.cylStep) || DEFAULT_STEP;
+        const addStep = parseFloat(row.addStep) || DEFAULT_STEP;
+
+        if ([sphFrom, sphTo, cylFrom, cylTo].some(isNaN)) return null;
+        if (!isPositiveStep(sphStep) || !isPositiveStep(cylStep) || !isPositiveStep(addStep)) return null;
+
+        if (!isValidStep(sphFrom, sphStep) || !isValidStep(sphTo, sphStep)) return null;
+        if (!isValidStep(cylFrom, cylStep) || !isValidStep(cylTo, cylStep)) return null;
+
+        const sFrom = Math.min(sphFrom, sphTo);
+        const sTo = Math.max(sphFrom, sphTo);
+        const cFrom = Math.min(cylFrom, cylTo);
+        const cTo = Math.max(cylFrom, cylTo);
+
+        let addSteps = [""];
+        if (addFrom !== null && addTo !== null) {
+            if (isNaN(addFrom) || isNaN(addTo)) return null;
+            if (!isValidStep(addFrom, addStep) || !isValidStep(addTo, addStep)) return null;
+            const aFrom = Math.min(addFrom, addTo);
+            const aTo = Math.max(addFrom, addTo);
+            addSteps = [];
+            for (let a = aFrom; a <= aTo + 0.0001; a = round2(a + addStep)) {
+                addSteps.push(round2(a).toFixed(2));
+            }
+        } else if (addFrom !== null) {
+            if (!isNaN(addFrom) && isValidStep(addFrom, addStep))
+                addSteps = [round2(addFrom).toFixed(2)];
+        } else if (addTo !== null) {
+            if (!isNaN(addTo) && isValidStep(addTo, addStep))
+                addSteps = [round2(addTo).toFixed(2)];
+        }
+
+        const combos = [];
+        for (let sph = sFrom; sph <= sTo + 0.0001; sph = round2(sph + sphStep)) {
+            for (let cyl = cFrom; cyl <= cTo + 0.0001; cyl = round2(cyl + cylStep)) {
+                for (const add of addSteps) {
+                    combos.push({
+                        sph: round2(sph).toFixed(2),
+                        cyl: round2(cyl).toFixed(2),
+                        addition: add,
+                    });
+                }
+            }
+        }
+        return combos;
+    };
+
+    // ── Live total count ──
+    const totalComboCount = useMemo(() => {
+        let total = 0;
+        for (const row of rangeRows) {
+            if (Object.keys(row.errors).length > 0) return -1;
+            const combos = generateRowCombinations(row);
+            if (combos === null) continue;
+            total += combos.length;
+        }
+        return total;
+    }, [rangeRows]);
+
+    const hasAnyRangeErrors = rangeRows.some(r => Object.keys(r.errors).length > 0);
+
+    // ── Preview builder ──
+    const handlePreview = () => {
+        if (!form.productName || !form.category || !form.brand)
+            return toast.error("Please fill Product Name, Category, and Brand first.");
+        if (categoryError) return toast.error(categoryError);
+        if (hasAnyRangeErrors) return toast.error("Fix the range step errors first.");
+
+        const allCombos = [];
+        for (let ri = 0; ri < rangeRows.length; ri++) {
+            const row = rangeRows[ri];
+            if (!row.sphFrom && !row.sphTo && !row.cylFrom && !row.cylTo) continue;
+            const combos = generateRowCombinations(row);
+            if (!combos || combos.length === 0)
+                return toast.error(`Row ${ri + 1}: Check SPH/CYL range — values must be valid multiples of their steps.`);
+            combos.forEach(c => allCombos.push({
+                ...c, rowIndex: ri,
+                buyingPrice: form.buyingPrice,
+                sellingPrice: form.sellingPrice,
+                price: form.buyingPrice || form.price,
+                mrp: form.mrp,
+                qty: form.qty
+            }));
+        }
+        if (allCombos.length === 0) return toast.error("No combinations generated. Fill at least one range row.");
+        setPreviewRows(allCombos);
+        setPreviewSearch("");
+        setShowPreview(true);
+    };
+
+    const handlePreviewEdit = (idx, field, value) => {
+        setPreviewRows(prev => {
+            const copy = [...prev];
+            copy[idx] = { ...copy[idx], [field]: value };
+            return copy;
+        });
+    };
+
+    const handlePreviewDeleteRow = (idx) => {
+        setPreviewRows(prev => prev.filter((_, i) => i !== idx));
+    };
+
+    const filteredPreviewRows = useMemo(() => {
+        if (!previewSearch.trim()) return previewRows.map((r, i) => ({ ...r, _origIdx: i }));
+        const q = previewSearch.trim().toLowerCase();
+        return previewRows
+            .map((r, i) => ({ ...r, _origIdx: i }))
+            .filter(r => {
+                const label = `${form.productName} sph${r.sph} cyl${r.cyl} ${r.addition ? `add${r.addition}` : ""}`.toLowerCase();
+                return label.includes(q) || r.sph.includes(q) || r.cyl.includes(q) || (r.addition || "").includes(q);
+            });
+    }, [previewRows, previewSearch, form.productName]);
+
+    // ── Submit ──
+    const handleSubmit = async () => {
+        if (!form.productName || !form.category || !form.brand)
+            return toast.error("Fill Product Name, Category, and Brand.");
+        if (categoryError) return toast.error(categoryError);
+        if (!isLensCat(form.category)) return toast.error("Only Lens / Glass / Contact Lens categories are allowed.");
+        if (hasAnyRangeErrors) return toast.error("Fix range errors first.");
+        if (!showPreview || previewRows.length === 0) return toast.error("Click Preview first.");
+
+        for (let i = 0; i < previewRows.length; i++) {
+            const r = previewRows[i];
+            const bPrice = r.buyingPrice !== "" && r.buyingPrice != null ? r.buyingPrice : r.price;
+            if (!bPrice || Number(bPrice) <= 0) return toast.error(`Row ${i + 1}: Buying Price must be > 0`);
+            if (!r.sellingPrice || Number(r.sellingPrice) <= 0) return toast.error(`Row ${i + 1}: Selling Price must be > 0`);
+            if (!r.mrp || Number(r.mrp) <= 0) return toast.error(`Row ${i + 1}: MRP must be > 0`);
+            if (!r.qty || Number(r.qty) <= 0) return toast.error(`Row ${i + 1}: Qty must be > 0`);
+        }
+
+        const products = previewRows.map(({ sph, cyl, addition, buyingPrice, sellingPrice, price, mrp, qty }, i) => {
+            const bVal = Number(buyingPrice !== "" && buyingPrice != null ? buyingPrice : (price || 0));
+            const sVal = Number(sellingPrice !== "" && sellingPrice != null ? sellingPrice : (mrp || 0));
+            return {
+                productCode: `${i + 1}${form.prefix.trim().toUpperCase() || "DO"}`,
+                productName: form.productName.trim().toUpperCase(),
+                category: form.category.trim().toUpperCase(),
+                brand: form.brand,
+                coating: form.coating,
+                material: form.material,
+                addition: addition || "",
+                index: form.index,
+                sph,
+                cyl,
+                price: bVal,
+                buyingPrice: bVal,
+                sellingPrice: sVal,
+                mrp: Number(mrp),
+                gst: Number(form.gst),
+                hsnSac: form.hsnSac,
+                qty: Number(qty),
+                discount: Number(form.discount) || 0,
+                vendorNumber: form.vendorNumber,
+                vendorName: form.vendorName,
+            };
+        });
+
+        setSubmitting(true);
+        try {
+            const res = await api.post("/api/digi/product/bulk", {
+                products: JSON.stringify(products),
+                suffix: form.prefix.trim().toUpperCase() || "DO",
+            });
+            if (res.data.success) {
+                toast.success(`${res.data.count} lens products created successfully.`);
+                if (onSuccess) onSuccess();
+                onClose();
+            } else {
+                toast.error(res.data.message || "Upload failed.");
+            }
+        } catch (err) {
+            toast.error(err.message || err.response?.data?.message || "Something went wrong.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    // ── Shared input class helpers ──
+    const inputCls = "w-full px-3 py-2 text-xs border border-gray-200 rounded-lg outline-none transition bg-gray-50 text-gray-700 focus:border-orange-300 focus:ring-2 focus:ring-orange-100 hover:border-gray-300";
+    const selectCls = "w-full px-3 py-2 text-xs border border-gray-200 rounded-lg outline-none transition bg-gray-50 text-gray-700 focus:border-orange-300 focus:ring-2 focus:ring-orange-100 hover:border-gray-300";
+
+    return (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl flex flex-col max-h-[90vh]">
+
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                    <div>
+                        <h2 className="text-base font-bold text-gray-800 flex items-center gap-2">
+                            <FiPlus className="text-orange-500" size={18} />
+                            Lens Range Generator
+                        </h2>
+                        <p className="text-[11px] text-gray-400 mt-0.5">
+                            Auto-create lens products across SPH × CYL × Addition ranges
+                        </p>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="w-8 h-8 flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition"
+                    >
+                        <FiX size={16} />
+                    </button>
+                </div>
+
+                {/* Body */}
+                <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6">
+
+                    {/* ── Product Info ── */}
+                    <div>
+                        <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-3">
+                            Product Info
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                            <div>
+                                <label className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider block mb-1">
+                                    Product Name *
+                                </label>
+                                <input
+                                    name="productName" type="text" className={inputCls}
+                                    placeholder="e.g. CR39 Single Vision"
+                                    value={form.productName} onChange={handleFormChange}
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider block mb-1">
+                                    Category *
+                                </label>
+                                <select
+                                    name="category"
+                                    className={`${selectCls} ${categoryError ? "border-red-400" : ""}`}
+                                    value={form.category} onChange={handleFormChange}
+                                >
+                                    <option value="">Select</option>
+                                    {lensCategories.length > 0
+                                        ? lensCategories.map((cat, i) => (
+                                            <option key={i} value={cat}>{cat}</option>
+                                        ))
+                                        : (settings?.allCategories || []).map((cat, i) => (
+                                            <option key={i} value={cat} disabled={!isLensCat(cat)}
+                                                style={!isLensCat(cat) ? { color: "#9ca3af" } : {}}>
+                                                {cat}{!isLensCat(cat) ? " (not allowed)" : ""}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                                {categoryError && (
+                                    <p className="text-[10px] text-red-500 mt-1">{categoryError}</p>
+                                )}
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider block mb-1">
+                                    Brand *
+                                </label>
+                                <input name="brand" type="text" className={inputCls} placeholder="e.g. Zeiss"
+                                    value={form.brand} onChange={handleFormChange} />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider block mb-1">
+                                    Index
+                                </label>
+                                <input name="index" type="text" className={inputCls} placeholder="e.g. 1.56"
+                                    value={form.index} onChange={handleFormChange} />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider block mb-1">
+                                    Coating
+                                </label>
+                                <input name="coating" type="text" className={inputCls} placeholder="e.g. AR Coating"
+                                    value={form.coating} onChange={handleFormChange} />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider block mb-1">
+                                    Material
+                                </label>
+                                <input name="material" type="text" className={inputCls} placeholder="e.g. CR39"
+                                    value={form.material} onChange={handleFormChange} />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider block mb-1">
+                                    Vendor
+                                </label>
+                                <select
+                                    name="vendorNumber" className={selectCls} value={form.vendorNumber}
+                                    onChange={e => {
+                                        const vendorName = e.target.options[e.target.selectedIndex].text;
+                                        setForm(prev => ({ ...prev, vendorNumber: e.target.value, vendorName }));
+                                        setShowPreview(false);
+                                    }}
+                                >
+                                    <option value="">Select</option>
+                                    {vendors?.map(v => (
+                                        <option key={v.vendorNumber} value={v.vendorNumber}>{v.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ── Pricing ── */}
+                    <div>
+                        <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-3">
+                            Default Pricing
+                            <span className="normal-case font-normal text-gray-400 ml-1">(editable per row in preview)</span>
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4">
+                            {[
+                                { label: "Buying Price *", name: "buyingPrice", type: "number", placeholder: "0" },
+                                { label: "Selling Price *", name: "sellingPrice", type: "number", placeholder: "0" },
+                                { label: "MRP *", name: "mrp", type: "number", placeholder: "0" },
+                                { label: "HSN/SAC", name: "hsnSac", type: "text", placeholder: "9001" },
+                                { label: "Discount (₹)", name: "discount", type: "number", placeholder: "0" },
+                                { label: "Qty per product *", name: "qty", type: "number", placeholder: "0" },
+                            ].map(f => (
+                                <div key={f.name}>
+                                    <label className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider block mb-1">
+                                        {f.label}
+                                    </label>
+                                    <input name={f.name} type={f.type} className={inputCls}
+                                        placeholder={f.placeholder} value={form[f.name]} onChange={handleFormChange} />
+                                </div>
+                            ))}
+                            <div>
+                                <label className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider block mb-1">
+                                    GST %
+                                </label>
+                                <select name="gst" className={selectCls} value={form.gst} onChange={handleFormChange}>
+                                    {(settings?.gst || [5, 12, 18]).map((p, i) => (
+                                        <option key={i} value={p}>{p}%</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ── SPH × CYL × Addition Range Rows ── */}
+                    <div className="space-y-5">
+                        {/* Header */}
+                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                            <div>
+                                <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                                    SPH × CYL × Addition Ranges
+                                </h3>
+                                <p className="text-xs text-gray-400 mt-1">
+                                    Configure lens power ranges with custom step values.
+                                </p>
+                            </div>
+                            {totalComboCount > 0 && (
+                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-sm">
+                                    <span className="text-[10px] uppercase tracking-wider opacity-80">Products</span>
+                                    <span className="text-sm font-bold leading-none">{totalComboCount}</span>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Info Box */}
+                        <div className="flex gap-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-4">
+                            <div className="w-8 h-8 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm flex-shrink-0">
+                                i
+                            </div>
+                            <div className="text-xs text-blue-800 leading-relaxed">
+                                <strong>Tip:</strong> All From/To values must follow their step values.
+                                Addition range is optional.
+                            </div>
+                        </div>
+
+                        {/* Rows */}
+                        <div className="space-y-4">
+                            {rangeRows.map((row, ri) => {
+                                const rowCombos = (() => {
+                                    if (Object.keys(row.errors).length > 0) return null;
+                                    if (!row.sphFrom && !row.sphTo && !row.cylFrom && !row.cylTo) return null;
+                                    return generateRowCombinations(row);
+                                })();
+
+                                return (
+                                    <div
+                                        key={row.id}
+                                        className="relative border border-gray-200 bg-white rounded-3xl shadow-sm hover:shadow-md transition-all overflow-hidden"
+                                    >
+                                        {/* Top bar */}
+                                        <div className="flex items-center justify-between px-5 py-3 border-b bg-gray-50">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-2xl bg-orange-100 text-orange-600 text-sm font-bold flex items-center justify-center">
+                                                    {ri + 1}
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-sm font-semibold text-gray-800">
+                                                        Range Configuration
+                                                    </h3>
+                                                    {rowCombos !== null && rowCombos.length > 0 && (
+                                                        <p className="text-[11px] text-blue-600 font-medium">
+                                                            {rowCombos.length} combinations generated
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <button
+                                                onClick={() => removeRangeRow(row.id)}
+                                                disabled={rangeRows.length === 1}
+                                                className="w-8 h-8 rounded-xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition disabled:opacity-30"
+                                            >
+                                                <FiX size={14} />
+                                            </button>
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="p-5 space-y-5">
+
+                                            {/* Power Ranges */}
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-3">
+                                                    <div className="w-1.5 h-5 rounded-full bg-orange-400" />
+                                                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                                                        Power Ranges
+                                                    </h4>
+                                                </div>
+                                                <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
+                                                    {[
+                                                        { field: "sphFrom", placeholder: "-6.00", label: "SPH From" },
+                                                        { field: "sphTo", placeholder: "+2.00", label: "SPH To" },
+                                                        { field: "cylFrom", placeholder: "-4.00", label: "CYL From" },
+                                                        { field: "cylTo", placeholder: "0.00", label: "CYL To" },
+                                                        { field: "additionFrom", placeholder: "+0.75", label: "Add From" },
+                                                        { field: "additionTo", placeholder: "+3.00", label: "Add To" },
+                                                    ].map(({ field, placeholder, label }) => (
+                                                        <div key={field}>
+                                                            <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1">
+                                                                {label}
+                                                            </label>
+                                                            {/* ✅ RangeCell is now defined OUTSIDE — no remount on re-render */}
+                                                            <RangeCell
+                                                                row={row}
+                                                                field={field}
+                                                                placeholder={placeholder}
+                                                                onRangeChange={handleRangeRowChange}
+                                                                onRangeBlur={handleRangeRowBlur}
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Step Values */}
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-3">
+                                                    <div className="w-1.5 h-5 rounded-full bg-indigo-400" />
+                                                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                                                        Step Values
+                                                    </h4>
+                                                </div>
+                                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                                    {[
+                                                        { field: "sphStep", label: "SPH step", title: "SPH Step" },
+                                                        { field: "cylStep", label: "CYL step", title: "CYL Step" },
+                                                        { field: "addStep", label: "Add step", title: "ADD Step" },
+                                                    ].map(({ field, label, title }) => (
+                                                        <div key={field} className="bg-gray-50 border border-gray-200 rounded-2xl p-3">
+                                                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">
+                                                                {title}
+                                                            </p>
+                                                            {/* ✅ StepCell is now defined OUTSIDE — no remount on re-render */}
+                                                            <StepCell
+                                                                row={row}
+                                                                field={field}
+                                                                label={label}
+                                                                onRangeChange={handleRangeRowChange}
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Add Button */}
+                        <button
+                            onClick={addRangeRow}
+                            className="w-full py-3 rounded-2xl border-2 border-dashed border-orange-300 hover:border-orange-500 bg-orange-50 hover:bg-orange-100 text-orange-600 font-semibold text-sm transition-all flex items-center justify-center gap-2"
+                        >
+                            <FiPlus size={16} />
+                            Add Another Range
+                        </button>
+
+                        {/* Warning */}
+                        {totalComboCount === 0 &&
+                            rangeRows.some(r => r.sphFrom || r.cylFrom) &&
+                            !hasAnyRangeErrors && (
+                                <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-amber-200 bg-amber-50 text-amber-700 text-sm font-medium">
+                                    ⚠ No valid combinations found. Check range and step values.
+                                </div>
+                            )}
+                    </div>
+
+                    {/* ── Code Suffix ── */}
+                    <div>
+                        <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-3">
+                            Product Code
+                        </h3>
+                        <div className="flex items-center gap-4">
+                            <div className="w-40">
+                                <label className="text-[10px] font-semibold text-gray-700 uppercase tracking-wider block mb-1">
+                                    Suffix
+                                </label>
+                                <input name="prefix" type="text" className={inputCls} placeholder="DO"
+                                    value={form.prefix} onChange={handleFormChange} maxLength={6} />
+                            </div>
+                            <p className="text-xs text-gray-400 mt-5">
+                                Codes auto-generated as{" "}
+                                <span className="font-mono font-semibold text-gray-600">
+                                    1{form.prefix || "DO"}, 2{form.prefix || "DO"}, 3{form.prefix || "DO"}…
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* ── Preview Table ── */}
+                    {showPreview && previewRows.length > 0 && (
+                        <div>
+                            <div className="flex items-center justify-between mb-3 gap-3">
+                                <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                                    Preview — {previewRows.length} product{previewRows.length !== 1 ? "s" : ""}
+                                    {previewSearch && filteredPreviewRows.length !== previewRows.length && (
+                                        <span className="ml-1 font-normal text-gray-400">
+                                            ({filteredPreviewRows.length} shown)
+                                        </span>
+                                    )}
+                                    <span className="normal-case font-normal text-gray-400 ml-1 text-[10px]">
+                                        (Buying Price, Selling Price, MRP, Qty editable)
+                                    </span>
+                                </h3>
+                                <div className="relative flex-shrink-0">
+                                    <FiSearch size={11} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search SPH, CYL, ADD…"
+                                        value={previewSearch}
+                                        onChange={e => setPreviewSearch(e.target.value)}
+                                        className="pl-7 pr-3 py-1.5 text-xs border border-gray-200 rounded-lg outline-none focus:border-orange-300 focus:ring-2 focus:ring-orange-100 bg-white text-gray-700 w-48 transition"
+                                    />
+                                    {previewSearch && (
+                                        <button
+                                            onClick={() => setPreviewSearch("")}
+                                            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500"
+                                        >
+                                            <FiX size={11} />
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="overflow-x-auto rounded-xl border border-gray-100">
+                                <table className="w-full text-xs border-collapse">
+                                    <thead>
+                                        <tr className="bg-gray-100 border-b border-gray-200">
+                                            {["#", "Code", "Product Name", "SPH", "CYL", "Addition", "Buying Price ✎", "Selling Price ✎", "MRP ✎", "Qty ✎", ""].map(h => (
+                                                <th key={h} className="px-3 py-2.5 text-center text-[10px] font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                                                    {h}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredPreviewRows.length === 0 ? (
+                                            <tr>
+                                                <td colSpan={11} className="px-4 py-8 text-center text-xs text-gray-400">
+                                                    No rows match "
+                                                    <span className="font-semibold text-gray-500">{previewSearch}</span>"
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            filteredPreviewRows.map((row, fi) => {
+                                                const origIdx = row._origIdx;
+                                                return (
+                                                    <tr
+                                                        key={origIdx}
+                                                        className={`border-b border-gray-50 ${fi % 2 === 0 ? "bg-white" : "bg-gray-50/50"}`}
+                                                    >
+                                                        <td className="px-3 py-1.5 text-center text-gray-400">{origIdx + 1}</td>
+                                                        <td className="px-3 py-1.5 text-center font-mono text-xs text-gray-700 whitespace-nowrap">
+                                                            {origIdx + 1}{form.prefix.trim().toUpperCase() || "DO"}
+                                                        </td>
+                                                        <td className="px-3 py-1.5 text-gray-700 whitespace-nowrap">
+                                                            {form.productName.toUpperCase()}
+                                                        </td>
+                                                        <td className="px-3 py-1.5 text-center font-mono text-blue-600">{row.sph}</td>
+                                                        <td className="px-3 py-1.5 text-center font-mono text-blue-600">{row.cyl}</td>
+                                                        <td className="px-3 py-1.5 text-center font-mono text-purple-600">
+                                                            {row.addition || "—"}
+                                                        </td>
+                                                        <td className="px-2 py-1">
+                                                            <input
+                                                                type="number"
+                                                                value={row.buyingPrice !== undefined ? row.buyingPrice : (row.price || "")}
+                                                                onChange={e => {
+                                                                    handlePreviewEdit(origIdx, "buyingPrice", e.target.value);
+                                                                    handlePreviewEdit(origIdx, "price", e.target.value);
+                                                                }}
+                                                                placeholder="0"
+                                                                className="w-20 px-2 py-1 text-xs border border-orange-200 rounded-lg outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-100 bg-orange-50 text-gray-700 text-center"
+                                                            />
+                                                        </td>
+                                                        <td className="px-2 py-1">
+                                                            <input
+                                                                type="number"
+                                                                value={row.sellingPrice !== undefined ? row.sellingPrice : ""}
+                                                                onChange={e => handlePreviewEdit(origIdx, "sellingPrice", e.target.value)}
+                                                                placeholder="0"
+                                                                className="w-20 px-2 py-1 text-xs border border-orange-200 rounded-lg outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-100 bg-orange-50 text-gray-700 text-center"
+                                                            />
+                                                        </td>
+                                                        <td className="px-2 py-1">
+                                                            <input
+                                                                type="number"
+                                                                value={row.mrp}
+                                                                onChange={e => handlePreviewEdit(origIdx, "mrp", e.target.value)}
+                                                                placeholder="0"
+                                                                className="w-20 px-2 py-1 text-xs border border-orange-200 rounded-lg outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-100 bg-orange-50 text-gray-700 text-center"
+                                                            />
+                                                        </td>
+                                                        <td className="px-2 py-1">
+                                                            <input
+                                                                type="number"
+                                                                value={row.qty}
+                                                                onChange={e => handlePreviewEdit(origIdx, "qty", e.target.value)}
+                                                                placeholder="1"
+                                                                className="w-16 px-2 py-1 text-xs border border-orange-200 rounded-lg outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-100 bg-orange-50 text-gray-700 text-center"
+                                                            />
+                                                        </td>
+                                                        <td className="px-2 py-1">
+                                                            <button
+                                                                onClick={() => handlePreviewDeleteRow(origIdx)}
+                                                                title="Remove this product"
+                                                                className="w-6 h-6 flex items-center justify-center rounded-lg text-red-300 hover:text-red-500 hover:bg-red-50 transition mx-auto cursor-pointer"
+                                                            >
+                                                                <FiTrash2 size={11} />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p className="text-[10px] text-gray-400 mt-2 text-right">
+                                {previewSearch && filteredPreviewRows.length !== previewRows.length
+                                    ? `Showing ${filteredPreviewRows.length} of ${previewRows.length} products — `
+                                    : `Showing all ${previewRows.length} products — `}
+                                edit Buying Price, Selling Price, MRP or Qty inline, or delete unwanted rows before submitting.
+                            </p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-3xl">
+                    <button
+                        onClick={handlePreview}
+                        disabled={submitting || hasAnyRangeErrors || totalComboCount === 0}
+                        className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-blue-600 bg-white border border-blue-200 rounded-xl hover:bg-blue-50 transition disabled:opacity-50"
+                    >
+                        Preview {totalComboCount > 0 ? `(${totalComboCount})` : ""}
+                    </button>
+                    <button
+                        onClick={onClose}
+                        className="px-4 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleSubmit}
+                        disabled={submitting || !showPreview || previewRows.length === 0 || hasAnyRangeErrors}
+                        className="flex items-center gap-2 px-5 py-2 bg-erp-primary hover:bg-erp-secondary text-white text-xs font-semibold rounded-xl transition shadow-sm disabled:opacity-60"
+                    >
+                        {submitting && (
+                            <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        )}
+                        {submitting ? "Creating..." : `Create ${previewRows.length > 0 ? previewRows.length : ""} Products`}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ─── InventoryTable ───────────────────────────────────────────────────────────
+function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, setKeyword, triggerSearch, setTriggerSearch, refreshTrigger }) {
+    const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const isFirstRender = useRef(true);
+
+    const [globalFilter, setGlobalFilter] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+
+    const [openEditProductModal, setOpenEditProductModal] = useState(false);
+    const [openInventoryModal, setOpenInventoryModal] = useState(false);
+    const [openInventoryHistoryTableModal, setOpenInventoryHistoryTableModal] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+
+    const handleOpenProductDetailsModal = (product) => {
+        setSelectedProduct(product);
+        setOpenInventoryHistoryTableModal(true);
+    };
+
+    const settings = useSelector((state) => state.settings.data);
+    const dispatch = useDispatch();
+    // Ensure settings (categories, GST) are loaded even if this component mounts independently
+    useEffect(() => { dispatch(fetchSettings()); }, [dispatch]);
+    const [vendors, setVendors] = useState([]);
+    useEffect(() => {
+        api.get("/api/vendor")
+            .then(res => { if (res.data?.success) setVendors(res.data.vendors || []); })
+            .catch(err => console.error("Failed to fetch vendors:", err));
+    }, []);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalProducts, setTotalProducts] = useState(0);
+    const [fetchLimit, setFetchLimit] = useState(FETCH_LIMIT);
+
+    const [openBarcodeModal, setOpenBarcodeModal] = useState(false);
+    const [barcodeProduct, setBarcodeProduct] = useState(null);
+
+    const [openBatchModal, setOpenBatchModal] = useState(false);
+    const [batchProduct, setBatchProduct] = useState(null);
+    const [productBatches, setProductBatches] = useState([]);
+    const [batchSummary, setBatchSummary] = useState({ totalStock: 0, allocatedQty: 0, unallocatedQty: 0 });
+    const [loadingBatches, setLoadingBatches] = useState(false);
+    const [allocatingBatch, setAllocatingBatch] = useState(false);
+    const [batchFormData, setBatchFormData] = useState({
+        batchNumber: '',
+        qty: '',
+        costPrice: '',
+        buyingPrice: '',
+        sellingPrice: '',
+        mrp: '',
+        remarks: ''
+    });
+
+    const fetchBatchesForSelectedProduct = useCallback(async (productId) => {
+        if (!productId) return;
+        setLoadingBatches(true);
+        try {
+            const res = await getBatchesForProduct(productId, 'ALL');
+            const batchList = res?.data?.batches || res?.batches || [];
+            const totalStock = res?.data?.totalStock ?? res?.totalStock ?? 0;
+            const allocatedQty = res?.data?.allocatedQty ?? res?.allocatedQty ?? 0;
+            const unallocatedQty = res?.data?.unallocatedQty ?? res?.unallocatedQty ?? 0;
+
+            setProductBatches(batchList);
+            setBatchSummary({ totalStock, allocatedQty, unallocatedQty });
+            setBatchFormData(prev => ({
+                ...prev,
+                qty: unallocatedQty > 0 ? unallocatedQty : 0,
+                buyingPrice: prev.buyingPrice !== '' ? prev.buyingPrice : (res?.data?.buyingPrice ?? ''),
+                sellingPrice: prev.sellingPrice !== '' ? prev.sellingPrice : (res?.data?.sellingPrice ?? ''),
+                mrp: prev.mrp !== '' ? prev.mrp : (res?.data?.mrp ?? '')
+            }));
+        } catch (err) {
+            console.error("Failed to load product batches:", err);
+        } finally {
+            setLoadingBatches(false);
+        }
+    }, []);
+
+    const handleOpenBatchModal = (product) => {
+        setBatchProduct(product);
+        setBatchSummary({ totalStock: product.qty || 0, allocatedQty: 0, unallocatedQty: product.qty || 0 });
+        const bPrice = product.buyingPrice != null ? product.buyingPrice : (product.price || '');
+        const sPrice = product.sellingPrice != null ? product.sellingPrice : (product.price || '');
+        const mPrice = product.mrp != null ? product.mrp : '';
+        setBatchFormData({
+            batchNumber: '',
+            qty: product.qty || 1,
+            costPrice: bPrice,
+            buyingPrice: bPrice,
+            sellingPrice: sPrice,
+            mrp: mPrice,
+            remarks: 'Manual batch allocation from Inventory'
+        });
+        setOpenBatchModal(true);
+        fetchBatchesForSelectedProduct(product._id);
+    };
+
+    const handleAllocateBatchSubmit = async (e) => {
+        e.preventDefault();
+        if (!batchProduct?._id) return;
+
+        const reqQty = Number(batchFormData.qty) || 0;
+        if (reqQty <= 0) {
+            toast.error("Please enter a valid allocated quantity (> 0)");
+            return;
+        }
+        if (reqQty > batchSummary.unallocatedQty) {
+            toast.error(`Allocated quantity (${reqQty}) cannot exceed remaining unallocated quantity (${batchSummary.unallocatedQty})`);
+            return;
+        }
+
+        setAllocatingBatch(true);
+        try {
+            const bPrice = batchFormData.buyingPrice !== '' ? Number(batchFormData.buyingPrice) : (Number(batchFormData.costPrice) || 0);
+            const sPrice = batchFormData.sellingPrice !== '' ? Number(batchFormData.sellingPrice) : 0;
+            const mPrice = batchFormData.mrp !== '' ? Number(batchFormData.mrp) : 0;
+
+            const res = await allocateManualBatch({
+                productId: batchProduct._id,
+                batchNumber: batchFormData.batchNumber,
+                qty: reqQty,
+                costPrice: bPrice,
+                buyingPrice: bPrice,
+                sellingPrice: sPrice,
+                mrp: mPrice,
+                remarks: batchFormData.remarks
+            });
+            toast.success(res?.message || "Batch allocated successfully!");
+            setBatchFormData({ 
+                batchNumber: '', 
+                qty: 0, 
+                costPrice: bPrice, 
+                buyingPrice: bPrice, 
+                sellingPrice: sPrice, 
+                mrp: mPrice, 
+                remarks: '' 
+            });
+            fetchBatchesForSelectedProduct(batchProduct._id);
+        } catch (err) {
+            toast.error(err?.message || "Failed to allocate batch");
+        } finally {
+            setAllocatingBatch(false);
+        }
+    };
+
+    // ── Row selection state ───────────────────────────────────────────────────
+    // Map of rowId (_id) → product object for selected rows
+    // ── Table View & Collapsible Column Section State (Zero Scroll Mode) ──────
+    const [expandedGroups, setExpandedGroups] = useState({ powers: false, specs: false });
+    const toggleGroup = (groupKey) => setExpandedGroups(prev => ({ ...prev, [groupKey]: !prev[groupKey] }));
+
+    const [selectedRows, setSelectedRows] = useState({});
+    // Pre-filled products array for bulk modals
+    const [bulkStockProducts, setBulkStockProducts] = useState(null);   // null = not open
+    const [bulkBarcodeProducts, setBulkBarcodeProducts] = useState(null); // null = not open
+
+    const selectedCount = Object.keys(selectedRows).length;
+    const selectedProductsList = Object.values(selectedRows); // array of product objects
+
+    const toggleRow = (product) => {
+        setSelectedRows(prev => {
+            const next = { ...prev };
+            if (next[product._id]) delete next[product._id];
+            else next[product._id] = product;
+            return next;
+        });
+    };
+
+    const toggleAllVisible = (tableRows) => {
+        const allSelected = tableRows.every(r => selectedRows[r.original._id]);
+        if (allSelected) {
+            // deselect all visible
+            setSelectedRows(prev => {
+                const next = { ...prev };
+                tableRows.forEach(r => delete next[r.original._id]);
+                return next;
+            });
+        } else {
+            // select all visible
+            setSelectedRows(prev => {
+                const next = { ...prev };
+                tableRows.forEach(r => { next[r.original._id] = r.original; });
+                return next;
+            });
+        }
+    };
+
+    const clearSelection = () => setSelectedRows({});
+
+    const fetchProducts = async (pageNumber = 1, append = false, currentLimit = fetchLimit) => {
+        try {
+            pageNumber === 1 && !append ? setLoading(true) : setLoadingMore(true);
+            const res = await api.get("/api/digi/product", { params: { page: pageNumber, limit: currentLimit } });
+            if (res.data.success) {
+                const fetchedProducts = res.data.products || [];
+                setData(prev => append ? [...prev, ...fetchedProducts] : fetchedProducts);
+                setHasMore(res.data.hasMore ?? (pageNumber < (res.data.totalPages || 1)));
+                setTotalPages(res.data.totalPages || 1);
+                setTotalProducts(res.data.totalProducts || (res.data.products?.length || 0));
+                setPage(pageNumber);
+            }
+        } catch (err) { console.error(err); }
+        finally { setLoading(false); setLoadingMore(false); }
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage < 1 || newPage > totalPages || newPage === page || loading || loadingMore) return;
+        fetchProducts(newPage, false, fetchLimit);
+    };
+
+    const handleLimitChange = (newLimit) => {
+        setFetchLimit(newLimit);
+        fetchProducts(1, false, newLimit);
+    };
+
+    useEffect(() => { fetchProducts(1, false); }, []);
+
+    // Re-fetch when parent signals a change (product added/bulk-uploaded)
+    useEffect(() => {
+        if (refreshTrigger > 0) {
+            // Reset search state AND the quick-search filter so fresh data is visible
+            setIsSearching(false);
+            setFilteredData([]);
+            setGlobalFilter(""); // clear the quick search box
+            fetchProducts(1, false);
+        }
+    }, [refreshTrigger]);
+
+    const handleLoadMore = () => {
+        if (!hasMore || loadingMore) return;
+        const nextPage = page + 1;
+        fetchProducts(nextPage, true, fetchLimit);
+    };
+
+    const handleDeleteProduct = async (product) => {
+        const result = await Swal.fire({
+            title: "Are you sure?", text: `Delete product (${product.productCode})?`,
+            icon: "warning", showCancelButton: true,
+            confirmButtonColor: "#dc2626", cancelButtonColor: "#6b7280",
+            confirmButtonText: "Yes, delete it",
+        });
+        if (!result.isConfirmed) return;
+        try {
+            Swal.fire({ title: "Deleting...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            const res = await api.delete(`/api/digi/product/${product._id}`);
+            if (res.data.success) {
+                setData(prev => prev.filter(p => p._id !== product._id));
+                setFilteredData(prev => prev.filter(p => p._id !== product._id));
+                setSelectedRows(prev => { const n = { ...prev }; delete n[product._id]; return n; });
+                setTotalProducts(prev => Math.max(0, prev - 1));
+                Swal.fire({ icon: "success", title: "Deleted!", timer: 1500, showConfirmButton: false });
+            }
+        } catch (error) {
+            Swal.fire({ icon: "error", title: "Error", text: error.message || error.response?.data?.message || "Something went wrong" });
+        }
+    };
+
+    const handleDeleteBulkProducts = async () => {
+        const idsToDelete = Object.keys(selectedRows);
+        if (idsToDelete.length === 0) return;
+
+        const result = await Swal.fire({
+            title: "Delete Selected Products?",
+            text: `Are you sure you want to permanently delete ${idsToDelete.length} selected product(s)? This action cannot be undone.`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#dc2626",
+            cancelButtonColor: "#6b7280",
+            confirmButtonText: `Yes, delete ${idsToDelete.length} product(s)`,
+        });
+
+        if (!result.isConfirmed) return;
+
+        try {
+            Swal.fire({ title: "Deleting selected products...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            const res = await api.post("/api/digi/product/delete-bulk", { ids: idsToDelete });
+            if (res.data.success) {
+                const deletedIdSet = new Set(idsToDelete);
+                const actualDeleted = res.data.deletedCount || idsToDelete.length;
+                setData(prev => prev.filter(p => !deletedIdSet.has(p._id)));
+                setFilteredData(prev => prev.filter(p => !deletedIdSet.has(p._id)));
+                setSelectedRows({});
+                setTotalProducts(prev => Math.max(0, prev - actualDeleted));
+                Swal.fire({
+                    icon: "success",
+                    title: "Deleted!",
+                    text: `${actualDeleted} product(s) deleted successfully.`,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Error Deleting Products",
+                text: error.response?.data?.message || error.message || "Failed to delete selected products."
+            });
+        }
+    };
+
+    const emptyInventoryRow = {
+        productCode: "",
+        productName: "",
+        qty: "",
+        batchNumber: "",
+        expiry: "",
+        inwardDate: new Date().toISOString().split("T")[0],
+        buyingPrice: "",
+        sellingPrice: "",
+        price: "",
+        gst: "0",
+        total: "",
+        mrp: "",
+        vendorId: "",
+        vendorName: "",
+        coating: "",
+        disposability: "",
+        remarks: "",
+        invoices: []  // File[] — invoice/challan files for this inward
+    };
+    const [inventoryRows, setInventoryRows] = useState([{ ...emptyInventoryRow }]);
+    const [submittingInventory, setSubmittingInventory] = useState(false);
+
+    const updateRow = (index, field, value) => {
+        setInventoryRows(prev => prev.map((row, i) => {
+            if (i !== index) return row;
+            const updatedRow = { ...row, [field]: field === "qty" ? Math.floor(Number(value)) : value };
+            if (field === "buyingPrice") {
+                updatedRow.price = value;
+            }
+            const qty = Number(updatedRow.qty) || 0;
+            const cost = Number(updatedRow.buyingPrice || updatedRow.price) || 0;
+            const gst = Number(updatedRow.gst) || 0;
+            updatedRow.total = (qty * cost * (1 + gst / 100)).toFixed(2);
+            return updatedRow;
+        }));
+    };
+
+    const addInventoryRow = () => setInventoryRows(prev => [...prev, { ...emptyInventoryRow }]);
+    const removeInventoryRow = (index) => setInventoryRows(prev => prev.length === 1 ? prev : prev.filter((_, i) => i !== index));
+
+    const isContactLens = (cat) => {
+        if (!cat) return false;
+        const c = cat.trim().toUpperCase().replace(/[\s_]+/g, " ");
+        return c === "CONTACT LENS" || c === "CONTACT_LENS";
+    };
+
+    const validateInventoryRows = () => {
+        for (let i = 0; i < inventoryRows.length; i++) {
+            const row = inventoryRows[i];
+            if (!row.productCode?.trim()) return `Product Code is required (Row ${i + 1})`;
+            if (!row.qty || Number(row.qty) <= 0) return `Quantity must be > 0 (Row ${i + 1})`;
+            const buyingP = row.buyingPrice !== "" ? Number(row.buyingPrice) : Number(row.price);
+            if (isNaN(buyingP) || buyingP < 0) return `Buying Price must be >= 0 (Row ${i + 1})`;
+            const sellingP = row.sellingPrice !== "" ? Number(row.sellingPrice) : Number(row.price);
+            if (isNaN(sellingP) || sellingP < 0) return `Selling Price must be >= 0 (Row ${i + 1})`;
+            if (row.mrp === "" || Number(row.mrp) < 0) return `MRP must be >= 0 (Row ${i + 1})`;
+
+            // Contact Lens: coating, disposability, expiry are required
+            const productCategory = row.category ||
+                (bulkProducts?.[i]?.category) ||
+                "";
+            if (isContactLens(productCategory)) {
+                if (!row.coating?.trim())       return `Coating is required for Contact Lens (Row ${i + 1})`;
+                if (!row.disposability?.trim()) return `Disposability is required for Contact Lens (Row ${i + 1})`;
+                if (!row.expiry)                return `Expiry Date is required for Contact Lens (Row ${i + 1})`;
+            }
+        }
+        return null;
+    };
+
+    const handleInventorySubmit = async (e) => {
+        e.preventDefault();
+        const err = validateInventoryRows();
+        if (err) { Swal.fire({ icon: "error", title: "Validation Error", text: err }); return; }
+        setSubmittingInventory(true);
+        try {
+            // Upload invoice files for each row (if any)
+            const itemsWithUploadedInvoices = await Promise.all(
+                inventoryRows.map(async (row) => {
+                    let uploadedInvoices = [];
+                    if (Array.isArray(row.invoices) && row.invoices.length > 0) {
+                        uploadedInvoices = await uploadMultipleDocuments(row.invoices);
+                    }
+                    const { invoices: _files, ...rest } = row;
+                    return { ...rest, invoices: uploadedInvoices };
+                })
+            );
+
+            const res = await api.post("/api/digi/product/add/inventory", { items: itemsWithUploadedInvoices });
+            if (res.data.success) {
+                // Real-time table state update
+                if (res.data.updated && Array.isArray(res.data.updated)) {
+                    const updatedMap = new Map(res.data.updated.map(u => [u.productCode, u]));
+                    setData(prev => prev.map(p => {
+                        const u = updatedMap.get(p.productCode);
+                        if (!u) return p;
+                        return {
+                            ...p,
+                            qty: u.qty,
+                            buyingPrice: u.buyingPrice,
+                            sellingPrice: u.sellingPrice,
+                            mrp: u.mrp,
+                            price: u.buyingPrice,
+                            vendor: u.vendor || p.vendor,
+                            expiry: u.expiry || p.expiry
+                        };
+                    }));
+                    setFilteredData(prev => prev.map(p => {
+                        const u = updatedMap.get(p.productCode);
+                        if (!u) return p;
+                        return {
+                            ...p,
+                            qty: u.qty,
+                            buyingPrice: u.buyingPrice,
+                            sellingPrice: u.sellingPrice,
+                            mrp: u.mrp,
+                            price: u.buyingPrice,
+                            vendor: u.vendor || p.vendor,
+                            expiry: u.expiry || p.expiry
+                        };
+                    }));
+                }
+
+                // Keep pagination and background metrics synced
+                fetchProducts(page, false, fetchLimit);
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Inventory & Batch Created!",
+                    text: res.data.message || "Stock level updated and new batch created successfully."
+                });
+                setOpenInventoryModal(false);
+                setBulkStockProducts(null);
+                setInventoryRows([{ ...emptyInventoryRow }]);
+                clearSelection();
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Error Adding Inventory",
+                text: error.response?.data?.message || error.message || "Something went wrong"
+            });
+        } finally {
+            setSubmittingInventory(false);
+        }
+    };
+
+    const searchProducts = async () => {
+        if (!fromDate && !toDate && !keyword) { toast.warning("Please provide at least one filter."); return; }
+        if ((fromDate && !toDate) || (!fromDate && toDate)) { toast.warning("Select both From and To dates."); return; }
+        if (fromDate && toDate && new Date(fromDate) > new Date(toDate)) { toast.warning("From date cannot be after To date."); return; }
+        if (keyword && keyword.trim().length < 3) { toast.warning("Keyword must be at least 3 characters."); return; }
+        try {
+            setLoading(true); setPage(1);
+            const res = await api.post("/api/digi/product/search", { startDate: fromDate || undefined, endDate: toDate || undefined, keyword: keyword || undefined });
+            if (res.data.success) {
+                setFilteredData(res.data.products || []);
+                setIsSearching(true);
+            } else {
+                setFilteredData([]);
+                setIsSearching(true);
+                toast.info(res.data.message || "No products found matching your filter");
+            }
+        } catch (err) { toast.error(err.response?.data?.message || "Search failed"); }
+        finally { setLoading(false); }
+    };
+
+    const handleResetSearch = () => {
+        setFromDate(""); setToDate(""); setKeyword("");
+        setFilteredData([]); setIsSearching(false); setGlobalFilter(""); setPage(1);
+        fetchProducts(1, false);
+    };
+
+    useEffect(() => {
+        if (triggerSearch > 0) {
+            searchProducts();
+        }
+    }, [triggerSearch]);
+
+    // ── Open bulk Add Stock — pre-fill rows from selected products ────────────
+    const openBulkStock = () => {
+        const preFilled = selectedProductsList.map(p => ({
+            ...emptyInventoryRow,
+            productCode: p.productCode || "",
+            productName: p.productName || "",
+            mrp: p.mrp ? String(p.mrp) : "",
+            buyingPrice: p.buyingPrice != null ? String(p.buyingPrice) : (p.price ? String(p.price) : ""),
+            sellingPrice: p.sellingPrice != null ? String(p.sellingPrice) : (p.price ? String(p.price) : ""),
+            price: p.buyingPrice != null ? String(p.buyingPrice) : (p.price ? String(p.price) : ""),
+            gst: p.gst ? String(p.gst) : "0",
+            vendorId: p.vendor?.id || "",
+            vendorName: p.vendor?.name || "",
+            batchNumber: "",
+            inwardDate: new Date().toISOString().split("T")[0],
+            expiry: p.expiry ? new Date(p.expiry).toISOString().split("T")[0] : "",
+            remarks: "Bulk stock inward"
+        }));
+        setInventoryRows(preFilled.length > 0 ? preFilled : [{ ...emptyInventoryRow }]);
+        setBulkStockProducts(selectedProductsList);
+        setOpenInventoryModal(true);
+    };
+
+    // ── Open bulk Barcode print — pre-fill from selected products ─────────────
+    const openBulkBarcode = () => {
+        setBulkBarcodeProducts(selectedProductsList);
+        setOpenBarcodeModal(true);
+    };
+
+    // Column dimension and alignment metadata to keep compact fields from expanding
+    const INVENTORY_COLUMN_META = {
+        select: { width: "40px", minWidth: "40px", maxWidth: "40px", align: "text-center", px: "px-1" },
+        actions: { width: "155px", minWidth: "155px", maxWidth: "160px", align: "text-center", px: "px-1" },
+        createdAt: { width: "85px", minWidth: "80px", maxWidth: "90px", align: "text-center font-medium text-gray-600 text-xs", px: "px-1.5" },
+        productCode: { width: "105px", minWidth: "100px", maxWidth: "115px", align: "text-center", px: "px-1.5" },
+        productName: { width: "200px", minWidth: "160px", maxWidth: "250px", align: "text-left font-bold text-gray-800", px: "px-2" },
+        category: { width: "110px", minWidth: "95px", maxWidth: "125px", align: "text-left font-semibold text-gray-700 uppercase text-[11px]", px: "px-2" },
+        brand: { width: "105px", minWidth: "90px", maxWidth: "120px", align: "text-left font-semibold text-gray-600 uppercase text-[11px]", px: "px-2" },
+        image: { width: "70px", minWidth: "65px", maxWidth: "75px", align: "text-center", px: "px-1" },
+        qty: { width: "55px", minWidth: "50px", maxWidth: "60px", align: "text-center font-bold text-gray-900", px: "px-1" },
+        buyingPrice: { width: "90px", minWidth: "80px", maxWidth: "100px", align: "text-center font-semibold text-amber-700", px: "px-1.5" },
+        sellingPrice: { width: "90px", minWidth: "80px", maxWidth: "100px", align: "text-center font-bold text-emerald-700", px: "px-1.5" },
+        mrp: { width: "70px", minWidth: "60px", maxWidth: "80px", align: "text-center font-medium text-gray-600", px: "px-1" },
+        gst: { width: "55px", minWidth: "50px", maxWidth: "60px", align: "text-center font-semibold text-blue-700", px: "px-1" },
+        powersSummary: { width: "125px", minWidth: "115px", maxWidth: "135px", align: "text-center font-mono font-medium text-amber-800 bg-amber-50/20", px: "px-2" },
+        specsSummary: { width: "140px", minWidth: "125px", maxWidth: "155px", align: "text-center font-medium text-gray-700 bg-blue-50/20", px: "px-2" },
+        sph: { width: "55px", minWidth: "50px", maxWidth: "65px", align: "text-center font-mono font-medium text-gray-700", px: "px-1" },
+        cyl: { width: "55px", minWidth: "50px", maxWidth: "65px", align: "text-center font-mono font-medium text-gray-700", px: "px-1" },
+        axis: { width: "50px", minWidth: "45px", maxWidth: "60px", align: "text-center font-mono font-medium text-gray-700", px: "px-1" },
+        addition: { width: "50px", minWidth: "45px", maxWidth: "60px", align: "text-center font-mono font-medium text-gray-700", px: "px-1" },
+        dimensions: { width: "100px", minWidth: "90px", maxWidth: "115px", align: "text-center font-medium text-gray-600", px: "px-1.5" },
+        material: { width: "90px", minWidth: "80px", maxWidth: "100px", align: "text-center font-medium text-gray-600", px: "px-1.5" },
+        color: { width: "75px", minWidth: "65px", maxWidth: "85px", align: "text-center font-medium text-gray-600", px: "px-1" },
+        shape: { width: "80px", minWidth: "70px", maxWidth: "90px", align: "text-center font-medium text-gray-600", px: "px-1" },
+        size: { width: "55px", minWidth: "50px", maxWidth: "60px", align: "text-center font-medium text-gray-600", px: "px-1" },
+        type: { width: "75px", minWidth: "65px", maxWidth: "85px", align: "text-center font-medium text-gray-600", px: "px-1" },
+        index: { width: "55px", minWidth: "50px", maxWidth: "60px", align: "text-center font-medium text-gray-600", px: "px-1" },
+        coating: { width: "95px", minWidth: "85px", maxWidth: "105px", align: "text-center font-medium text-gray-600", px: "px-1.5" },
+        expiry: { width: "80px", minWidth: "75px", maxWidth: "90px", align: "text-center font-medium text-gray-600", px: "px-1.5" },
+        price: { width: "75px", minWidth: "65px", maxWidth: "85px", align: "text-center font-medium text-gray-700", px: "px-1" },
+        hsnSac: { width: "75px", minWidth: "70px", maxWidth: "85px", align: "text-center font-mono text-gray-600", px: "px-1" },
+        delete: { width: "45px", minWidth: "40px", maxWidth: "50px", align: "text-center", px: "px-1" },
+    };
+
+    const columns = useMemo(() => [
+        // ── Checkbox column ──────────────────────────────────────────────────
+        {
+            id: "select",
+            header: ({ table }) => {
+                const visibleRows = table.getRowModel().rows;
+                const allChecked = visibleRows.length > 0 && visibleRows.every(r => selectedRows[r.original._id]);
+                const someChecked = visibleRows.some(r => selectedRows[r.original._id]);
+                return (
+                    <RowCheckbox
+                        checked={allChecked}
+                        indeterminate={!allChecked && someChecked}
+                        onChange={() => toggleAllVisible(visibleRows)}
+                    />
+                );
+            },
+            cell: ({ row }) => (
+                <div className="flex justify-center">
+                    <RowCheckbox
+                        checked={!!selectedRows[row.original._id]}
+                        onChange={() => toggleRow(row.original)}
+                    />
+                </div>
+            ),
+        },
+        {
+            header: "Action", id: "actions",
+            cell: ({ row }) => {
+                const product = row.original;
+                return (
+                    <div className="flex items-center justify-center gap-1">
+                        <button onClick={e => { e.stopPropagation(); setSelectedProduct(product); setOpenEditProductModal(true); }}
+                            className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition shadow-2xs" title="Edit Product">
+                            <FiEdit2 size={13} />
+                        </button>
+                        <button onClick={e => {
+                            e.stopPropagation();
+                            setInventoryRows([{
+                                ...emptyInventoryRow,
+                                productCode: product.productCode || "",
+                                productName: product.productName || "",
+                                mrp: product.mrp ? String(product.mrp) : "",
+                                buyingPrice: product.buyingPrice != null ? String(product.buyingPrice) : (product.price ? String(product.price) : ""),
+                                sellingPrice: product.sellingPrice != null ? String(product.sellingPrice) : (product.price ? String(product.price) : ""),
+                                price: product.buyingPrice != null ? String(product.buyingPrice) : (product.price ? String(product.price) : ""),
+                                gst: product.gst ? String(product.gst) : "0",
+                                vendorId: product.vendor?.id || "",
+                                vendorName: product.vendor?.name || "",
+                                batchNumber: "",
+                                inwardDate: new Date().toISOString().split("T")[0],
+                                expiry: product.expiry ? new Date(product.expiry).toISOString().split("T")[0] : "",
+                                remarks: "Stock added via inventory"
+                            }]);
+                            setBulkStockProducts([product]);
+                            setOpenInventoryModal(true);
+                        }}
+                            className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition shadow-2xs" title="Add Stock & Allocate Batch">
+                            <FiShoppingCart size={13} />
+                        </button>
+                        <button onClick={e => {
+                            e.stopPropagation();
+                            setBulkBarcodeProducts(null);
+                            setBarcodeProduct(product);
+                            setOpenBarcodeModal(true);
+                        }}
+                            className="p-1.5 rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-600 hover:text-white transition shadow-2xs" title="Print Barcode">
+                            <BsUpcScan size={13} />
+                        </button>
+                        <button onClick={e => { e.stopPropagation(); handleOpenProductDetailsModal(product); }}
+                            className="p-1.5 rounded-lg bg-cyan-50 text-cyan-600 hover:bg-cyan-600 hover:text-white transition shadow-2xs" title="Product Details & Receiving History">
+                            <FiInfo size={13} />
+                        </button>
+                        <button onClick={e => { e.stopPropagation(); handleOpenBatchModal(product); }}
+                            className="p-1.5 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white transition shadow-2xs" title="Assign / View Batches">
+                            <FiLayers size={13} />
+                        </button>
+                    </div>
+                );
+            },
+        },
+        { header: "Date", accessorKey: "createdAt", cell: ({ getValue }) => getValue() ? new Date(getValue()).toLocaleDateString("en-IN") : "-" },
+        {
+            header: "Code",
+            accessorKey: "productCode",
+            cell: ({ getValue, row }) => (
+                <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); handleOpenProductDetailsModal(row.original); }}
+                    className="font-mono text-xs font-bold text-[#2980b9] hover:text-[#1a5276] hover:underline cursor-pointer transition text-center truncate block w-full"
+                    title={getValue() || "Click to view product details & receiving history"}
+                >
+                    {getValue()}
+                </button>
+            ),
+        },
+        {
+            header: "Product Name",
+            accessorKey: "productName",
+            cell: ({ getValue, row }) => (
+                <button
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); handleOpenProductDetailsModal(row.original); }}
+                    className="font-semibold text-gray-900 hover:text-[#2980b9] hover:underline cursor-pointer transition text-left truncate block w-full"
+                    title={getValue() || "Click to view product details & receiving history"}
+                >
+                    {getValue()}
+                </button>
+            ),
+        },
+        { header: "Category", accessorKey: "category", cell: ({ getValue }) => <span className="truncate block" title={getValue() || ""}>{getValue() || "—"}</span> },
+        { header: "Brand", accessorKey: "brand", cell: ({ getValue }) => <span className="truncate block" title={getValue() || ""}>{getValue() || "—"}</span> },
+        {
+            header: "Image", accessorKey: "image",
+            cell: ({ row }) => {
+                const product = row.original;
+                const displayImg = getProductDisplayImage(product);
+                const hasColors = Array.isArray(product.colors) && product.colors.length > 0;
+                return (
+                    <div className="flex items-center justify-center gap-1.5">
+                        {displayImg && displayImg !== "/placeholder-product.png" ? (
+                            <button
+                                onClick={e => { e.stopPropagation(); window.open(displayImg, "_blank"); }}
+                                className="w-8 h-8 rounded-lg overflow-hidden border border-gray-200 hover:border-[#2980b9] bg-white flex items-center justify-center p-0.5 shadow-2xs transition shrink-0"
+                                title="Click to view full image"
+                            >
+                                <img
+                                    src={displayImg}
+                                    alt={product.productName}
+                                    className="w-full h-full object-contain"
+                                    onError={(e) => { e.currentTarget.src = "/placeholder-product.png"; }}
+                                />
+                            </button>
+                        ) : (
+                            <span className="text-gray-300">—</span>
+                        )}
+                        {hasColors && (
+                            <div className="flex items-center gap-0.5 flex-wrap max-w-[32px]">
+                                {product.colors.slice(0, 2).map((c, idx) => (
+                                    <span
+                                        key={idx}
+                                        title={`Color: ${c.color} | Qty: ${c.qty}`}
+                                        className="w-3 h-3 rounded-full border border-gray-300 shadow-2xs"
+                                        style={{ backgroundColor: c.color }}
+                                    />
+                                ))}
+                                {product.colors.length > 2 && (
+                                    <span className="text-[9px] font-bold text-gray-400">+{product.colors.length - 2}</span>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                );
+            },
+        },
+        { header: "Qty", accessorKey: "qty", cell: ({ getValue }) => getValue() ?? 0 },
+        {
+            header: "Buying Price",
+            accessorKey: "buyingPrice",
+            cell: ({ row }) => {
+                const val = row.original.buyingPrice != null ? row.original.buyingPrice : (row.original.price ?? 0);
+                return `₹${val}`;
+            }
+        },
+        {
+            header: "Selling Price",
+            accessorKey: "sellingPrice",
+            cell: ({ row }) => {
+                const val = row.original.sellingPrice != null ? row.original.sellingPrice : (row.original.price ?? 0);
+                return `₹${val}`;
+            }
+        },
+        { header: "MRP", accessorKey: "mrp", cell: ({ getValue }) => `₹${getValue() ?? 0}` },
+        { header: "GST %", accessorKey: "gst", cell: ({ getValue }) => `${getValue() ?? 0}%` },
+
+        // ── Powers Section (Collapsible) ──────────────────────────────────────
+        ...(expandedGroups.powers ? [
+            { header: "SPH", accessorKey: "sph", cell: ({ getValue }) => getValue() || "—" },
+            { header: "CYL", accessorKey: "cyl", cell: ({ getValue }) => getValue() || "—" },
+            { header: "Axis", accessorKey: "axis", cell: ({ getValue }) => getValue() || "—" },
+            { header: "Add.", accessorKey: "addition", cell: ({ getValue }) => getValue() || "—" },
+        ] : [
+            {
+                header: () => (
+                    <button
+                        type="button"
+                        onClick={() => toggleGroup('powers')}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/20 hover:bg-white/30 text-white transition text-xs font-semibold cursor-pointer border border-white/20"
+                        title="Click to expand SPH, CYL, Axis, Add columns"
+                    >
+                        <span>Rx Powers</span>
+                        <Icon icon="mdi:chevron-down" className="text-sm" />
+                    </button>
+                ),
+                id: "powersSummary",
+                cell: ({ row }) => {
+                    const p = row.original;
+                    const hasP = p.sph || p.cyl || p.axis || p.addition;
+                    if (!hasP) return <span className="text-gray-300">—</span>;
+                    return (
+                        <span className="font-mono text-xs text-amber-800 font-semibold" title={`Sph: ${p.sph || '-'} | Cyl: ${p.cyl || '-'} | Axis: ${p.axis || '-'} | Add: ${p.addition || '-'}`}>
+                            {p.sph || '0'} / {p.cyl || '0'}
+                        </span>
+                    );
+                }
+            }
+        ]),
+
+        // ── Specs & Details Section (Collapsible) ─────────────────────────────
+        ...(expandedGroups.specs ? [
+            { header: "Dimensions", accessorKey: "dimensions", cell: ({ getValue }) => <span className="truncate block" title={getValue() || ""}>{getValue() || "—"}</span> },
+            { header: "Material", accessorKey: "material", cell: ({ getValue }) => <span className="truncate block" title={getValue() || ""}>{getValue() || "—"}</span> },
+            { header: "Color", accessorKey: "color", cell: ({ getValue }) => <span className="truncate block" title={getValue() || ""}>{getValue() || "—"}</span> },
+            { header: "Shape", accessorKey: "shape", cell: ({ getValue }) => <span className="truncate block" title={getValue() || ""}>{getValue() || "—"}</span> },
+            { header: "Size", accessorKey: "size", cell: ({ getValue }) => <span className="truncate block" title={getValue() || ""}>{getValue() || "—"}</span> },
+            { header: "Type", accessorKey: "type", cell: ({ getValue }) => <span className="truncate block" title={getValue() || ""}>{getValue() || "—"}</span> },
+            { header: "Index", accessorKey: "index", cell: ({ getValue }) => getValue() || "—" },
+            { header: "Coating", accessorKey: "coating", cell: ({ getValue }) => <span className="truncate block" title={getValue() || ""}>{getValue() || "—"}</span> },
+            { header: "Expiry", accessorKey: "expiry", cell: ({ getValue }) => getValue() ? new Date(getValue()).toLocaleDateString("en-IN") : "—" },
+            { header: "HSN/SAC", accessorKey: "hsnSac", cell: ({ getValue }) => <span className="truncate block" title={getValue() || ""}>{getValue() || "—"}</span> },
+        ] : [
+            {
+                header: () => (
+                    <button
+                        type="button"
+                        onClick={() => toggleGroup('specs')}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/20 hover:bg-white/30 text-white transition text-xs font-semibold cursor-pointer border border-white/20"
+                        title="Click to expand Specs, Dimensions, Material, Coating & Expiry"
+                    >
+                        <span>Specs & Details</span>
+                        <Icon icon="mdi:chevron-down" className="text-sm" />
+                    </button>
+                ),
+                id: "specsSummary",
+                cell: ({ row }) => {
+                    const p = row.original;
+                    const parts = [p.dimensions, p.material, p.coating, p.expiry ? new Date(p.expiry).toLocaleDateString("en-IN") : null].filter(Boolean);
+                    if (parts.length === 0) return <span className="text-gray-300">—</span>;
+                    return (
+                        <span className="text-xs text-gray-700 font-medium truncate block" title={parts.join(" | ")}>
+                            {parts[0]}
+                        </span>
+                    );
+                }
+            }
+        ]),
+
+        {
+            header: "Delete", id: "delete",
+            cell: ({ row }) => (
+                <div className="flex justify-center">
+                    <button onClick={e => { e.stopPropagation(); handleDeleteProduct(row.original); }}
+                        className="p-1.5 rounded-lg hover:bg-red-50 text-red-400 hover:text-red-500 transition" title="Delete">
+                        <FiTrash2 size={14} />
+                    </button>
+                </div>
+            ),
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    ], [selectedRows, expandedGroups]);
+
+    const table = useReactTable({
+        data: isSearching ? filteredData : data,
+        columns,
+        state: { globalFilter },
+        onGlobalFilterChange: setGlobalFilter,
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+    });
+
+    if (loading) {
+        return (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm flex items-center justify-center py-20">
+                <div className="flex flex-col items-center gap-3">
+                    <div className="w-8 h-8 border-2 border-[#2980b9]/40 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-sm text-gray-400">Loading inventory...</span>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+
+            {/* Table top bar */}
+            <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-gray-100 flex-wrap">
+
+                {/* ── Selection action bar (visible when rows are checked) ── */}
+                {selectedCount > 0 ? (
+                    <div className="flex items-center gap-3 flex-wrap">
+                        {/* Selection summary badge */}
+                        <div className="flex items-center gap-2 bg-[#2980b9]/10 border border-[#2980b9]/40 rounded-xl px-3 py-1.5">
+                            <FiCheckSquare size={13} className="text-[#2980b9]" />
+                            <span className="text-xs font-bold text-[#2980b9]/90">
+                                {selectedCount} row{selectedCount > 1 ? "s" : ""} selected
+                            </span>
+                        </div>
+
+                        {/* Bulk Add Stock */}
+                        <button
+                            onClick={openBulkStock}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold rounded-xl transition shadow-sm"
+                        >
+                            <FiShoppingCart size={13} /> Add Stock ({selectedCount})
+                        </button>
+
+                        {/* Bulk Print */}
+                        <button
+                            onClick={openBulkBarcode}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-700 hover:bg-gray-800 text-white text-xs font-semibold rounded-xl transition shadow-sm"
+                        >
+                            <FiPrinter size={13} /> Print Labels ({selectedCount})
+                        </button>
+
+                        {/* Bulk Delete */}
+                        <button
+                            onClick={handleDeleteBulkProducts}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-xl transition shadow-sm"
+                        >
+                            <FiTrash2 size={13} /> Delete Selected ({selectedCount})
+                        </button>
+
+                    </div>
+                ) : (
+                    <div /> // placeholder to keep search on right
+                )}
+
+                {/* Quick search */}
+                <div className="relative w-full sm:w-60">
+                    <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" size={13} />
+                    <input type="text" value={globalFilter ?? ""} onChange={e => setGlobalFilter(e.target.value)}
+                        placeholder="Quick search..."
+                        className="w-full pl-8 pr-7 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-[#2980b9]/40 focus:ring-2 focus:ring-[#2980b9]/20 transition text-gray-600 placeholder:text-gray-300" />
+                    {globalFilter && (
+                        <button
+                            onClick={() => setGlobalFilter("")}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                            title="Clear search"
+                        >
+                            <FiX size={13} />
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Table View Bar (Compact / Zero Scroll Mode & Section Toggles) */}
+            <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-50 border-t border-gray-100 text-xs">
+                <div className="flex items-center gap-2">
+                    <span className="text-gray-500 font-bold text-[11px] uppercase tracking-wide">TABLE VIEW:</span>
+                    <button
+                        type="button"
+                        onClick={() => setExpandedGroups({ powers: false, specs: false })}
+                        className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                            !expandedGroups.powers && !expandedGroups.specs
+                                ? 'bg-erp-accent text-white shadow-sm ring-2 ring-erp-accent/30'
+                                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
+                        }`}
+                    >
+                        <Icon icon="mdi:view-compact-outline" className="text-sm" />
+                        Compact Mode (Zero Scroll)
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setExpandedGroups({ powers: true, specs: true })}
+                        className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                            expandedGroups.powers && expandedGroups.specs
+                                ? 'bg-erp-accent text-white shadow-sm ring-2 ring-erp-accent/30'
+                                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
+                        }`}
+                    >
+                        <Icon icon="mdi:table-eye" className="text-sm" />
+                        Full Table (All Columns)
+                    </button>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                    <span className="text-gray-500 font-medium mr-1 hidden sm:inline">Toggle Sections:</span>
+                    <button
+                        type="button"
+                        onClick={() => toggleGroup('powers')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 cursor-pointer ${
+                            expandedGroups.powers
+                                ? 'bg-blue-100 text-erp-accent border-erp-accent/40 font-semibold'
+                                : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                        }`}
+                        title="Expand / Collapse SPH, CYL, Axis, Add columns"
+                    >
+                        Powers {expandedGroups.powers ? '▴ (Expanded)' : '▸ (Collapsed)'}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => toggleGroup('specs')}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 cursor-pointer ${
+                            expandedGroups.specs
+                                ? 'bg-blue-100 text-erp-accent border-erp-accent/40 font-semibold'
+                                : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                        }`}
+                        title="Expand / Collapse Dimensions, Material, Coating, Expiry"
+                    >
+                        Specs {expandedGroups.specs ? '▴ (Expanded)' : '▸ (Collapsed)'}
+                    </button>
+                </div>
+            </div>
+
+            {/* Table Container */}
+            <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-280px)] min-h-[420px] pb-3 custom-scrollbar border-t border-gray-100">
+                <table className="w-max min-w-full text-sm border-collapse">
+                    <thead className="sticky top-0 z-30 shadow-sm">
+                        {table.getHeaderGroups().map(hg => (
+                            <tr key={hg.id} className="bg-gradient-to-r from-erp-accent to-blue-600 text-white text-[11px] uppercase tracking-wider font-semibold">
+                                {hg.headers.map(h => {
+                                    const colStyle = INVENTORY_COLUMN_META[h.column.id] || { width: "80px", minWidth: "60px", maxWidth: "120px", align: "text-center", px: "px-1.5" };
+                                    const isStickySelect = h.column.id === "select";
+                                    const isStickyActions = h.column.id === "actions";
+
+                                    let stickyClasses = "";
+                                    let stickyStyle = {};
+                                    if (isStickySelect) {
+                                        stickyClasses = "sticky left-0 z-40 bg-erp-accent border-r border-white/20";
+                                        stickyStyle = { left: 0 };
+                                    } else if (isStickyActions) {
+                                        stickyClasses = "sticky left-[40px] z-40 bg-erp-accent border-r border-white/20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.15)]";
+                                        stickyStyle = { left: "40px" };
+                                    }
+
+                                    return (
+                                        <th
+                                            key={h.id}
+                                            style={{
+                                                width: colStyle.width,
+                                                minWidth: colStyle.minWidth,
+                                                maxWidth: colStyle.maxWidth,
+                                                ...stickyStyle,
+                                            }}
+                                            className={`${colStyle.px} ${colStyle.align} py-3 font-semibold text-white whitespace-nowrap overflow-hidden text-ellipsis border-r border-white/20 ${stickyClasses}`}
+                                        >
+                                            {flexRender(h.column.columnDef.header, h.getContext())}
+                                        </th>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                        {table.getRowModel().rows.length === 0 && (
+                            <tr>
+                                <td colSpan={columns.length} className="py-14 text-center text-gray-400 text-sm">
+                                    <div className="flex flex-col items-center justify-center gap-2.5">
+                                        <p className="font-medium text-gray-500">No products found</p>
+                                        {(isSearching || globalFilter || fromDate || toDate || keyword) ? (
+                                            <button
+                                                type="button"
+                                                onClick={handleResetSearch}
+                                                className="px-3.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl text-xs font-bold transition shadow-xs"
+                                            >
+                                                Clear search filters & reload all
+                                            </button>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={() => fetchProducts(1, false)}
+                                                className="px-3.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition shadow-xs"
+                                            >
+                                                Reload Inventory
+                                            </button>
+                                        )}
+                                    </div>
+                                </td>
+                            </tr>
+                        )}
+                        {table.getRowModel().rows.map((row, rIdx) => {
+                            const isChecked = !!selectedRows[row.original._id];
+                            const isEven = rIdx % 2 === 0;
+                            const rowBgClass = isChecked 
+                                ? "bg-blue-50/90 hover:bg-blue-100/90 shadow-[inset_3px_0_0_0_#2980b9]" 
+                                : (isEven ? "bg-white hover:bg-blue-50/40" : "bg-gray-50/30 hover:bg-blue-50/40");
+
+                            return (
+                                <tr key={row.id}
+                                    className={`transition-colors cursor-pointer group ${rowBgClass}`}
+                                    onClick={() => handleOpenProductDetailsModal(row.original)}
+                                >
+                                    {row.getVisibleCells().map(cell => {
+                                        const colStyle = INVENTORY_COLUMN_META[cell.column.id] || { width: "80px", minWidth: "60px", maxWidth: "120px", align: "text-center", px: "px-1.5" };
+                                        const isStickySelect = cell.column.id === "select";
+                                        const isStickyActions = cell.column.id === "actions";
+
+                                        let stickyClasses = "";
+                                        let stickyStyle = {};
+                                        if (isStickySelect) {
+                                            stickyClasses = `sticky left-0 z-20 border-r border-gray-100 ${isChecked ? 'bg-blue-50' : (isEven ? 'bg-white group-hover:bg-blue-50/60' : 'bg-gray-50 group-hover:bg-blue-50/60')}`;
+                                            stickyStyle = { left: 0 };
+                                        } else if (isStickyActions) {
+                                            stickyClasses = `sticky left-[40px] z-20 border-r border-gray-200/80 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.06)] ${isChecked ? 'bg-blue-50' : (isEven ? 'bg-white group-hover:bg-blue-50/60' : 'bg-gray-50 group-hover:bg-blue-50/60')}`;
+                                            stickyStyle = { left: "40px" };
+                                        }
+
+                                        return (
+                                            <td
+                                                key={cell.id}
+                                                style={{
+                                                    width: colStyle.width,
+                                                    minWidth: colStyle.minWidth,
+                                                    maxWidth: colStyle.maxWidth,
+                                                    ...stickyStyle,
+                                                }}
+                                                className={`${colStyle.px} ${colStyle.align} py-2.5 text-gray-700 whitespace-nowrap text-xs overflow-hidden text-ellipsis border-r border-gray-100/60 ${stickyClasses}`}
+                                                onClick={e => {
+                                                    // Checkbox column toggles row selection without opening popup
+                                                    if (cell.column.id === "select") {
+                                                        e.stopPropagation();
+                                                        toggleRow(row.original);
+                                                    }
+                                                    // Don't trigger row click when clicking action buttons or delete cell
+                                                    if (cell.column.id === "actions" || cell.column.id === "delete") {
+                                                        e.stopPropagation();
+                                                    }
+                                                }}
+                                            >
+                                                {flexRender(cell.column.columnDef.cell ?? cell.column.columnDef.accessorKey, cell.getContext())}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-4 border-t border-gray-100 bg-gray-50/50">
+                <div className="flex items-center gap-3 flex-wrap">
+                    <span className="text-xs text-gray-500 font-medium">
+                        {isSearching
+                            ? <>Showing <span className="font-bold text-gray-800">{filteredData.length}</span> search results</>
+                            : <>Showing <span className="font-bold text-gray-800">{data.length > 0 ? (page - 1) * fetchLimit + 1 : 0}</span> to <span className="font-bold text-gray-800">{(page - 1) * fetchLimit + data.length}</span> of <span className="font-bold text-gray-800">{totalProducts}</span> products</>
+                        }
+                    </span>
+                    <div className="flex items-center gap-1.5 ml-2">
+                        <span className="text-xs text-gray-400">Per page:</span>
+                        <select
+                            value={fetchLimit}
+                            onChange={(e) => handleLimitChange(Number(e.target.value))}
+                            className="text-xs font-semibold bg-white border border-gray-200 rounded-lg px-2 py-1 outline-none text-gray-700 cursor-pointer"
+                        >
+                            <option value={25}>25</option>
+                            <option value={50}>50</option>
+                            <option value={100}>100</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-1">
+                    {/* Previous Page */}
+                    <button
+                        onClick={() => handlePageChange(page - 1)}
+                        disabled={page <= 1 || loading || loadingMore}
+                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-30 transition font-medium"
+                        title="Previous Page"
+                    >
+                        <FiChevronLeft size={14} />
+                    </button>
+
+                    {/* Page Buttons */}
+                    {(() => {
+                        const MAX_VISIBLE = 5;
+                        let start = Math.max(1, page - Math.floor(MAX_VISIBLE / 2));
+                        let end = Math.min(totalPages, start + MAX_VISIBLE - 1);
+                        if (end - start + 1 < MAX_VISIBLE) {
+                            start = Math.max(1, end - MAX_VISIBLE + 1);
+                        }
+                        const pNums = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+
+                        return (
+                            <>
+                                {start > 1 && (
+                                    <>
+                                        <button
+                                            onClick={() => handlePageChange(1)}
+                                            className="w-8 h-8 text-xs rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 font-semibold"
+                                        >
+                                            1
+                                        </button>
+                                        {start > 2 && <span className="text-gray-300 text-xs px-0.5">…</span>}
+                                    </>
+                                )}
+
+                                {pNums.map(p => (
+                                    <button
+                                        key={p}
+                                        onClick={() => handlePageChange(p)}
+                                        className={`w-8 h-8 text-xs rounded-lg font-semibold transition ${
+                                            p === page
+                                                ? "bg-[#2980b9] text-white shadow-sm"
+                                                : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                                        }`}
+                                    >
+                                        {p}
+                                    </button>
+                                ))}
+
+                                {end < totalPages && (
+                                    <>
+                                        {end < totalPages - 1 && <span className="text-gray-300 text-xs px-0.5">…</span>}
+                                        <button
+                                            onClick={() => handlePageChange(totalPages)}
+                                            className="w-8 h-8 text-xs rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 font-semibold"
+                                        >
+                                            {totalPages}
+                                        </button>
+                                    </>
+                                )}
+                            </>
+                        );
+                    })()}
+
+                    {/* Next Page */}
+                    <button
+                        onClick={() => handlePageChange(page + 1)}
+                        disabled={page >= totalPages || loading || loadingMore}
+                        className="p-1.5 rounded-lg border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 disabled:opacity-30 transition font-medium"
+                        title="Next Page"
+                    >
+                        <FiChevronRight size={14} />
+                    </button>
+                </div>
+            </div>
+
+            {/* Modals */}
+            {openEditProductModal && (
+                <EditProductModal
+                    product={selectedProduct}
+                    settings={settings}
+                    onClose={() => { setOpenEditProductModal(false); setSelectedProduct(null); }}
+                    onSuccess={(updatedProduct) => {
+                        // Real-time update — no page refresh needed
+                        setData(prev => prev.map(p => p._id === updatedProduct._id ? { ...p, ...updatedProduct } : p));
+                        setFilteredData(prev => prev.map(p => p._id === updatedProduct._id ? { ...p, ...updatedProduct } : p));
+                        setOpenEditProductModal(false);
+                        setSelectedProduct(null);
+                    }}
+                />
+            )}
+
+            {openInventoryModal && (
+                <InventoryModal open={openInventoryModal}
+                    onClose={() => { setOpenInventoryModal(false); setBulkStockProducts(null); }}
+                    inventoryRows={inventoryRows} updateRow={updateRow}
+                    addRow={addInventoryRow} removeRow={removeInventoryRow}
+                    handleInventorySubmit={handleInventorySubmit}
+                    settings={settings}
+                    vendors={vendors}
+                    bulkProducts={bulkStockProducts}
+                    isSubmitting={submittingInventory}
+                />
+            )}
+
+            {openInventoryHistoryTableModal && (
+                <ProductDetailsHistoryModal
+                    product={selectedProduct}
+                    vendors={vendors}
+                    onClose={() => { setSelectedProduct(null); setOpenInventoryHistoryTableModal(false); }}
+                    onOpenEdit={(prod) => {
+                        setOpenInventoryHistoryTableModal(false);
+                        setSelectedProduct(prod);
+                        setOpenEditProductModal(true);
+                    }}
+                    onOpenBatches={(prod) => {
+                        setOpenInventoryHistoryTableModal(false);
+                        handleOpenBatchModal(prod);
+                    }}
+                />
+            )}
+
+            {openBatchModal && (
+                <BatchManagementModal
+                    isOpen={openBatchModal}
+                    onClose={() => { setOpenBatchModal(false); setBatchProduct(null); }}
+                    product={batchProduct}
+                    batches={productBatches}
+                    summary={batchSummary}
+                    loading={loadingBatches}
+                    allocating={allocatingBatch}
+                    formData={batchFormData}
+                    setFormData={setBatchFormData}
+                    onAllocateSubmit={handleAllocateBatchSubmit}
+                />
+            )}
+
+            {openBarcodeModal && (
+                <BarcodePrintModal
+                    product={bulkBarcodeProducts ? null : barcodeProduct}
+                    bulkProducts={bulkBarcodeProducts}
+                    inventoryData={data}
+                    onClose={() => { setOpenBarcodeModal(false); setBarcodeProduct(null); setBulkBarcodeProducts(null); }}
+                    settings={settings}
+                />
+            )}
+        </div>
+    );
+}
+
+
+// ─── Edit Product Modal ───────────────────────────────────────────────────────
+function EditProductModal({ product, settings, onClose, onSuccess }) {
+    const toInputDate = (v) => v ? new Date(v).toISOString().split("T")[0] : "";
+
+    const [formData, setFormData] = useState({
+        createdAt: "", productCode: "", productName: "", category: "", brand: "",
+        color: "", size: "", type: "", shape: "", sph: "", cyl: "", index: "",
+        axis: "", coating: "", disposability: "", expiry: "", buyingPrice: "", sellingPrice: "", price: "", gst: "0", hsnSac: "", mrp: "", qty: "",
+        addition: "", material: "", dimensions: "",
+        vendorId: "", vendorName: "",
+    });
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const [saving, setSaving] = useState(false);
+    const [vendors, setVendors] = useState([]);
+
+    // Fetch vendors for the vendor dropdown
+    useEffect(() => {
+        api.get("/api/vendor", { params: { page: 1, limit: 1000 } })
+            .then(res => { if (res.data.success) setVendors(res.data.vendors || []); })
+            .catch(() => {});
+    }, []);
+    useEffect(() => {
+        if (!vendors.length) return;
+        if (formData.vendorId) {
+            const byId = vendors.find(v => v._id?.toString() === formData.vendorId?.toString());
+            if (byId) { setFormData(prev => ({ ...prev, vendorName: byId.name || prev.vendorName })); return; }
+        }
+        if (!formData.vendorId && formData.vendorName) {
+            const byName = vendors.find(v => (v.name || "").toUpperCase() === (formData.vendorName || "").toUpperCase());
+            if (byName) setFormData(prev => ({ ...prev, vendorId: byName._id?.toString() || "" }));
+        }
+    }, [vendors]);
+
+    useEffect(() => {
+        if (product) {
+            const initialColor = product.color 
+                || (Array.isArray(product.colors) && product.colors.find(c => c?.color)?.color)
+                || (Array.isArray(product.colors) && product.colors[0]?.color)
+                || "";
+            setFormData({
+                createdAt: toInputDate(product.createdAt), productCode: product.productCode || "",
+                productName: product.productName || "", category: product.category || "",
+                brand: product.brand || "", color: initialColor, size: product.size || "",
+                type: product.type || "", shape: product.shape || "", sph: product.sph || "",
+                cyl: product.cyl || "", index: product.index || "", axis: product.axis || "",
+                coating: product.coating || "", disposability: product.disposability || "", expiry: toInputDate(product.expiry),
+                buyingPrice: product.buyingPrice != null ? product.buyingPrice : (product.price || ""),
+                sellingPrice: product.sellingPrice != null ? product.sellingPrice : (product.price || ""),
+                price: product.price || "", gst: product.gst ?? "0", hsnSac: product.hsnSac || "",
+                mrp: product.mrp || "", qty: product.qty || "",
+                addition: product.addition || "", material: product.material || "", dimensions: product.dimensions || "",
+                // Pre-fill vendor
+                vendorId: (product.vendor?.id ?? product.vendor?._id ?? "")?.toString() || "",
+                vendorName: product.vendor?.name || product.vendorName || "",
+            });
+            // Reset image preview when switching products
+            setSelectedImage(null);
+            setImagePreview(null);
+        }
+    }, [product]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value,
+            ...(name === "buyingPrice" ? { price: value } : {}),
+            // When vendor dropdown changes, also update vendorName
+            ...(name === "vendorId"
+                ? { vendorName: vendors.find(v => v._id === value)?.name || value }
+                : {}),
+        }));
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error("File size must not exceed 5 MB");
+            e.target.value = "";
+            return;
+        }
+        setSelectedImage(file);
+        setImagePreview(URL.createObjectURL(file));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSaving(true);
+        try {
+            if (isEditContactLens) {
+                if (!formData.coating?.trim()) { toast.error("Coating is required for Contact Lens"); setSaving(false); return; }
+                if (!formData.disposability?.trim()) { toast.error("Disposability is required for Contact Lens"); setSaving(false); return; }
+                if (!formData.expiry) { toast.error("Expiry Date is required for Contact Lens"); setSaving(false); return; }
+            }
+            const dataToSend = new FormData();
+            Object.keys(formData).forEach(key => dataToSend.append(key, formData[key]));
+            dataToSend.append("productId", product._id);
+            if (selectedImage instanceof File) dataToSend.append("image", selectedImage);
+            const res = await api.put(`/api/digi/product`, dataToSend, { headers: { "Content-Type": "multipart/form-data" } });
+            if (res.data.success) {
+                toast.success("Product updated successfully");
+                // Pass updated product back so parent can update state in-place
+                let updatedProduct = res.data.product || { ...product, ...formData };
+                if (formData.color) {
+                    const colorVal = formData.color.trim();
+                    updatedProduct = {
+                        ...updatedProduct,
+                        color: colorVal,
+                        colors: (Array.isArray(updatedProduct.colors) && updatedProduct.colors.length > 0)
+                            ? updatedProduct.colors.map((c, i) => i === 0 ? { ...c, color: colorVal } : c)
+                            : [{ color: colorVal, qty: Number(formData.qty) || 0, productColorImage: updatedProduct.image || "" }]
+                    };
+                }
+                if (onSuccess) onSuccess(updatedProduct);
+                else onClose();
+            } else {
+                toast.error(res.data.message || "Update failed");
+            }
+        } catch (err) {
+            toast.error(err?.response?.data?.message || "Something went wrong");
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    // Build category options: always include current value even if not in settings list
+    const categoryOptions = (() => {
+        const base = settings?.allCategories || [];
+        const current = formData.category;
+        if (current && !base.includes(current)) return [current, ...base];
+        return base;
+    })();
+
+    const isEditContactLens = Boolean(formData.category && formData.category.trim().toUpperCase().replace(/[\s_]+/g, "_") === "CONTACT_LENS");
+
+    const fields = [
+        { name: "createdAt", label: "Date", type: "date" },
+        { name: "productCode", label: "Product Code", type: "text" },
+        { name: "productName", label: "Product Name", type: "text" },
+        { name: "brand", label: "Brand", type: "text" },
+        { name: "color", label: "Color", type: "text" },
+        { name: "size", label: "Size", type: "text" },
+        { name: "type", label: "Type", type: "text" },
+        { name: "shape", label: "Shape", type: "text" },
+        { name: "sph", label: "SPH", type: "text" },
+        { name: "cyl", label: "CYL", type: "text" },
+        { name: "index", label: "Index", type: "text" },
+        { name: "axis", label: "Axis", type: "text" },
+        { name: "coating", label: isEditContactLens ? "Coating *" : "Coating", type: "text", required: isEditContactLens },
+        { name: "disposability", label: isEditContactLens ? "Disposability *" : "Disposability", type: "text", required: isEditContactLens },
+        { name: "expiry", label: isEditContactLens ? "Expiry *" : "Expiry", type: "date", required: isEditContactLens },
+        { name: "buyingPrice", label: "Buying Price (₹)", type: "number" },
+        { name: "sellingPrice", label: "Selling Price (₹)", type: "number" },
+        { name: "mrp", label: "MRP (₹)", type: "number" },
+        { name: "hsnSac", label: "HSN/SAC", type: "text" },
+        { name: "addition", label: "ADD.", type: "text" },
+        { name: "material", label: "MATERIAL", type: "text" },
+        { name: "dimensions", label: "DIMENSIONS", type: "text" },
+        { name: "qty", label: "Quantity", type: "number" },
+    ];
+
+    return (
+        <Modal onClose={onClose} maxWidth="max-w-5xl">
+            <ModalHeader title="Edit Product" subtitle={product?.productName} icon={FiEdit2} onClose={onClose} />
+            <form onSubmit={handleSubmit} className="flex-1 min-h-0 flex flex-col">
+                <div className="flex-1 min-h-0 overflow-y-auto p-6">
+                    <SectionTitle>Product Details</SectionTitle>
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        {fields.map(f => (
+                            <FieldInput key={f.name} label={f.label}>
+                                <input name={f.name} type={f.type} value={formData[f.name]}
+                                    onChange={handleChange} className={inputCls} required={f.required || false} />
+                            </FieldInput>
+                        ))}
+
+                        {/* Category dropdown — always shows current value */}
+                        <FieldInput label="Category">
+                            <select name="category" value={formData.category} onChange={handleChange} className={selectCls}>
+                                <option value="">Select Category</option>
+                                {categoryOptions.map((cat, idx) => <option key={idx} value={cat}>{cat}</option>)}
+                            </select>
+                        </FieldInput>
+
+                        {/* GST dropdown */}
+                        <FieldInput label="GST %">
+                            <select name="gst" value={formData.gst} onChange={handleChange} className={selectCls}>
+                                <option value="0">0%</option>
+                                {settings?.gst?.map((p, idx) => <option key={idx} value={p}>{p}%</option>)}
+                            </select>
+                        </FieldInput>
+
+                        {/* Vendor dropdown */}
+                        <FieldInput label="Vendor">
+                            <select name="vendorId" value={formData.vendorId?.toString() || ""} onChange={handleChange} className={selectCls}>
+                                <option value="">No Vendor / Unknown</option>
+                                {vendors.map(v => (
+                                    <option key={v._id?.toString()} value={v._id?.toString()}>
+                                        {v.name}{v.firm ? ` — ${v.firm}` : ""}
+                                    </option>
+                                ))}
+                            </select>
+                        </FieldInput>
+
+                        {/* Product Image with live preview */}
+                        <FieldInput label="Product Image (Max 5 MB)">
+                            <div className="flex flex-col gap-2">
+                                {/* Preview: show newly selected image OR existing image */}
+                                {(imagePreview || (() => { const d = getProductDisplayImage(product); return d && d !== "/placeholder-product.png" ? d : null; })()) && (
+                                    <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-gray-200 bg-gray-50 flex-shrink-0">
+                                        <img
+                                            src={imagePreview || getProductDisplayImage(product)}
+                                            alt="preview"
+                                            className="w-full h-full object-cover"
+                                        />
+                                        {imagePreview && (
+                                            <div className="absolute top-0.5 right-0.5 bg-green-500 text-white rounded-full p-0.5">
+                                                <FiCheckCircle size={8} />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    className={inputCls}
+                                />
+                                {imagePreview && (
+                                    <p className="text-[10px] text-green-600 font-medium">New image selected — will be uploaded on save</p>
+                                )}
+                            </div>
+                        </FieldInput>
+                    </div>
+                </div>
+                <ModalFooter>
+                    <button type="button" onClick={onClose}
+                        className="px-4 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition">Cancel</button>
+                    <button type="submit" disabled={saving}
+                        className="flex items-center gap-2 px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm disabled:opacity-60">
+                        {saving && <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                        {saving ? "Saving..." : "Save Changes"}
+                    </button>
+                </ModalFooter>
+            </form>
+        </Modal>
+    );
+}
+
+
+// ─── Inventory Modal ──────────────────────────────────────────────────────────
+// bulkProducts: array of product objects (when opened from bulk selection or single row), or null
+const InventoryModal = ({
+    open,
+    onClose,
+    inventoryRows,
+    updateRow,
+    addRow,
+    removeRow,
+    handleInventorySubmit,
+    settings,
+    vendors = [],
+    bulkProducts,
+    isSubmitting = false
+}) => {
+    if (!open) return null;
+
+    const isSingle = Array.isArray(bulkProducts) && bulkProducts.length === 1;
+    const singleProduct = isSingle ? bulkProducts[0] : null;
+
+    // Calculate overall totals
+    const totalUnits = inventoryRows.reduce((sum, r) => sum + (Number(r.qty) || 0), 0);
+    const totalCost = inventoryRows.reduce((sum, r) => sum + (Number(r.total) || 0), 0);
+
+    return (
+        <Modal onClose={onClose} maxWidth="max-w-5xl">
+            <ModalHeader
+                title={isSingle ? "Add Stock & Inward Batch" : (bulkProducts?.length > 1 ? "Bulk Stock Inward & Batches" : "Add Inventory")}
+                subtitle={isSingle
+                    ? `Inward stock & assign batch pricing for ${singleProduct.productName || singleProduct.productCode}`
+                    : (bulkProducts?.length > 1
+                        ? `Create batches and inward stock for ${bulkProducts.length} selected products`
+                        : "Inward stock levels and create batches"
+                    )
+                }
+                icon={FiShoppingCart}
+                onClose={onClose}
+            />
+
+            <form onSubmit={handleInventorySubmit} className="flex-1 min-h-0 flex flex-col">
+                <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-4">
+                    {/* Single Product Highlight Banner */}
+                    {isSingle && singleProduct && (
+                        <div className="bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-white rounded-2xl border border-blue-100/80 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+                            <div className="flex items-center gap-3.5">
+                                <div className="w-12 h-12 rounded-xl bg-white border border-blue-200/60 shadow-xs flex items-center justify-center p-1 overflow-hidden shrink-0">
+                                    {singleProduct.images?.[0] ? (
+                                        <img src={singleProduct.images[0]} alt="" className="w-full h-full object-contain" />
+                                    ) : (
+                                        <FiPackage className="text-[#2980b9]" size={22} />
+                                    )}
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        <span className="font-mono text-xs font-bold text-[#2980b9] bg-white px-2 py-0.5 rounded-md border border-blue-200">
+                                            {singleProduct.productCode}
+                                        </span>
+                                        {singleProduct.category && (
+                                            <span className="text-[11px] font-semibold text-gray-600 bg-gray-100 px-2 py-0.5 rounded-md">
+                                                {singleProduct.category}
+                                            </span>
+                                        )}
+                                        {singleProduct.brand && (
+                                            <span className="text-[11px] font-semibold text-gray-600 bg-gray-100 px-2 py-0.5 rounded-md">
+                                                {singleProduct.brand}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <h3 className="text-sm font-bold text-gray-900 mt-1">
+                                        {singleProduct.productName || "Product"}
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 self-stretch sm:self-auto justify-between sm:justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-blue-100">
+                                <div className="text-right">
+                                    <span className="text-[10px] uppercase font-bold text-gray-400 block tracking-wider">Current Stock</span>
+                                    <span className="text-sm font-extrabold text-gray-800">{singleProduct.qty || 0} units</span>
+                                </div>
+                                {Number(inventoryRows[0]?.qty) > 0 && (
+                                    <>
+                                        <div className="text-gray-300 font-bold text-lg">➔</div>
+                                        <div className="text-right bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
+                                            <span className="text-[10px] uppercase font-bold text-emerald-600 block tracking-wider">New Total Stock</span>
+                                            <span className="text-sm font-extrabold text-emerald-700">
+                                                {(Number(singleProduct.qty) || 0) + Number(inventoryRows[0]?.qty)} units
+                                                <span className="text-[11px] font-semibold text-emerald-600 ml-1">(+{inventoryRows[0]?.qty})</span>
+                                            </span>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Inventory Rows */}
+                    {inventoryRows.map((row, index) => {
+                        const associatedProduct = bulkProducts?.[index] || (isSingle ? singleProduct : null);
+                        return (
+                            <div key={index} className="bg-white rounded-2xl border border-gray-200 shadow-xs p-5 hover:border-[#2980b9]/40 transition space-y-4">
+                                {/* Row Header */}
+                                <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        <span className="w-6 h-6 rounded-lg bg-[#2980b9]/10 text-[#2980b9] text-xs font-bold flex items-center justify-center">
+                                            {index + 1}
+                                        </span>
+                                        {associatedProduct ? (
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-mono text-xs font-bold text-gray-800">
+                                                    {associatedProduct.productCode}
+                                                </span>
+                                                <span className="text-xs font-medium text-gray-600 truncate max-w-[200px] sm:max-w-md">
+                                                    {associatedProduct.productName}
+                                                </span>
+                                                <span className="text-[11px] text-gray-400">
+                                                    (Stock: {associatedProduct.qty || 0})
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <span className="text-xs font-semibold text-gray-500">Inward Item #{index + 1}</span>
+                                        )}
+                                    </div>
+
+                                    {inventoryRows.length > 1 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => removeRow(index)}
+                                            className="p-1.5 rounded-lg hover:bg-red-50 text-red-400 hover:text-red-500 transition"
+                                            title="Remove this item"
+                                        >
+                                            <FiTrash2 size={14} />
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* Section 1: Batch & Quantity */}
+                                <div>
+                                    <div className="flex items-center gap-1.5 mb-2">
+                                        <div className="w-1.5 h-3.5 bg-[#2980b9] rounded-full" />
+                                        <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                                            Batch Details & Quantity
+                                        </span>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                                        {!associatedProduct && (
+                                            <FieldInput label="Product Code *">
+                                                <input
+                                                    type="text"
+                                                    value={row.productCode}
+                                                    onChange={e => updateRow(index, "productCode", e.target.value.toUpperCase())}
+                                                    className={inputCls}
+                                                    placeholder="e.g. PRD-101"
+                                                    required
+                                                />
+                                            </FieldInput>
+                                        )}
+                                        <FieldInput label="Batch Number">
+                                            <input
+                                                type="text"
+                                                value={row.batchNumber}
+                                                onChange={e => updateRow(index, "batchNumber", e.target.value.toUpperCase())}
+                                                className={inputCls}
+                                                placeholder="Auto-generate (e.g. BTCN1)"
+                                            />
+                                            <p className="text-[10px] text-gray-400 mt-1">Leave blank to auto-generate</p>
+                                        </FieldInput>
+                                        <FieldInput label="Inward Quantity *">
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                step="1"
+                                                value={row.qty}
+                                                onChange={e => updateRow(index, "qty", e.target.value)}
+                                                className={inputCls}
+                                                placeholder="Units to add"
+                                                required
+                                            />
+                                            <p className="text-[10px] text-gray-400 mt-1">Quantity added to stock</p>
+                                        </FieldInput>
+                                        <FieldInput label="Inward Date">
+                                            <input
+                                                type="date"
+                                                value={row.inwardDate}
+                                                onChange={e => updateRow(index, "inwardDate", e.target.value)}
+                                                className={inputCls}
+                                            />
+                                            <p className="text-[10px] text-gray-400 mt-1">Date received into inventory</p>
+                                        </FieldInput>
+                                    </div>
+                                </div>
+
+                                {/* Section 2: Batch Pricing & Costing */}
+                                <div>
+                                    <div className="flex items-center gap-1.5 mb-2">
+                                        <div className="w-1.5 h-3.5 bg-emerald-500 rounded-full" />
+                                        <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                                            Batch Pricing & Valuation
+                                        </span>
+                                    </div>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                                        <FieldInput label="Buying Price (₹) *">
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                step="0.01"
+                                                value={row.buyingPrice !== undefined ? row.buyingPrice : row.price}
+                                                onChange={e => updateRow(index, "buyingPrice", e.target.value)}
+                                                className={inputCls}
+                                                placeholder="0.00"
+                                                required
+                                            />
+                                            <p className="text-[10px] text-gray-400 mt-1">Batch unit cost</p>
+                                        </FieldInput>
+                                        <FieldInput label="Selling Price (₹) *">
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                step="0.01"
+                                                value={row.sellingPrice !== undefined ? row.sellingPrice : row.price}
+                                                onChange={e => updateRow(index, "sellingPrice", e.target.value)}
+                                                className={inputCls}
+                                                placeholder="0.00"
+                                                required
+                                            />
+                                            <p className="text-[10px] text-gray-400 mt-1">Batch unit price</p>
+                                        </FieldInput>
+                                        <FieldInput label="MRP (₹) *">
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                step="0.01"
+                                                value={row.mrp}
+                                                onChange={e => updateRow(index, "mrp", e.target.value)}
+                                                className={inputCls}
+                                                placeholder="0.00"
+                                                required
+                                            />
+                                            <p className="text-[10px] text-gray-400 mt-1">Max retail price</p>
+                                        </FieldInput>
+                                        <FieldInput label="Tax / GST %">
+                                            <select
+                                                value={row.gst}
+                                                onChange={e => updateRow(index, "gst", e.target.value)}
+                                                className={selectCls}
+                                            >
+                                                {(settings?.gst && settings.gst.length > 0 ? settings.gst : [0, 5, 12, 18, 28]).map((g, idx) => (
+                                                    <option key={idx} value={g}>{g}%</option>
+                                                ))}
+                                            </select>
+                                            <p className="text-[10px] text-gray-400 mt-1">Applicable GST</p>
+                                        </FieldInput>
+                                        <FieldInput label="Total Batch Value">
+                                            <div className="flex items-center h-[38px] px-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 font-bold text-sm">
+                                                ₹{row.total || "0.00"}
+                                            </div>
+                                            <p className="text-[10px] text-emerald-600 mt-1">Qty × Cost + GST</p>
+                                        </FieldInput>
+                                    </div>
+                                </div>
+
+                                {/* Section 3: Vendor & Additional Details */}
+                                <div>
+                                    <div className="flex items-center gap-1.5 mb-2">
+                                        <div className="w-1.5 h-3.5 bg-amber-500 rounded-full" />
+                                        <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                                            Vendor & Traceability
+                                        </span>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                        <FieldInput label="Vendor">
+                                            <select
+                                                value={row.vendorId || ""}
+                                                onChange={e => {
+                                                    const vId = e.target.value || "";
+                                                    const vName = e.target.options[e.target.selectedIndex]?.text || "";
+                                                    updateRow(index, "vendorId", vId);
+                                                    updateRow(index, "vendorName", vId ? vName : "");
+                                                }}
+                                                className={selectCls}
+                                            >
+                                                <option value="">Select Vendor (Optional)</option>
+                                                {vendors?.map(v => (
+                                                    <option key={v._id || v.id} value={v._id || v.id}>
+                                                        {v.name || v.vendorName || v.companyName}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <p className="text-[10px] text-gray-400 mt-1">Source supplier/vendor</p>
+                                        </FieldInput>
+                                        <FieldInput label={isContactLens(associatedProduct?.category || row.category) ? "Expiry Date *" : "Expiry Date"}>
+                                            <input
+                                                type="date"
+                                                value={row.expiry || ""}
+                                                onChange={e => updateRow(index, "expiry", e.target.value)}
+                                                className={`${inputCls} ${isContactLens(associatedProduct?.category || row.category) && !row.expiry ? "border-red-400 ring-1 ring-red-300" : ""}`}
+                                                required={isContactLens(associatedProduct?.category || row.category)}
+                                            />
+                                            <p className={`text-[10px] mt-1 ${isContactLens(associatedProduct?.category || row.category) ? "text-red-500" : "text-gray-400"}`}>
+                                                {isContactLens(associatedProduct?.category || row.category) ? "Required for Contact Lens" : "Leave empty if not applicable"}
+                                            </p>
+                                        </FieldInput>
+                                        <FieldInput label="Remarks / Invoice Ref">
+                                            <input
+                                                type="text"
+                                                value={row.remarks || ""}
+                                                onChange={e => updateRow(index, "remarks", e.target.value)}
+                                                className={inputCls}
+                                                placeholder="e.g. PO #123 / Inv #456 / Inward"
+                                            />
+                                            <p className="text-[10px] text-gray-400 mt-1">Reference note for this batch</p>
+                                        </FieldInput>
+                                    </div>
+
+                                    {/* Contact Lens Required Fields: Coating & Disposability */}
+                                    {isContactLens(associatedProduct?.category || row.category) && (
+                                        <div className="mt-3 pt-3 border-t border-orange-100">
+                                            <div className="flex items-center gap-1.5 mb-2">
+                                                <div className="w-1.5 h-3.5 bg-orange-500 rounded-full" />
+                                                <span className="text-[11px] font-bold text-orange-600 uppercase tracking-wider">
+                                                    Contact Lens Details (Required)
+                                                </span>
+                                            </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                <FieldInput label="Coating *">
+                                                    <input
+                                                        type="text"
+                                                        value={row.coating || ""}
+                                                        onChange={e => updateRow(index, "coating", e.target.value)}
+                                                        className={`${inputCls} ${!row.coating?.trim() ? "border-red-400 ring-1 ring-red-300" : "border-green-400"}`}
+                                                        placeholder="e.g. UV Coating, Anti-Reflective"
+                                                        required
+                                                    />
+                                                    <p className="text-[10px] text-red-500 mt-1">Required for Contact Lens</p>
+                                                </FieldInput>
+                                                <FieldInput label="Disposability *">
+                                                    <input
+                                                        type="text"
+                                                        value={row.disposability || ""}
+                                                        onChange={e => updateRow(index, "disposability", e.target.value)}
+                                                        className={`${inputCls} ${!row.disposability?.trim() ? "border-red-400 ring-1 ring-red-300" : "border-green-400"}`}
+                                                        placeholder="e.g. Daily, Monthly, Yearly"
+                                                        required
+                                                    />
+                                                    <p className="text-[10px] text-red-500 mt-1">Required for Contact Lens</p>
+                                                </FieldInput>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Invoice / Challan Upload */}
+                                    <div className="mt-3 pt-2.5 border-t border-gray-100">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                            <div>
+                                                <label className="text-[11px] font-bold text-gray-700 flex items-center gap-1.5">
+                                                    <FiPaperclip size={12} className="text-[#2980b9]" /> Invoice / Challan / Bill (Optional, max 5)
+                                                </label>
+                                                <p className="text-[10px] text-gray-400">Attach purchase invoices, bills, or delivery challans for this inward</p>
+                                            </div>
+                                            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#eaf4fb] hover:bg-[#d5eaf6] border border-[#2980b9]/30 text-[#1F618D] text-xs font-semibold rounded-lg cursor-pointer transition self-start sm:self-auto">
+                                                <FiUpload size={12} />
+                                                <span>Attach Files</span>
+                                                <input
+                                                    type="file"
+                                                    multiple
+                                                    accept="application/pdf,image/*"
+                                                    className="hidden"
+                                                    onChange={e => {
+                                                        const newFiles = Array.from(e.target.files || []);
+                                                        const updated = [...(row.invoices || []), ...newFiles].slice(0, 5);
+                                                        updateRow(index, "invoices", updated);
+                                                        e.target.value = '';
+                                                    }}
+                                                />
+                                            </label>
+                                        </div>
+                                        {(row.invoices || []).length > 0 && (
+                                            <div className="flex flex-wrap gap-1.5 mt-2">
+                                                {row.invoices.map((f, fi) => (
+                                                    <span key={fi} className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-800 text-[11px] font-medium rounded-lg">
+                                                        <FiFileText size={11} className="text-[#2980b9]" />
+                                                        <span className="truncate max-w-[160px]">{f.name}</span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => updateRow(index, "invoices", row.invoices.filter((_, idx) => idx !== fi))}
+                                                            className="text-blue-400 hover:text-red-500 ml-1 font-bold"
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+
+                    {!isSingle && (
+                        <button
+                            type="button"
+                            onClick={addRow}
+                            className="w-full py-3 border-2 border-dashed border-[#2980b9]/40 hover:border-[#2980b9]/60 hover:bg-[#2980b9]/5 text-[#2980b9] text-xs font-semibold rounded-2xl transition flex items-center justify-center gap-2"
+                        >
+                            <FiPlus size={15} /> Add Another Product Row
+                        </button>
+                    )}
+                </div>
+
+                <ModalFooter>
+                    <div className="flex-1 flex items-center gap-3 text-xs text-gray-500 flex-wrap">
+                        <span>Items: <strong className="text-gray-800">{inventoryRows.length}</strong></span>
+                        <span>•</span>
+                        <span>Total Units: <strong className="text-gray-800">{totalUnits}</strong></span>
+                        <span>•</span>
+                        <span>Total Value: <strong className="text-emerald-600 font-bold">₹{totalCost.toFixed(2)}</strong></span>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        disabled={isSubmitting}
+                        className="px-4 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm flex items-center gap-2 disabled:opacity-60"
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <span>Processing Inward...</span>
+                            </>
+                        ) : (
+                            <>
+                                <FiShoppingCart size={14} />
+                                <span>Inward Stock & Create Batch</span>
+                            </>
+                        )}
+                    </button>
+                </ModalFooter>
+            </form>
+        </Modal>
+    );
+};
+
+
+// ─── Product Details & Receiving History Modal ─────────────────────────────────
+const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit, onOpenBatches }) => {
+    const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState("RECEIVING"); // 'RECEIVING' | 'BATCHES' | 'SPECS'
+    const [productDetails, setProductDetails] = useState(product || null);
+    const [receivingHistory, setReceivingHistory] = useState([]);
+    const [batches, setBatches] = useState([]);
+    const [historySearch, setHistorySearch] = useState("");
+
+    const getVendorDisplayName = useCallback((vendorObj, fallback) => {
+        if (!vendorObj && !fallback) return "—";
+        if (typeof vendorObj === "string") {
+            const found = vendors.find(v => (v._id || v.id) === vendorObj);
+            return found ? (found.vendorName || found.name || found.companyName) : vendorObj;
+        }
+        if (vendorObj && typeof vendorObj === "object") {
+            if (vendorObj.name) return vendorObj.name;
+            const targetId = (vendorObj.id?._id || vendorObj.id || vendorObj._id)?.toString();
+            if (targetId) {
+                const found = vendors.find(v => (v._id || v.id)?.toString() === targetId);
+                return found ? (found.vendorName || found.name || found.companyName) : "—";
+            }
+        }
+        return fallback || "—";
+    }, [vendors]);
+
+    useEffect(() => {
+        if (product?._id) {
+            fetchProductInventoryDetails();
+        }
+    }, [product?._id]);
+
+    const fetchProductInventoryDetails = async () => {
+        try {
+            setLoading(true);
+            const res = await api.get(`/api/digi/product/inventory/${product._id}`);
+            if (res.data.success && res.data.data) {
+                const resData = res.data.data;
+                if (resData.product) {
+                    setProductDetails(resData.product);
+                } else if (Array.isArray(resData) && resData[0]) {
+                    setProductDetails(resData[0]);
+                }
+                if (Array.isArray(resData.receivingHistory)) {
+                    setReceivingHistory(resData.receivingHistory);
+                }
+                if (Array.isArray(resData.batches)) {
+                    setBatches(resData.batches);
+                }
+            }
+        } catch (err) {
+            console.error("Failed to load product details & history:", err);
+            toast.error("Failed to load product details");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const curr = productDetails || product || {};
+    const stockQty = Number(curr.qty || 0);
+    const buyingPrice = Number(curr.buyingPrice != null ? curr.buyingPrice : (curr.price || 0));
+    const sellingPrice = Number(curr.sellingPrice != null ? curr.sellingPrice : (curr.price || 0));
+    const mrp = Number(curr.mrp || 0);
+    const profitMargin = sellingPrice - buyingPrice;
+    const marginPercent = sellingPrice > 0 ? ((profitMargin / sellingPrice) * 100).toFixed(1) : 0;
+    const totalReceivedUnits = receivingHistory.reduce((sum, item) => sum + Number(item.receivedQty || 0), 0);
+
+    const filteredHistory = useMemo(() => {
+        if (!historySearch.trim()) return receivingHistory;
+        const q = historySearch.toLowerCase();
+        return receivingHistory.filter(item =>
+            (item.vendorName && item.vendorName.toLowerCase().includes(q)) ||
+            (item.batchNumber && item.batchNumber.toLowerCase().includes(q)) ||
+            (item.invoiceNumber && item.invoiceNumber.toLowerCase().includes(q)) ||
+            (item.orderNumber && item.orderNumber.toLowerCase().includes(q)) ||
+            (item.receivedBy && item.receivedBy.toLowerCase().includes(q)) ||
+            (item.receivedFrom && item.receivedFrom.toLowerCase().includes(q)) ||
+            (item.failureReason && item.failureReason.toLowerCase().includes(q)) ||
+            (item.qcStatus && item.qcStatus.toLowerCase().includes(q))
+        );
+    }, [receivingHistory, historySearch]);
+
+    const formatDate = (val) => {
+        if (!val) return "—";
+        try {
+            return new Date(val).toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+            });
+        } catch {
+            return String(val);
+        }
+    };
+
+    const displayImg = getProductDisplayImage(curr);
+
+    return (
+        <Modal onClose={onClose} maxWidth="max-w-6xl">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0 bg-white">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#2980b9]/10 flex items-center justify-center text-[#2980b9]">
+                        <FiPackage size={20} />
+                    </div>
+                    <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <h2 className="text-base font-bold text-gray-800">{curr.productName}</h2>
+                            <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-blue-50 text-[#2980b9] font-bold border border-blue-100">
+                                {curr.productCode}
+                            </span>
+                            {curr.category && (
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-semibold uppercase">
+                                    {curr.category}
+                                </span>
+                            )}
+                            {curr.brand && (
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 font-semibold uppercase">
+                                    {curr.brand}
+                                </span>
+                            )}
+                        </div>
+                        <p className="text-xs text-gray-400 mt-0.5">
+                            Product Receiving History, Batch Tracking & Inventory Breakdown
+                        </p>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <div className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 ${
+                        stockQty > 10 ? "bg-emerald-50 text-emerald-700 border border-emerald-200" :
+                        stockQty > 0 ? "bg-amber-50 text-amber-700 border border-amber-200" :
+                        "bg-red-50 text-red-700 border border-red-200"
+                    }`}>
+                        <span className={`w-2 h-2 rounded-full ${
+                            stockQty > 10 ? "bg-emerald-500" : stockQty > 0 ? "bg-amber-500" : "bg-red-500"
+                        }`} />
+                        <span>{stockQty > 0 ? `In Stock: ${stockQty} Units` : "Out of Stock"}</span>
+                    </div>
+
+                    <button onClick={onClose} className="p-2 rounded-full text-gray-400 hover:bg-gray-100 transition">
+                        <FiX size={18} />
+                    </button>
+                </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6">
+                {/* ── Summary KPI Cards ── */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                    {/* Current Stock */}
+                    <div className="p-3.5 bg-gradient-to-br from-blue-50/80 to-indigo-50/40 border border-blue-100/80 rounded-2xl">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700/80 block mb-1">
+                            Current Stock
+                        </span>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-xl font-extrabold text-blue-900">{stockQty}</span>
+                            <span className="text-[11px] text-blue-600 font-medium">units</span>
+                        </div>
+                    </div>
+
+                    {/* Buying Price (Cost) */}
+                    <div className="p-3.5 bg-gradient-to-br from-amber-50/80 to-orange-50/40 border border-amber-100/80 rounded-2xl">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700/80 block mb-1">
+                            Buying Price (Cost)
+                        </span>
+                        <div className="flex items-baseline gap-0.5">
+                            <span className="text-xl font-extrabold text-amber-900">₹{buyingPrice}</span>
+                        </div>
+                    </div>
+
+                    {/* Selling Price */}
+                    <div className="p-3.5 bg-gradient-to-br from-emerald-50/80 to-teal-50/40 border border-emerald-100/80 rounded-2xl">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700/80 block mb-1">
+                            Selling Price
+                        </span>
+                        <div className="flex items-baseline gap-0.5">
+                            <span className="text-xl font-extrabold text-emerald-900">₹{sellingPrice}</span>
+                        </div>
+                    </div>
+
+                    {/* MRP */}
+                    <div className="p-3.5 bg-gradient-to-br from-indigo-50/80 to-blue-50/40 border border-indigo-100/80 rounded-2xl">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700/80 block mb-1">
+                            MRP
+                        </span>
+                        <div className="flex items-baseline gap-0.5">
+                            <span className="text-xl font-extrabold text-indigo-900">₹{mrp}</span>
+                        </div>
+                    </div>
+
+                    {/* Profit Margin */}
+                    <div className="p-3.5 bg-gradient-to-br from-purple-50/80 to-pink-50/40 border border-purple-100/80 rounded-2xl">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700/80 block mb-1">
+                            Margin / Unit
+                        </span>
+                        <div className="flex items-baseline gap-1">
+                            <span className={`text-xl font-extrabold ${profitMargin >= 0 ? "text-purple-900" : "text-red-600"}`}>
+                                ₹{profitMargin}
+                            </span>
+                            <span className="text-[10px] font-bold text-purple-600">({marginPercent}%)</span>
+                        </div>
+                    </div>
+
+                    {/* Total Received Units */}
+                    <div className="p-3.5 bg-gradient-to-br from-cyan-50/80 to-sky-50/40 border border-cyan-100/80 rounded-2xl">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-700/80 block mb-1">
+                            Total Received
+                        </span>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-xl font-extrabold text-cyan-900">{totalReceivedUnits || stockQty}</span>
+                            <span className="text-[11px] text-cyan-600 font-medium">units</span>
+                        </div>
+                    </div>
+
+                    {/* Primary Vendor */}
+                    <div className="p-3.5 bg-gradient-to-br from-gray-50 to-slate-100/60 border border-gray-200/70 rounded-2xl">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block mb-1">
+                            Primary Vendor
+                        </span>
+                        <span className="text-xs font-bold text-gray-800 block truncate" title={getVendorDisplayName(curr.vendor, curr.vendorName)}>
+                            {getVendorDisplayName(curr.vendor, curr.vendorName)}
+                        </span>
+                    </div>
+                </div>
+
+                {/* ── Tabs Navigation ── */}
+                <div className="flex items-center justify-between border-b border-gray-100 pb-2 flex-wrap gap-3">
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab("RECEIVING")}
+                            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
+                                activeTab === "RECEIVING"
+                                    ? "bg-[#2980b9] text-white shadow-sm"
+                                    : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                            }`}
+                        >
+                            <FiTruck size={14} />
+                            <span>Receiving History</span>
+                            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                                activeTab === "RECEIVING" ? "bg-white/25 text-white" : "bg-gray-200 text-gray-700"
+                            }`}>
+                                {receivingHistory.length}
+                            </span>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab("BATCHES")}
+                            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
+                                activeTab === "BATCHES"
+                                    ? "bg-[#2980b9] text-white shadow-sm"
+                                    : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                            }`}
+                        >
+                            <FiLayers size={14} />
+                            <span>Assigned Batches</span>
+                            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                                activeTab === "BATCHES" ? "bg-white/25 text-white" : "bg-gray-200 text-gray-700"
+                            }`}>
+                                {batches.length}
+                            </span>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab("SPECS")}
+                            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
+                                activeTab === "SPECS"
+                                    ? "bg-[#2980b9] text-white shadow-sm"
+                                    : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                            }`}
+                        >
+                            <FiTag size={14} />
+                            <span>Product Specifications</span>
+                        </button>
+                    </div>
+
+                    {activeTab === "RECEIVING" && receivingHistory.length > 0 && (
+                        <div className="relative w-48 sm:w-64">
+                            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={13} />
+                            <input
+                                type="text"
+                                placeholder="Search vendor, batch, invoice..."
+                                value={historySearch}
+                                onChange={e => setHistorySearch(e.target.value)}
+                                className="w-full pl-8 pr-3 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:bg-white font-medium"
+                            />
+                        </div>
+                    )}
+                </div>
+
+                {/* ── Tab Content ── */}
+                {loading ? (
+                    <div className="flex flex-col items-center justify-center py-16 gap-3">
+                        <div className="w-8 h-8 border-2 border-[#2980b9] border-t-transparent rounded-full animate-spin" />
+                        <span className="text-xs text-gray-400 font-semibold">Loading receiving history & details...</span>
+                    </div>
+                ) : (
+                    <>
+                        {/* TAB 1: RECEIVING HISTORY */}
+                        {activeTab === "RECEIVING" && (
+                            <div>
+                                {filteredHistory.length === 0 ? (
+                                    <div className="p-10 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                                        <FiTruck size={32} className="mx-auto text-gray-300 mb-2" />
+                                        <p className="text-xs font-bold text-gray-700">No Receiving Records Found</p>
+                                        <p className="text-[11px] text-gray-400 mt-1 max-w-sm mx-auto">
+                                            No vendor purchase inward or receiving logs were recorded for this item yet.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-2xs">
+                                        <table className="w-full text-left text-xs border-collapse">
+                                            <thead className="bg-[#eaf4fb]/70 text-[#1F618D] font-bold text-[10px] uppercase tracking-wider border-b border-[#2980b9]/15">
+                                                <tr>
+                                                    <th className="px-4 py-3 whitespace-nowrap">Purchase Date</th>
+                                                    <th className="px-4 py-3 whitespace-nowrap">Received On</th>
+                                                    <th className="px-4 py-3 whitespace-nowrap">Batch / Invoice #</th>
+                                                    <th className="px-4 py-3 whitespace-nowrap">Vendor Name</th>
+                                                    <th className="px-4 py-3 text-center whitespace-nowrap">Batch Stock (Remaining)</th>
+                                                    <th className="px-4 py-3 text-center whitespace-nowrap">Qty Received</th>
+                                                    <th className="px-4 py-3 text-center whitespace-nowrap">QC Passed</th>
+                                                    <th className="px-4 py-3 text-center whitespace-nowrap">QC Failed</th>
+                                                    <th className="px-4 py-3 text-right whitespace-nowrap">Buying Price</th>
+                                                    <th className="px-4 py-3 text-right whitespace-nowrap">Selling Price</th>
+                                                    <th className="px-4 py-3 text-right whitespace-nowrap">MRP</th>
+                                                    <th className="px-4 py-3 whitespace-nowrap">Received By</th>
+                                                    <th className="px-4 py-3 whitespace-nowrap">Received From</th>
+                                                    <th className="px-4 py-3 text-center whitespace-nowrap">Condition</th>
+                                                    <th className="px-4 py-3 whitespace-nowrap">Remarks</th>
+                                                    <th className="px-4 py-3 text-center whitespace-nowrap">Invoices / Challans</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
+                                                {filteredHistory.map((item, idx) => (
+                                                    <tr key={item._id || idx} className="hover:bg-blue-50/30 transition-colors">
+                                                        {/* Purchase Date */}
+                                                        <td className="px-4 py-3 whitespace-nowrap text-gray-500 font-medium">
+                                                            {formatDate(item.dateOfPurchase)}
+                                                        </td>
+
+                                                        {/* Received On */}
+                                                        <td className="px-4 py-3 whitespace-nowrap">
+                                                            <span className="px-2 py-0.5 rounded-lg bg-blue-50 text-[#1F618D] font-bold text-[11px]">
+                                                                {formatDate(item.receivedOn || item.inwardDate)}
+                                                            </span>
+                                                        </td>
+
+                                                        {/* Batch / Invoice # */}
+                                                        <td className="px-4 py-3 whitespace-nowrap">
+                                                            <span className="px-2 py-0.5 rounded-lg bg-gray-100 text-gray-800 font-mono font-bold text-[11px]">
+                                                                {item.batchNumber || item.invoiceNumber || "—"}
+                                                            </span>
+                                                        </td>
+
+                                                        {/* Vendor Name */}
+                                                        <td className="px-4 py-3 whitespace-nowrap font-bold text-gray-800">
+                                                            {item.vendorName && item.vendorName !== "—" ? item.vendorName : getVendorDisplayName(curr.vendor, "—")}
+                                                        </td>
+
+                                                        {/* Batch Stock (Remaining) */}
+                                                        <td className="px-4 py-3 text-center whitespace-nowrap">
+                                                            <span className={`px-2.5 py-1 rounded-lg text-xs font-extrabold inline-flex items-center gap-1.5 ${
+                                                                (item.availableQty != null ? item.availableQty : item.receivedQty) > 0
+                                                                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                                                    : "bg-red-50 text-red-600 border border-red-200"
+                                                            }`}>
+                                                                <span>{item.availableQty != null ? item.availableQty : item.receivedQty}</span>
+                                                                <span className="text-[10px] font-normal text-gray-500">
+                                                                    avail
+                                                                </span>
+                                                            </span>
+                                                        </td>
+
+                                                        {/* Qty Received */}
+                                                        <td className="px-4 py-3 text-center whitespace-nowrap">
+                                                            <span className="text-sm font-extrabold text-blue-800">
+                                                                {item.receivedQty}
+                                                            </span>
+                                                            {item.orderedQty && item.orderedQty !== item.receivedQty && (
+                                                                <span className="text-[10px] text-gray-400 block">
+                                                                    (Ord: {item.orderedQty})
+                                                                </span>
+                                                            )}
+                                                        </td>
+
+                                                        {/* QC Passed */}
+                                                        <td className="px-4 py-3 text-center whitespace-nowrap">
+                                                            {item.passedQty != null ? (
+                                                                <span className={`px-2 py-0.5 rounded-full text-xs font-bold inline-flex items-center gap-1 ${
+                                                                    Number(item.passedQty) > 0
+                                                                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                                                        : "text-gray-400"
+                                                                }`}>
+                                                                    <FiCheckCircle size={11} className={Number(item.passedQty) > 0 ? "text-emerald-600" : "text-gray-400"} />
+                                                                    <span>{item.passedQty}</span>
+                                                                </span>
+                                                            ) : (
+                                                                <span className="text-gray-400 text-xs">—</span>
+                                                            )}
+                                                        </td>
+
+                                                        {/* QC Failed */}
+                                                        <td className="px-4 py-3 text-center whitespace-nowrap">
+                                                            {Number(item.failedQty || 0) > 0 ? (
+                                                                <div className="flex flex-col items-center">
+                                                                    <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 inline-flex items-center gap-1" title={item.failureReason || "QC Failed"}>
+                                                                        <FiAlertTriangle size={11} className="text-red-500" />
+                                                                        <span>{item.failedQty}</span>
+                                                                    </span>
+                                                                    {item.failureReason && (
+                                                                        <span className="text-[10px] text-red-500 block truncate max-w-[110px] mt-0.5" title={item.failureReason}>
+                                                                            {item.failureReason}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            ) : (
+                                                                <span className="text-gray-300 text-xs font-medium">0</span>
+                                                            )}
+                                                        </td>
+
+                                                        {/* Buying Price */}
+                                                        <td className="px-4 py-3 text-right whitespace-nowrap font-semibold text-amber-700">
+                                                            ₹{item.buyingPrice != null ? item.buyingPrice : (curr.buyingPrice || "—")}
+                                                        </td>
+
+                                                        {/* Selling Price */}
+                                                        <td className="px-4 py-3 text-right whitespace-nowrap font-semibold text-emerald-700">
+                                                            ₹{item.sellingPrice != null ? item.sellingPrice : (curr.sellingPrice || "—")}
+                                                        </td>
+
+                                                        {/* MRP */}
+                                                        <td className="px-4 py-3 text-right whitespace-nowrap font-semibold text-indigo-700">
+                                                            ₹{item.mrp != null ? item.mrp : (curr.mrp || "—")}
+                                                        </td>
+
+                                                        {/* Received By */}
+                                                        <td className="px-4 py-3 whitespace-nowrap">
+                                                            <div className="flex items-center gap-1 text-gray-700 font-semibold">
+                                                                <FiUser size={12} className="text-gray-400" />
+                                                                <span>{item.receivedBy || "—"}</span>
+                                                            </div>
+                                                        </td>
+
+                                                        {/* Received From */}
+                                                        <td className="px-4 py-3 whitespace-nowrap text-gray-600">
+                                                            {item.receivedFrom || "—"}
+                                                        </td>
+
+                                                        {/* Condition */}
+                                                        <td className="px-4 py-3 text-center whitespace-nowrap">
+                                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                                                item.condition === "GOOD" ? "bg-emerald-50 text-emerald-700" :
+                                                                item.condition === "DAMAGED" ? "bg-red-50 text-red-700" :
+                                                                "bg-amber-50 text-amber-700"
+                                                            }`}>
+                                                                {item.condition || "GOOD"}
+                                                            </span>
+                                                        </td>
+
+                                                        {/* Remarks */}
+                                                        <td className="px-4 py-3 text-gray-400 text-[11px] max-w-[150px] truncate" title={item.remarks}>
+                                                            {item.remarks || "—"}
+                                                        </td>
+
+                                                        {/* Invoices / Challans */}
+                                                        <td className="px-4 py-3 whitespace-nowrap text-center">
+                                                            {Array.isArray(item.invoices) && item.invoices.length > 0 ? (
+                                                                <div className="flex items-center justify-center gap-1 flex-wrap max-w-[160px] mx-auto">
+                                                                    {item.invoices.map((inv, invIdx) => (
+                                                                        <a
+                                                                            key={invIdx}
+                                                                            href={inv.url}
+                                                                            target="_blank"
+                                                                            rel="noopener noreferrer"
+                                                                            className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-[#1F618D] border border-blue-200 rounded-md text-[10px] font-semibold transition"
+                                                                            title={inv.originalName || `Invoice ${invIdx + 1}`}
+                                                                        >
+                                                                            <FiFileText size={10} className="text-[#2980b9]" />
+                                                                            <span className="truncate max-w-[70px]">{inv.originalName || `Inv ${invIdx + 1}`}</span>
+                                                                        </a>
+                                                                    ))}
+                                                                </div>
+                                                            ) : (
+                                                                <span className="text-gray-300">—</span>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* TAB 2: ASSIGNED BATCHES */}
+                        {activeTab === "BATCHES" && (
+                            <div>
+                                {batches.length === 0 ? (
+                                    <div className="p-10 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                                        <FiLayers size={32} className="mx-auto text-gray-300 mb-2" />
+                                        <p className="text-xs font-bold text-gray-700">No Batches Allocated</p>
+                                        <p className="text-[11px] text-gray-400 mt-1 max-w-sm mx-auto">
+                                            No batch numbers have been assigned to this product yet. Click &quot;Assign / View Batches&quot; to allocate batches.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-2xs">
+                                        <table className="w-full text-left text-xs border-collapse">
+                                            <thead className="bg-gray-50 text-gray-600 font-bold text-[10px] uppercase tracking-wider border-b border-gray-100">
+                                                <tr>
+                                                    <th className="px-4 py-3">Batch Number</th>
+                                                    <th className="px-4 py-3 text-center">Available Qty</th>
+                                                    <th className="px-4 py-3 text-center">Initial Qty</th>
+                                                    <th className="px-4 py-3 text-right">Buying Price (₹)</th>
+                                                    <th className="px-4 py-3 text-right">Selling Price (₹)</th>
+                                                    <th className="px-4 py-3 text-right">MRP (₹)</th>
+                                                    <th className="px-4 py-3 text-center">Status</th>
+                                                    <th className="px-4 py-3">Inward Date</th>
+                                                    <th className="px-4 py-3">Remarks</th>
+                                                    <th className="px-4 py-3 text-center">Invoices</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
+                                                {batches.map((b) => (
+                                                    <tr key={b._id} className="hover:bg-gray-50/50 transition-colors">
+                                                        <td className="px-4 py-3 font-mono font-bold text-[#2980b9]">
+                                                            <span className="px-2 py-0.5 bg-blue-50 border border-blue-100 rounded-lg">
+                                                                {b.batchNumber}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-4 py-3 text-center font-bold text-emerald-600">
+                                                            {b.availableQty}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-center text-gray-500 font-medium">
+                                                            {b.initialQty}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-right font-semibold text-amber-700">
+                                                            ₹{b.buyingPrice != null ? b.buyingPrice : (b.costPrice || curr.buyingPrice || curr.price || 0)}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-right font-semibold text-emerald-700">
+                                                            ₹{b.sellingPrice != null ? b.sellingPrice : (curr.sellingPrice || curr.price || 0)}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-right font-semibold text-indigo-700">
+                                                            ₹{b.mrp != null ? b.mrp : (curr.mrp || 0)}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-center">
+                                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
+                                                                b.status === "OPEN" ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-500"
+                                                            }`}>
+                                                                {b.status}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-4 py-3 text-gray-500 text-[11px]">
+                                                            {formatDate(b.inwardDate || b.createdAt)}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-gray-400 text-[11px] max-w-[150px] truncate" title={b.remarks}>
+                                                            {b.remarks || "—"}
+                                                        </td>
+                                                        <td className="px-4 py-3 text-center">
+                                                            {Array.isArray(b.invoices) && b.invoices.length > 0 ? (
+                                                                <div className="flex items-center justify-center gap-1 flex-wrap max-w-[140px] mx-auto">
+                                                                    {b.invoices.map((inv, invIdx) => (
+                                                                        <a
+                                                                            key={invIdx}
+                                                                            href={inv.url}
+                                                                            target="_blank"
+                                                                            rel="noopener noreferrer"
+                                                                            className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-[#1F618D] border border-blue-200 rounded-md text-[10px] font-semibold transition"
+                                                                            title={inv.originalName || `Invoice ${invIdx + 1}`}
+                                                                        >
+                                                                            <FiFileText size={10} className="text-[#2980b9]" />
+                                                                            <span className="truncate max-w-[60px]">{inv.originalName || `Inv ${invIdx + 1}`}</span>
+                                                                        </a>
+                                                                    ))}
+                                                                </div>
+                                                            ) : (
+                                                                <span className="text-gray-300">—</span>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* TAB 3: PRODUCT SPECIFICATIONS */}
+                        {activeTab === "SPECS" && (
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    {/* Left: Product Image & Basic Info */}
+                                    <div className="bg-gray-50 rounded-2xl border border-gray-100 p-5 flex flex-col items-center text-center">
+                                        <div className="w-36 h-36 rounded-2xl bg-white border border-gray-200 overflow-hidden flex items-center justify-center p-2 mb-4 shadow-sm">
+                                            {displayImg && displayImg !== "/placeholder-product.png" ? (
+                                                <img
+                                                    src={displayImg}
+                                                    alt={curr.productName}
+                                                    className="w-full h-full object-contain"
+                                                    onError={e => { e.currentTarget.src = "/placeholder-product.png"; }}
+                                                />
+                                            ) : (
+                                                <div className="flex flex-col items-center gap-1 text-gray-300">
+                                                    <FiPackage size={36} />
+                                                    <span className="text-[10px]">No image available</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <h3 className="text-sm font-bold text-gray-800">{curr.productName}</h3>
+                                        <span className="font-mono text-xs text-gray-400 mt-0.5">{curr.productCode}</span>
+
+                                        {Array.isArray(curr.colors) && curr.colors.length > 0 && (
+                                            <div className="mt-4 pt-4 border-t border-gray-200/60 w-full">
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-2">
+                                                    Color Variants
+                                                </span>
+                                                <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                                                    {curr.colors.map((c, i) => (
+                                                        <span
+                                                            key={i}
+                                                            title={`Color: ${c.color} | Qty: ${c.qty}`}
+                                                            className="w-4 h-4 rounded-full border border-gray-300 shadow-2xs"
+                                                            style={{ backgroundColor: c.color }}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Right: Technical Attributes */}
+                                    <div className="md:col-span-2 space-y-4">
+                                        {/* Optical Specs */}
+                                        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-2xs">
+                                            <h4 className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                                                <FiEye size={13} /> Optical Parameters
+                                            </h4>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">SPH</span>
+                                                    <span className="font-semibold text-gray-800">{curr.sph || "—"}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">CYL</span>
+                                                    <span className="font-semibold text-gray-800">{curr.cyl || "—"}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Axis</span>
+                                                    <span className="font-semibold text-gray-800">{curr.axis || "—"}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Addition</span>
+                                                    <span className="font-semibold text-gray-800">{curr.addition || "—"}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Index</span>
+                                                    <span className="font-semibold text-gray-800">{curr.index || "—"}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Coating</span>
+                                                    <span className="font-semibold text-gray-800">{curr.coating || "—"}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Physical & Dimensions */}
+                                        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-2xs">
+                                            <h4 className="text-xs font-bold text-purple-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                                                <FiBox size={13} /> Physical & Material
+                                            </h4>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Color</span>
+                                                    <span className="font-semibold text-gray-800">{curr.color || "—"}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Shape</span>
+                                                    <span className="font-semibold text-gray-800">{curr.shape || "—"}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Size</span>
+                                                    <span className="font-semibold text-gray-800">{curr.size || "—"}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Type</span>
+                                                    <span className="font-semibold text-gray-800">{curr.type || "—"}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Material</span>
+                                                    <span className="font-semibold text-gray-800">{curr.material || "—"}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Dimensions</span>
+                                                    <span className="font-semibold text-gray-800">{curr.dimensions || "—"}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Commercial & Tax */}
+                                        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-2xs">
+                                            <h4 className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                                                <FiDollarSign size={13} /> Commercial & Tax Details
+                                            </h4>
+                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">MRP</span>
+                                                    <span className="font-semibold text-gray-800">₹{curr.mrp || 0}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">Cost Price</span>
+                                                    <span className="font-semibold text-gray-800">₹{curr.price || 0}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">GST Rate</span>
+                                                    <span className="font-semibold text-gray-800">{curr.gst || 0}%</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase block">HSN / SAC</span>
+                                                    <span className="font-semibold text-gray-800">{curr.hsnSac || "—"}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 bg-gray-50/60 rounded-b-2xl flex-shrink-0">
+                <div className="flex items-center gap-2">
+                    {onOpenBatches && (
+                        <button
+                            type="button"
+                            onClick={() => onOpenBatches(curr)}
+                            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl transition cursor-pointer"
+                        >
+                            <FiLayers size={14} />
+                            <span>Assign / View Batches</span>
+                        </button>
+                    )}
+                    {onOpenEdit && (
+                        <button
+                            type="button"
+                            onClick={() => onOpenEdit(curr)}
+                            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-[#2980b9] bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl transition cursor-pointer"
+                        >
+                            <FiEdit2 size={14} />
+                            <span>Edit Product</span>
+                        </button>
+                    )}
+                </div>
+
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="px-5 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition cursor-pointer shadow-2xs"
+                >
+                    Close
+                </button>
+            </div>
+        </Modal>
+    );
+};
+
+
+// ─── BarcodePrintModal ────────────────────────────────────────────────────────
+
+const STORAGE_KEY = "printModalSettings_v7";
+
+// ─── Field definitions ────────────────────────────────────────────────────────
+const ALL_FIELDS = [
+    { key: "storeName", label: "Store Name", icon: FiLayout, sub: "e.g. MY SHOP" },
+    { key: "productName", label: "Product Name", icon: FiBox, sub: "e.g. Blue Pen" },
+    { key: "category", label: "Category", icon: FiLayers, sub: "e.g. Stationery" },
+    { key: "brand", label: "Brand", icon: FiAward, sub: "e.g. BIC" },
+    { key: "description", label: "Description", icon: FiAlignLeft, sub: "Promo / note" },
+    { key: "mrp", label: "MRP / Price", icon: FiDollarSign, sub: "₹ value" },
+    { key: "productCode", label: "Product Code", icon: FiTag, sub: "Below image" },
+];
+
+const FONT_FIELDS = [
+    { key: "storeName", label: "Store Name", def: 7.5 },
+    { key: "productName", label: "Product Name", def: 8.5 },
+    { key: "category", label: "Category", def: 7.5 },
+    { key: "brand", label: "Brand", def: 7 },
+    { key: "description", label: "Description", def: 7 },
+    { key: "mrp", label: "MRP / Price", def: 9 },
+    { key: "productCode", label: "Product Code", def: 7 },
+];
+
+const SHOW_KEY_MAP = {
+    storeName: "showStoreName",
+    productName: "showProductName",
+    category: "showCategory",
+    brand: "showBrand",
+    description: "showDescription",
+    mrp: "showMrp",
+    productCode: "showProductCode",
+};
+
+const ZONES = ["leftAbove", "leftOfImage", "rightOfImage", "leftBelow", "right", "hidden"];
+
+const SIZE_PRESETS = [
+    { label: "100×13 mm", width: 100, height: 13 },
+    { label: "100×25 mm", width: 100, height: 25 },
+    { label: "50×25 mm", width: 50, height: 25 },
+];
+const N_PRESETS = [1, 2, 3, 4];
+
+// imageSide: where the image column sits
+// "hidden" only hides the graphic — the column structure is unchanged
+const IMAGE_SIDE_OPTIONS = [
+    { value: "left", label: "Image Left", icon: FiChevronLeft, desc: "Barcode/QR column on the left, text on the right." },
+    { value: "right", label: "Image Right", icon: FiChevronRight, desc: "Text column on the left, Barcode/QR on the right." },
+    { value: "hidden", label: "Hide Image", icon: FiEyeOff, desc: "Image graphic hidden — column layout & all text fields still print." },
+];
+
+const DEFAULT_LAYOUT = {
+    leftAbove: [],
+    leftOfImage: [],
+    rightOfImage: [],
+    leftBelow: ["productCode"],
+    right: ["storeName", "productName", "category", "description", "mrp"],
+    hidden: ["brand"],
+};
+
+const DEFAULT_GLOBAL_FIELDS = {
+    storeName: "",
+    showStoreName: true,
+    showProductName: true,
+    showCategory: true,
+    showBrand: false,
+    showMrp: true,
+    showDescription: true,
+    showProductCode: true,
+};
+
+const DEFAULT_TYPO = {
+    gap: 0.3,
+    imgPct: 70,
+    leftZonePct: 44,
+    imageSide: "left",
+    lpad: { top: 0.5, bottom: 0.5, left: 0.5, right: 0.5 },
+    rpad: { top: 0.5, bottom: 0.5, left: 0.6, right: 0.4 },
+    fonts: {
+        storeName: 7.5, productName: 8.5, category: 7.5,
+        brand: 7, description: 7, mrp: 9, productCode: 7,
+    },
+};
+
+// ─── Storage helpers ──────────────────────────────────────────────────────────
+function loadFromStorage() {
+    try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : null; }
+    catch { return null; }
+}
+function saveToStorage(data) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); return true; }
+    catch { return false; }
+}
+
+// ─── Pad normaliser ───────────────────────────────────────────────────────────
+function normPad(v, def) {
+    if (!v) return { ...def };
+    if (typeof v === "object" && "top" in v) return { ...def, ...v };
+    const n = parseFloat(v) || def.top;
+    return { top: n, bottom: n, left: n, right: n };
+}
+
+// ─── StatusBadge ─────────────────────────────────────────────────────────────
+function StatusBadge({ status }) {
+    const map = {
+        loading: { cls: "bg-[#2980b9]/10 text-[#2980b9] border-[#2980b9]/20", label: "Looking up…" },
+        found: { cls: "bg-green-50 text-green-600 border-green-100", label: "Found" },
+        notfound: { cls: "bg-amber-50 text-amber-500 border-amber-100", label: "Not found" },
+        error: { cls: "bg-red-50 text-red-400 border-red-100", label: "Error" },
+    };
+    if (!map[status]) return null;
+    const { cls, label } = map[status];
+    return <span className={`text-[9px] font-semibold px-2 py-0.5 rounded-full border ${cls}`}>{label}</span>;
+}
+
+// ─── QtyStepper ───────────────────────────────────────────────────────────────
+function QtyStepper({ value, onChange, label = "Qty", size = "normal" }) {
+    const parsed = Math.max(1, parseInt(value) || 1);
+    const sm = size === "small";
+    return (
+        <div className="flex flex-col gap-1">
+            {label && (
+                <span className={`${sm ? "text-[8px]" : "text-[9px]"} font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1`}>
+                    <FiHash size={sm ? 8 : 9} /> {label}
+                </span>
+            )}
+            <div className="flex items-center gap-1">
+                <button type="button" onClick={() => onChange(Math.max(1, parsed - 1))}
+                    className={`${sm ? "w-6 h-6 text-[10px]" : "w-7 h-7 text-xs"} rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 font-bold flex items-center justify-center`}>
+                    −
+                </button>
+                <input type="number" min={1} value={value} onChange={e => onChange(e.target.value)}
+                    className={`${sm ? "w-10 text-[10px] py-0.5" : "w-12 text-xs py-1"} text-center font-semibold rounded-lg border border-gray-200 outline-none focus:border-[#2980b9]/60 text-gray-700`} />
+                <button type="button" onClick={() => onChange(parsed + 1)}
+                    className={`${sm ? "w-6 h-6 text-[10px]" : "w-7 h-7 text-xs"} rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 font-bold flex items-center justify-center`}>
+                    +
+                </button>
+            </div>
+        </div>
+    );
+}
+
+// ─── SliderRow ────────────────────────────────────────────────────────────────
+function SliderRow({ label, min, max, step = 0.1, value, unit = "", onChange }) {
+    return (
+        <div className="mb-3">
+            <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] text-gray-400">{label}</span>
+                <span className="text-[10px] font-semibold text-[#2980b9]">
+                    {typeof value === "number" ? value.toFixed(step < 1 ? 1 : 0) : value}{unit}
+                </span>
+            </div>
+            <input type="range" min={min} max={max} step={step} value={value}
+                onChange={e => onChange(parseFloat(e.target.value))}
+                className="w-full accent-[#2980b9] h-1.5" />
+        </div>
+    );
+}
+
+// ─── LabelSize ────────────────────────────────────────────────────────────────
+function LabelSize({ width, height, onChange }) {
+    const [customOpen, setCustomOpen] = useState(false);
+    const isPreset = SIZE_PRESETS.some(s => s.width === width && s.height === height);
+    return (
+        <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Size</span>
+            {SIZE_PRESETS.map(s => {
+                const active = !customOpen && s.width === width && s.height === height;
+                return (
+                    <button key={s.label} type="button"
+                        onClick={() => { onChange({ width: s.width, height: s.height }); setCustomOpen(false); }}
+                        className={`px-3 py-1.5 rounded-xl border text-xs font-semibold transition
+              ${active ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#2980b9]/40 hover:text-[#2980b9]"}`}>
+                        {s.label}
+                    </button>
+                );
+            })}
+            <button type="button" onClick={() => setCustomOpen(v => !v)}
+                className={`px-3 py-1.5 rounded-xl border text-xs font-semibold transition
+          ${customOpen || !isPreset ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#2980b9]/40 hover:text-[#2980b9]"}`}>
+                Custom
+            </button>
+            {(customOpen || !isPreset) && (
+                <div className="flex items-center gap-1">
+                    <input type="number" value={width} onChange={e => onChange({ width: +e.target.value, height })}
+                        className="w-14 text-center text-xs rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60" placeholder="W" />
+                    <span className="text-gray-400 text-xs">×</span>
+                    <input type="number" value={height} onChange={e => onChange({ width, height: +e.target.value })}
+                        className="w-14 text-center text-xs rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60" placeholder="H" />
+                    <span className="text-gray-400 text-xs">mm</span>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// ─── FieldChip ────────────────────────────────────────────────────────────────
+function FieldChip({ fieldKey, zone, layout, dragging, onDragStart, onDragEnd, onReorder, onHide }) {
+    const field = ALL_FIELDS.find(f => f.key === fieldKey);
+    if (!field) return null;
+    const Icon = field.icon;
+    const arr = layout[zone] || [];
+    const idx = arr.indexOf(fieldKey);
+    return (
+        <div
+            draggable
+            onDragStart={() => onDragStart(fieldKey)}
+            onDragEnd={onDragEnd}
+            className={`flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-2.5 py-2 cursor-grab text-xs text-gray-700 transition
+        ${dragging === fieldKey ? "opacity-40 scale-95" : "hover:border-[#2980b9]/40 hover:shadow-sm"}`}
+        >
+            <FiMove size={10} className="text-gray-300 flex-shrink-0" />
+            <Icon size={11} className="text-[#2980b9] flex-shrink-0" />
+            <span className="flex-1 font-medium">{field.label}</span>
+            <span className="text-[9px] text-gray-400">{field.sub}</span>
+            {zone !== "hidden" && (
+                <div className="flex flex-col gap-0.5 ml-1">
+                    <button type="button" onClick={() => onReorder(zone, fieldKey, -1)} disabled={idx === 0}
+                        className="p-0.5 rounded hover:bg-[#2980b9]/10 text-gray-300 hover:text-[#2980b9] disabled:opacity-20 transition">
+                        <FiArrowUp size={9} />
+                    </button>
+                    <button type="button" onClick={() => onReorder(zone, fieldKey, 1)} disabled={idx === arr.length - 1}
+                        className="p-0.5 rounded hover:bg-[#2980b9]/10 text-gray-300 hover:text-[#2980b9] disabled:opacity-20 transition">
+                        <FiArrowDown size={9} />
+                    </button>
+                </div>
+            )}
+            <button type="button" onClick={() => onHide(fieldKey)} title="Hide"
+                className="p-1 rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition">
+                <FiX size={10} />
+            </button>
+        </div>
+    );
+}
+
+// ─── DropZone ─────────────────────────────────────────────────────────────────
+function DropZone({ zoneId, label, icon, hint, overZone, layout, onDragOver, onDragLeave, onDrop, children }) {
+    return (
+        <div
+            onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}
+            className={`border-2 border-dashed rounded-2xl p-3 min-h-[72px] transition
+        ${overZone === zoneId ? "border-[#2980b9] bg-[#2980b9]/10" : "border-gray-200 bg-gray-50"}`}
+        >
+            <div className="flex items-center gap-1.5 mb-2">
+                <span className="text-[#2980b9]">{icon}</span>
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{label}</span>
+                <span className="text-[9px] text-gray-400 ml-1">{hint}</span>
+            </div>
+            <div className="space-y-1.5">
+                {children}
+                {(layout[zoneId] || []).length === 0 && (
+                    <div className="text-[10px] text-gray-300 text-center py-2">Drop fields here</div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+// ─── LayoutDesigner ───────────────────────────────────────────────────────────
+function LayoutDesigner({ layout, onChange, printType }) {
+    const [dragging, setDragging] = useState(null);
+    const [overZone, setOverZone] = useState(null);
+
+    const moveField = (key, toZone) => {
+        const next = {};
+        ZONES.forEach(z => { next[z] = (layout[z] || []).filter(k => k !== key); });
+        next[toZone] = [...(next[toZone] || []), key];
+        onChange(next);
+    };
+
+    const reorder = (zone, key, dir) => {
+        const arr = [...(layout[zone] || [])];
+        const idx = arr.indexOf(key);
+        if (idx < 0) return;
+        const ni = idx + dir;
+        if (ni < 0 || ni >= arr.length) return;
+        [arr[idx], arr[ni]] = [arr[ni], arr[idx]];
+        onChange({ ...layout, [zone]: arr });
+    };
+
+    const handleDragEnd = () => { setDragging(null); setOverZone(null); };
+    const chipProps = {
+        layout, dragging,
+        onDragStart: setDragging,
+        onDragEnd: handleDragEnd,
+        onReorder: reorder,
+        onHide: k => moveField(k, "hidden"),
+    };
+    const dzProps = zoneId => ({
+        zoneId, overZone, layout,
+        onDragOver: e => { e.preventDefault(); setOverZone(zoneId); },
+        onDragLeave: () => setOverZone(null),
+        onDrop: e => { e.preventDefault(); if (dragging) moveField(dragging, zoneId); setOverZone(null); },
+    });
+
+    const allKeysInLayout = ZONES.flatMap(z => layout[z] || []);
+    const unplaced = ALL_FIELDS.filter(f => !allKeysInLayout.includes(f.key));
+
+    return (
+        <div className="space-y-3">
+            {/* Image column zones */}
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+                    Image column — {printType === "qr" ? "QR" : "Barcode"} area
+                </div>
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                    <DropZone {...dzProps("leftAbove")} label="Above image" icon={<FiArrowUp size={11} />} hint="above code">
+                        {(layout.leftAbove || []).map(k => <FieldChip key={k} fieldKey={k} zone="leftAbove" {...chipProps} />)}
+                    </DropZone>
+                    <DropZone {...dzProps("leftBelow")} label="Below image" icon={<FiArrowDown size={11} />} hint="below code">
+                        {(layout.leftBelow || []).map(k => <FieldChip key={k} fieldKey={k} zone="leftBelow" {...chipProps} />)}
+                    </DropZone>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <DropZone {...dzProps("leftOfImage")} label="Left of image" icon={<FiAlignLeft size={11} />} hint="beside image, left">
+                        {(layout.leftOfImage || []).map(k => <FieldChip key={k} fieldKey={k} zone="leftOfImage" {...chipProps} />)}
+                    </DropZone>
+                    <DropZone {...dzProps("rightOfImage")} label="Right of image" icon={<FiAlignRight size={11} />} hint="beside image, right">
+                        {(layout.rightOfImage || []).map(k => <FieldChip key={k} fieldKey={k} zone="rightOfImage" {...chipProps} />)}
+                    </DropZone>
+                </div>
+            </div>
+
+            {/* Right + Hidden */}
+            <div className="grid grid-cols-2 gap-3">
+                <DropZone {...dzProps("right")} label="Right text column" icon={<FiAlignRight size={11} />} hint="top → bottom order">
+                    {(layout.right || []).map(k => <FieldChip key={k} fieldKey={k} zone="right" {...chipProps} />)}
+                </DropZone>
+                <DropZone {...dzProps("hidden")} label="Hidden (not printed)" icon={<FiEyeOff size={11} />} hint="">
+                    {(layout.hidden || []).map(k => <FieldChip key={k} fieldKey={k} zone="hidden" {...chipProps} />)}
+                </DropZone>
+            </div>
+
+            {unplaced.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-1">
+                    <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold">Unplaced:</span>
+                    {unplaced.map(f => (
+                        <button key={f.key} type="button" onClick={() => moveField(f.key, "right")}
+                            className="text-[10px] px-2 py-1 rounded-lg border border-dashed border-[#2980b9]/60 text-[#2980b9] hover:bg-[#2980b9]/10 transition">
+                            + {f.label}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
+// ─── PaddingEditor ────────────────────────────────────────────────────────────
+function PaddingEditor({ label, value, onChange }) {
+    const set = (side, v) => onChange({ ...value, [side]: parseFloat(v) || 0 });
+    return (
+        <div className="mb-4">
+            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{label}</div>
+            <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-1">
+                    <span className="text-[9px] text-gray-400 w-12 text-right">top</span>
+                    <input type="number" min={0} max={5} step={0.1} value={value.top} onChange={e => set("top", e.target.value)}
+                        className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60 text-gray-700" />
+                    <span className="text-[9px] text-gray-400">mm</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-[9px] text-gray-400">left</span>
+                        <input type="number" min={0} max={5} step={0.1} value={value.left} onChange={e => set("left", e.target.value)}
+                            className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60 text-gray-700" />
+                        <span className="text-[9px] text-gray-400">mm</span>
+                    </div>
+                    <div className="w-12 h-8 border-2 border-dashed border-[#2980b9]/40 rounded-md bg-[#2980b9]/10 flex items-center justify-center">
+                        <span className="text-[8px] text-[#2980b9]/60 font-bold">zone</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-[9px] text-gray-400">right</span>
+                        <input type="number" min={0} max={5} step={0.1} value={value.right} onChange={e => set("right", e.target.value)}
+                            className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60 text-gray-700" />
+                        <span className="text-[9px] text-gray-400">mm</span>
+                    </div>
+                </div>
+                <div className="flex items-center gap-1">
+                    <span className="text-[9px] text-gray-400 w-12 text-right">bottom</span>
+                    <input type="number" min={0} max={5} step={0.1} value={value.bottom} onChange={e => set("bottom", e.target.value)}
+                        className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60 text-gray-700" />
+                    <span className="text-[9px] text-gray-400">mm</span>
+                </div>
+            </div>
+            <div className="mt-1.5 text-center text-[9px] text-[#2980b9] font-mono">
+                {value.top} · {value.right} · {value.bottom} · {value.left} mm
+            </div>
+        </div>
+    );
+}
+
+// ─── ImageSideToggle ──────────────────────────────────────────────────────────
+function ImageSideToggle({ value, onChange }) {
+    const active = IMAGE_SIDE_OPTIONS.find(o => o.value === value);
+    return (
+        <div className="mb-2">
+            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+                Barcode / QR position
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+                {IMAGE_SIDE_OPTIONS.map(opt => {
+                    const Icon = opt.icon;
+                    const isActive = value === opt.value;
+                    return (
+                        <button key={opt.value} type="button" onClick={() => onChange(opt.value)}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition
+                ${isActive ? "border-[#2980b9] bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#2980b9]/40 hover:text-[#2980b9]"}`}>
+                            <Icon size={12} /> {opt.label}
+                        </button>
+                    );
+                })}
+            </div>
+            {active && (
+                <p className="text-[9px] text-gray-400 mt-1.5">{active.desc}</p>
+            )}
+        </div>
+    );
+}
+
+// ─── TypographyPanel ─────────────────────────────────────────────────────────
+function TypographyPanel({ typo, onChange }) {
+    const set = (path, val) => {
+        if (path.startsWith("fonts.")) {
+            onChange({ ...typo, fonts: { ...typo.fonts, [path.slice(6)]: val } });
+        } else {
+            onChange({ ...typo, [path]: val });
+        }
+    };
+    const lpad = normPad(typo.lpad, DEFAULT_TYPO.lpad);
+    const rpad = normPad(typo.rpad, DEFAULT_TYPO.rpad);
+    return (
+        <div className="space-y-5">
+            <ImageSideToggle value={typo.imageSide || "left"} onChange={v => onChange({ ...typo, imageSide: v })} />
+            <div className="grid grid-cols-2 gap-6">
+                <div>
+                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Font sizes (pt)</div>
+                    {FONT_FIELDS.map(f => (
+                        <SliderRow key={f.key} label={f.label} min={5} max={14} step={0.5}
+                            value={typo.fonts[f.key] ?? f.def} unit="pt" onChange={v => set(`fonts.${f.key}`, v)} />
+                    ))}
+                </div>
+                <div>
+                    <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Spacing &amp; image</div>
+                    <SliderRow label="Gap between fields" min={0} max={3} step={0.1} value={typo.gap} unit="mm" onChange={v => set("gap", v)} />
+                    <SliderRow label="Image / code size" min={0} max={100} step={1} value={typo.imgPct} unit="%" onChange={v => set("imgPct", v)} />
+                    <SliderRow label="Image/text split" min={20} max={80} step={1} value={typo.leftZonePct} unit="%" onChange={v => set("leftZonePct", v)} />
+                    <div className="border-t border-gray-100 my-3" />
+                    <div className="grid grid-cols-2 gap-4">
+                        <PaddingEditor label="Image zone padding" value={lpad} onChange={v => onChange({ ...typo, lpad: v })} />
+                        <PaddingEditor label="Text zone padding" value={rpad} onChange={v => onChange({ ...typo, rpad: v })} />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ─── Section (collapsible) ───────────────────────────────────────────────────
+function Section({ title, icon: Icon, defaultOpen = false, children, badge }) {
+    const [open, setOpen] = useState(defaultOpen);
+    return (
+        <div className="border border-gray-200 rounded-2xl overflow-hidden">
+            <button type="button" onClick={() => setOpen(v => !v)}
+                className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition text-left">
+                <div className="flex items-center gap-2">
+                    {Icon && <Icon size={13} className="text-[#2980b9]" />}
+                    <span className="text-xs font-semibold text-gray-700">{title}</span>
+                    {badge && <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#2980b9]/20 text-[#2980b9]/90 font-semibold">{badge}</span>}
+                </div>
+                <FiArrowDown size={13} className={`text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+            </button>
+            {open && <div className="px-4 py-4 bg-white">{children}</div>}
+        </div>
+    );
+}
+
+// ─── LivePreviewLabel ─────────────────────────────────────────────────────────
+const MM_TO_PX = 3.7795;
+
+function LivePreviewLabel({ value, row, layout, printType, globalFields, typo, labelSize }) {
+    const barcodeCanvasRef = useRef(null);
+    const [qrUrl, setQrUrl] = useState(null);
+
+    const imageSide = typo.imageSide || "left";
+    // "hidden" means: suppress the <canvas>/<img> graphic only.
+    // The left column (imageCol) still renders its text fields.
+    const suppressImg = imageSide === "hidden";
+
+    const W = Math.round(labelSize.width * MM_TO_PX);
+    const H = Math.round(labelSize.height * MM_TO_PX);
+
+    const hasRightZone = (layout.right || []).length > 0;
+    const lzPct = hasRightZone ? typo.leftZonePct : 100;
+    const lzW = Math.round(W * lzPct / 100);
+
+    const fScale = Math.max(0.5, Math.min(1.4, lzW / (50 * MM_TO_PX)));
+    const gapPx = Math.round(typo.gap * MM_TO_PX * fScale);
+
+    const lpad = normPad(typo.lpad, DEFAULT_TYPO.lpad);
+    const rpad = normPad(typo.rpad, DEFAULT_TYPO.rpad);
+    const px = mm => Math.round(mm * MM_TO_PX);
+
+    const imgH = Math.round(H * typo.imgPct / 100);
+    const imgW = Math.max(20, lzW - px(lpad.left) - px(lpad.right));
+
+    const resolve = useCallback(key => {
+        const sk = SHOW_KEY_MAP[key];
+        if (sk && !globalFields[sk] && key !== "productCode") return "";
+        return ({
+            storeName: globalFields.storeName || "",
+            productName: row.productName || "",
+            category: row.category || "",
+            brand: row.brand || "",
+            description: row.description || "",
+            mrp: row.mrp ? `₹${row.mrp}/-` : "",
+            productCode: row.productCode || value || "",
+        })[key] ?? "";
+    }, [row, globalFields, value]);
+
+    const fieldStyle = key => ({
+        fontSize: `${(typo.fonts[key] || 8) * fScale}px`,
+        fontWeight: ["storeName", "productName", "mrp"].includes(key) ? "700" : "400",
+        textTransform: key === "storeName" ? "uppercase" : "none",
+        letterSpacing: key === "storeName" ? "0.3px" : "normal",
+        fontFamily: key === "productCode" ? "monospace" : "inherit",
+        textAlign: key === "productCode" ? "center" : "left",
+        color: key === "description" ? "#666" : "#111",
+        overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+        maxWidth: "100%", marginBottom: `${gapPx}px`, lineHeight: 1.4,
+    });
+
+    // Only render barcode/QR canvas when NOT suppressed
+    useEffect(() => {
+        if (suppressImg || printType !== "barcode" || !barcodeCanvasRef.current || !value) return;
+        try {
+            JsBarcode(barcodeCanvasRef.current, value, {
+                format: "CODE128",
+                width: Math.max(1, Math.round(imgW / 40)),
+                height: imgH, displayValue: false, margin: 1,
+                background: "#ffffff", lineColor: "#000000",
+            });
+        } catch { }
+    }, [value, printType, imgW, imgH, suppressImg]);
+
+    useEffect(() => {
+        if (suppressImg || printType !== "qr" || !value) { setQrUrl(null); return; }
+        QRCode.toDataURL(value, { width: Math.max(40, imgH * 2), margin: 1 })
+            .then(setQrUrl).catch(() => setQrUrl(null));
+    }, [value, printType, imgH, suppressImg]);
+
+    if (!value?.trim()) {
+        return (
+            <div style={{ width: W, height: H, border: "0.5px solid #d1d5db", borderRadius: 2, background: "#fafafa", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 9, color: "#9ca3af" }}>No code</span>
+            </div>
+        );
+    }
+
+    const hasLeftOfImg = (layout.leftOfImage || []).length > 0;
+    const hasRightOfImg = (layout.rightOfImage || []).length > 0;
+
+    const renderZoneFields = (zone, extraStyle = {}) =>
+        (layout[zone] || []).map(k => {
+            const v = resolve(k);
+            return v ? <div key={k} style={{ ...fieldStyle(k), ...extraStyle }}>{v}</div> : null;
+        });
+
+    // The image graphic element — null when suppressed
+    const imgGraphic = suppressImg ? null : (
+        printType === "barcode"
+            ? <canvas ref={barcodeCanvasRef} style={{ maxWidth: "100%", maxHeight: imgH, display: "block", flexShrink: 1 }} />
+            : qrUrl
+                ? <img src={qrUrl} alt="QR" style={{ width: imgH, height: imgH, objectFit: "contain", imageRendering: "pixelated", flexShrink: 1 }} />
+                : null
+    );
+
+    // Show a placeholder outline where the image would be, so the user can see the zone
+    const imgPlaceholder = suppressImg ? (
+        <div style={{ width: imgH * 1.5, height: imgH, border: "0.8px dashed #fbbf24", borderRadius: 2, background: "#fffbeb", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 1 }}>
+            <span style={{ fontSize: 7, color: "#f59e0b", fontWeight: 600 }}>hidden</span>
+        </div>
+    ) : null;
+
+    // imageRow: leftOfImage | [graphic or placeholder] | rightOfImage
+    const imageRow = (
+        <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: `${gapPx}px`, flexShrink: 1, minHeight: 0, width: "100%" }}>
+            {hasLeftOfImg && (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", gap: `${gapPx}px`, flexShrink: 0, overflow: "hidden", maxWidth: "35%" }}>
+                    {renderZoneFields("leftOfImage", { textAlign: "right", whiteSpace: "nowrap" })}
+                </div>
+            )}
+            <div style={{ flexShrink: 1, minWidth: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {imgGraphic || imgPlaceholder}
+            </div>
+            {hasRightOfImg && (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center", gap: `${gapPx}px`, flexShrink: 0, overflow: "hidden", maxWidth: "35%" }}>
+                    {renderZoneFields("rightOfImage", { whiteSpace: "nowrap" })}
+                </div>
+            )}
+        </div>
+    );
+
+    // imageCol contains: leftAbove + imageRow + leftBelow
+    const imageColStyle = {
+        width: lzW, flexShrink: 0, height: "100%",
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        padding: `${px(lpad.top)}px ${px(lpad.right)}px ${px(lpad.bottom)}px ${px(lpad.left)}px`,
+        gap: `${gapPx}px`, overflow: "hidden",
+    };
+
+    const imageColBorder = hasRightZone
+        ? (imageSide === "right" ? { borderLeft: "0.5px solid #e5e7eb" } : { borderRight: "0.5px solid #e5e7eb" })
+        : {};
+
+    const imageCol = (
+        <div style={{ ...imageColStyle, ...imageColBorder }}>
+            {renderZoneFields("leftAbove")}
+            {imageRow}
+            {renderZoneFields("leftBelow")}
+        </div>
+    );
+
+    // textCol contains: right zone fields
+    const textCol = hasRightZone ? (
+        <div style={{
+            flex: 1, minWidth: 0, height: "100%",
+            display: "flex", flexDirection: "column", justifyContent: "center",
+            padding: `${px(rpad.top)}px ${px(rpad.right)}px ${px(rpad.bottom)}px ${px(rpad.left)}px`,
+            gap: `${gapPx}px`, overflow: "hidden",
+        }}>
+            {renderZoneFields("right")}
+        </div>
+    ) : null;
+
+    return (
+        <div style={{ width: W, height: H, display: "flex", flexDirection: "row", border: "0.5px solid #d1d5db", borderRadius: 2, background: "#fff", overflow: "hidden", flexShrink: 0 }}>
+            {imageSide === "right" ? <>{textCol}{imageCol}</> : <>{imageCol}{textCol}</>}
+        </div>
+    );
+}
+
+// ─── Row factory ─────────────────────────────────────────────────────────────
+let _rowCounter = 0;
+function makeRow(overrides = {}) {
+    return {
+        id: `r${++_rowCounter}`,
+        barcodeValue: "", productCode: "", productName: "",
+        category: "", brand: "", description: "", mrp: "",
+        qty: 1, _status: "idle",
+        ...overrides,
+    };
+}
+
+// ─── BarcodePrintModal ────────────────────────────────────────────────────────
+function BarcodePrintModal({
+    product = null,
+    bulkProducts = null,
+    inventoryData = [],
+    onClose,
+    settings = {},
+    api = null,
+}) {
+    const saved = useMemo(() => loadFromStorage(), []);
+
+    const [printType, setPrintType] = useState(saved?.printType || "barcode");
+    const [labelSize, setLabelSize] = useState(saved?.labelSize || { width: 100, height: 13 });
+    const [nup, setNup] = useState(saved?.nup || 1);
+    const [layout, setLayout] = useState(saved?.layout || settings?.layoutConfig || DEFAULT_LAYOUT);
+    const [globalFields, setGlobalFields] = useState(() => ({
+        ...DEFAULT_GLOBAL_FIELDS,
+        storeName: settings?.storeName || "",
+        ...(saved?.globalFields || {}),
+    }));
+    const [typo, setTypo] = useState(() => {
+        const sv = saved?.typo || {};
+        return {
+            ...DEFAULT_TYPO, ...sv,
+            imageSide: sv.imageSide || DEFAULT_TYPO.imageSide,
+            lpad: normPad(sv.lpad, DEFAULT_TYPO.lpad),
+            rpad: normPad(sv.rpad, DEFAULT_TYPO.rpad),
+            fonts: { ...DEFAULT_TYPO.fonts, ...(sv.fonts || {}) },
+        };
+    });
+
+    const [globalQty, setGlobalQty] = useState(saved?.globalQty || 1);
+    const [useGlobalQty, setUseGlobalQty] = useState(saved?.useGlobalQty ?? false);
+    const [showDesigner, setShowDesigner] = useState(false);
+    const [savedNotice, setSavedNotice] = useState(false);
+    const [customNInput, setCustomNInput] = useState("");
+
+    // ── Rows ──────────────────────────────────────────────────────────────────
+    const [rows, setRows] = useState(() => {
+        if (bulkProducts?.length > 0) {
+            return bulkProducts.map(p => makeRow({
+                barcodeValue: p.productCode || "", productCode: p.productCode || "",
+                productName: p.productName || "", category: p.category || "",
+                brand: p.brand || "", mrp: p.mrp ? String(p.mrp) : "",
+                qty: Math.max(1, parseInt(p.qty) || 1),   // ← pre-fill each row from p.qty
+                _status: p.mrp ? "found" : "idle",
+            }));
+        }
+        return [makeRow({
+            barcodeValue: product?.productCode || "", productCode: product?.productCode || "",
+            productName: product?.productName || "", category: product?.category || "",
+            brand: product?.brand || "", mrp: product?.mrp ? String(product.mrp) : "",
+            qty: Math.max(1, parseInt(product?.qty) || 1),   // ← pre-fill from product.qty
+            _status: product?.mrp ? "found" : "idle",
+        })];
+    });
+
+    // ── On mount: resolve missing data ────────────────────────────────────────
+    useEffect(() => {
+        rows.forEach(row => {
+            if (row.barcodeValue && !row.mrp) {
+                const match = inventoryData.find(p => p.productCode?.toLowerCase() === row.barcodeValue.toLowerCase());
+                if (match) {
+                    setRows(prev => prev.map(r => r.id !== row.id ? r : {
+                        ...r, mrp: match.mrp ? String(match.mrp) : "",
+                        productName: match.productName || r.productName,
+                        category: match.category || r.category,
+                        brand: match.brand || r.brand,
+                        qty: match.qty ? Math.max(1, parseInt(match.qty) || 1) : r.qty,
+                        _status: "found",
+                    }));
+                } else if (api) {
+                    fetchByCode(row.barcodeValue, row.id);
+                }
+            } else if (row.barcodeValue && row.mrp) {
+                setRows(prev => prev.map(r => r.id === row.id ? { ...r, _status: "found" } : r));
+            }
+        });
+    }, []); // eslint-disable-line
+
+    // ── Row helpers ───────────────────────────────────────────────────────────
+    const setRow = (id, field, val) => setRows(prev => prev.map(r => r.id === id ? { ...r, [field]: val } : r));
+    const addRow = () => setRows(prev => [...prev, makeRow()]);
+    const removeRow = id => { if (rows.length > 1) setRows(prev => prev.filter(r => r.id !== id)); };
+    const toggleGF = (key, val) => setGlobalFields(prev => ({ ...prev, [key]: val }));
+    const effectiveQty = row => useGlobalQty ? Math.max(1, parseInt(globalQty) || 1) : Math.max(1, parseInt(row.qty) || 1);
+
+    // ── API fetch ─────────────────────────────────────────────────────────────
+    const fetchByCode = useCallback(async (code, rowId) => {
+        if (!code?.trim() || !api) return;
+        setRow(rowId, "_status", "loading");
+        try {
+            const res = await api.get(`/product/inventory/productCode/${encodeURIComponent(code.trim())}`);
+            if (res.data.success) {
+                const p = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
+                setRows(prev => prev.map(r => r.id !== rowId ? r : {
+                    ...r,
+                    mrp: p?.mrp ? String(p.mrp) : r.mrp,
+                    productCode: p?.productCode || r.productCode,
+                    productName: p?.productName || r.productName,
+                    category: p?.category || r.category,
+                    brand: p?.brand || r.brand,
+                    qty: p?.qty ? Math.max(1, parseInt(p.qty) || 1) : r.qty,
+                    _status: "found",
+                }));
+            } else { setRow(rowId, "_status", "notfound"); }
+        } catch { setRow(rowId, "_status", "error"); }
+    }, [api]); // eslint-disable-line
+
+    // ── Debounced barcode change ──────────────────────────────────────────────
+    const debounceTimers = useRef({});
+    const handleBarcodeChange = useCallback((id, value) => {
+        setRows(prev => prev.map(r => r.id !== id ? r : {
+            ...r, barcodeValue: value, productCode: value,
+            productName: "", category: "", brand: "", mrp: "", _status: "idle",
+        }));
+        if (!value.trim() || value.trim().length < 2) return;
+        const match = inventoryData.find(p => p.productCode?.toLowerCase() === value.trim().toLowerCase());
+        if (match) {
+            setRows(prev => prev.map(r => r.id !== id ? r : {
+                ...r,
+                productCode: match.productCode || value,
+                productName: match.productName || "",
+                category: match.category || "",
+                brand: match.brand || "",
+                mrp: match.mrp ? String(match.mrp) : "",
+                qty: match.qty ? Math.max(1, parseInt(match.qty) || 1) : r.qty,
+                _status: "found",
+            }));
+            return;
+        }
+        clearTimeout(debounceTimers.current[id]);
+        debounceTimers.current[id] = setTimeout(() => fetchByCode(value, id), 600);
+    }, [inventoryData, fetchByCode]);
+
+    // ── Save / Reset ──────────────────────────────────────────────────────────
+    const handleSave = () => {
+        if (saveToStorage({ printType, labelSize, nup, layout, globalFields, typo, globalQty, useGlobalQty })) {
+            setSavedNotice(true);
+            setTimeout(() => setSavedNotice(false), 4000);
+        }
+    };
+    const handleReset = () => {
+        localStorage.removeItem(STORAGE_KEY);
+        setPrintType("barcode"); setLabelSize({ width: 100, height: 13 }); setNup(1);
+        setLayout(DEFAULT_LAYOUT); setGlobalFields(DEFAULT_GLOBAL_FIELDS); setTypo(DEFAULT_TYPO);
+        setGlobalQty(1); setUseGlobalQty(false); setCustomNInput("");
+    };
+
+    // ── Derived values ────────────────────────────────────────────────────────
+    const validRows = rows.filter(r => r.barcodeValue.trim());
+    const totalLabels = rows.reduce((s, r) => s + effectiveQty(r), 0);
+    const totalStrips = Math.ceil(totalLabels / nup);
+    const isBulk = bulkProducts?.length > 0;
+    const isCustomN = !N_PRESETS.includes(nup);
+
+    const resolveField = useCallback((row, key) => {
+        const sk = SHOW_KEY_MAP[key];
+        if (sk && !globalFields[sk] && key !== "productCode") return "";
+        return ({
+            storeName: globalFields.storeName || "",
+            productName: row.productName || "",
+            category: row.category || "",
+            brand: row.brand || "",
+            description: row.description || "",
+            mrp: row.mrp ? `${row.mrp}` : "",
+            productCode: row.productCode || row.barcodeValue || "",
+        })[key] ?? "";
+    }, [globalFields]);
+
+    // ── Print handler ─────────────────────────────────────────────────────────
+    const handlePrint = useCallback(async () => {
+        const labels = [];
+        rows.forEach(row => {
+            if (!row.barcodeValue.trim()) return;
+            const count = effectiveQty(row);
+            for (let i = 0; i < count; i++) {
+                labels.push({
+                    barcodeValue: row.barcodeValue.trim(),
+                    leftAbove: (layout.leftAbove || []).map(k => ({ key: k, value: resolveField(row, k) })).filter(x => x.value),
+                    leftOfImage: (layout.leftOfImage || []).map(k => ({ key: k, value: resolveField(row, k) })).filter(x => x.value),
+                    rightOfImage: (layout.rightOfImage || []).map(k => ({ key: k, value: resolveField(row, k) })).filter(x => x.value),
+                    leftBelow: (layout.leftBelow || []).map(k => ({ key: k, value: resolveField(row, k) })).filter(x => x.value),
+                    right: (layout.right || []).map(k => ({ key: k, value: resolveField(row, k) })).filter(x => x.value),
+                });
+            }
+        });
+        if (!labels.length) return;
+
+        const isQR = printType === "qr";
+        const imageSide = typo.imageSide || "left";
+        // suppressImg: do NOT render barcode/QR <img> in the print HTML,
+        //              but KEEP the two-column layout and all text fields.
+        const suppressImg = imageSide === "hidden";
+
+        const dataUrls = await Promise.all(labels.map(async l => {
+            if (suppressImg) return null;   // image suppressed — skip generation
+            if (!isQR) {
+                const canvas = document.createElement("canvas");
+                try {
+                    JsBarcode(canvas, l.barcodeValue, {
+                        format: "CODE128", width: 2, height: 60,
+                        displayValue: false, margin: 4,
+                        background: "#ffffff", lineColor: "#000000",
+                    });
+                    return canvas.toDataURL("image/png");
+                } catch { return null; }
+            } else {
+                try {
+                    return await QRCode.toDataURL(l.barcodeValue, {
+                        width: 160, margin: 2, color: { dark: "#000000", light: "#ffffff" },
+                    });
+                } catch { return null; }
+            }
+        }));
+
+        const N = nup;
+        const PW = labelSize.width;
+        const PH = labelSize.height;
+        const CW = PW / N;
+        const LZP = typo.leftZonePct;
+        const lpad = normPad(typo.lpad, DEFAULT_TYPO.lpad);
+        const rpad = normPad(typo.rpad, DEFAULT_TYPO.rpad);
+        const fScale = Math.max(0.5, Math.min(1.4, CW / 50));
+        const fs = key => `${((typo.fonts[key] || 8) * fScale).toFixed(1)}pt`;
+
+        const FSTYLES = {
+            storeName: k => `font-size:${fs(k)};font-weight:bold;text-transform:uppercase;letter-spacing:0.3pt;`,
+            productName: k => `font-size:${fs(k)};font-weight:700;`,
+            category: k => `font-size:${fs(k)};font-weight:600;`,
+            brand: k => `font-size:${fs(k)};`,
+            description: k => `font-size:${fs(k)};color:#444;`,
+            mrp: k => `font-size:${fs(k)};font-weight:bold;`,
+            productCode: k => `font-size:${fs(k)};font-family:monospace;text-align:center;`,
+        };
+
+        const fieldDiv = item =>
+            `<div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;line-height:1.4;margin-bottom:${typo.gap}mm;${(FSTYLES[item.key] || (k => `font-size:${fs(k)};`))(item.key)}">${item.key === "mrp" ? `&#8377;${item.value}/-` : item.value}</div>`;
+        const fieldDivR = item => fieldDiv(item).replace("text-overflow:ellipsis", "text-overflow:ellipsis;text-align:right");
+
+        const renderCell = (label, imgSrc, isEmpty = false) => {
+            if (isEmpty) return `<div style="width:${CW}mm;height:${PH}mm;flex-shrink:0;background:#fafafa;"></div>`;
+
+            const hasRight = label.right.length > 0;
+            const hasLOI = label.leftOfImage.length > 0;
+            const hasROI = label.rightOfImage.length > 0;
+
+            // imgSrc is null when suppressImg=true.
+            // We still render the image column — we just omit the <img> tag inside it.
+            const imgHtml = (imgSrc && !suppressImg)
+                ? `<img src="${imgSrc}" style="width:${typo.imgPct}%;height:auto;object-fit:contain;display:block;flex-shrink:1;min-height:0;${isQR ? "image-rendering:pixelated;max-height:70%;" : "max-height:65%;"}" alt="">`
+                : "";   // empty string when hidden — column structure remains
+
+            const loiHtml = hasLOI
+                ? `<div style="flex-shrink:0;max-width:35%;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:${typo.gap}mm;overflow:hidden;">${label.leftOfImage.map(fieldDivR).join("")}</div>`
+                : "";
+            const roiHtml = hasROI
+                ? `<div style="flex-shrink:0;max-width:35%;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:${typo.gap}mm;overflow:hidden;">${label.rightOfImage.map(fieldDiv).join("")}</div>`
+                : "";
+
+            const imgRow = `<div style="display:flex;flex-direction:row;align-items:center;justify-content:center;gap:${typo.gap}mm;flex-shrink:1;min-height:0;width:100%;">${loiHtml}<div style="flex-shrink:1;min-width:0;display:flex;align-items:center;justify-content:center;">${imgHtml}</div>${roiHtml}</div>`;
+
+            const dividerStyle = hasRight
+                ? (imageSide === "right" ? "border-left:0.2mm solid #eee;" : "border-right:0.2mm solid #eee;")
+                : "";
+
+            // Image column: always rendered (graphic may be empty when suppressed)
+            const imgColHtml =
+                `<div style="width:${LZP}%;flex-shrink:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:${lpad.top}mm ${lpad.right}mm ${lpad.bottom}mm ${lpad.left}mm;gap:${typo.gap}mm;overflow:hidden;${dividerStyle}">` +
+                label.leftAbove.map(fieldDiv).join("") +
+                imgRow +
+                label.leftBelow.map(fieldDiv).join("") +
+                `</div>`;
+
+            // Text column: rendered when right zone has fields
+            const txtColHtml = hasRight
+                ? `<div style="flex:1;min-width:0;height:100%;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:${rpad.top}mm ${rpad.right}mm ${rpad.bottom}mm ${rpad.left}mm;gap:${typo.gap}mm;overflow:hidden;">${label.right.map(fieldDiv).join("")}</div>`
+                : "";
+
+            // Swap order based on imageSide
+            const innerHtml = imageSide === "right"
+                ? `${txtColHtml}${imgColHtml}`
+                : `${imgColHtml}${txtColHtml}`;
+
+            return `<div style="width:${CW}mm;height:${PH}mm;flex-shrink:0;display:flex;flex-direction:row;align-items:stretch;overflow:hidden;">${innerHtml}</div>`;
+        };
+
+        let pagesHtml = "";
+        for (let i = 0; i < labels.length; i += N) {
+            const cells = Array.from({ length: N }, (_, offset) => {
+                const idx = i + offset;
+                return idx < labels.length
+                    ? renderCell(labels[idx], dataUrls[idx], false)
+                    : renderCell(null, null, true);
+            });
+            pagesHtml += `<div style="width:${PW}mm;height:${PH}mm;display:flex;flex-direction:row;align-items:stretch;overflow:hidden;page-break-after:always;background:#fff;">${cells.join("")}</div>`;
+        }
+
+        const printHtml = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>${isQR ? "QR" : "Barcode"} Labels (${N}-Up)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+@page{size:${PW}mm ${PH}mm;margin:0;}
+html,body{width:${PW}mm;font-family:'Arial Narrow',Arial,sans-serif;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+@media screen{html,body{width:100vw;min-height:100vh;background:#3a3a3a;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;gap:16px;overflow-y:auto;}}
+@media print{html,body{width:${PW}mm;background:#fff;}}
+</style></head><body>
+${pagesHtml}
+<script>window.onload=function(){setTimeout(function(){window.focus();window.print();},350)};<\/script>
+</body></html>`;
+
+        const win = window.open("", "_blank", "width=960,height=720");
+        if (!win) { alert("Popup blocked — please allow popups for this site."); return; }
+        win.document.write(printHtml);
+        win.document.close();
+    }, [rows, printType, labelSize, nup, layout, globalFields, typo, resolveField, useGlobalQty, globalQty]); // eslint-disable-line
+
+    // ─── Render ───────────────────────────────────────────────────────────────
+    const inputCls = "w-full text-xs rounded-xl border border-gray-200 px-3 py-2 outline-none focus:border-[#2980b9]/60 focus:bg-white bg-white transition placeholder:text-gray-300 text-gray-700";
+
+    return createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl flex flex-col max-h-[94vh]">
+
+                {/* Header */}
+                <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 flex-shrink-0">
+                    <div className="p-2 bg-[#2980b9]/10 rounded-xl"><FiPrinter size={16} className="text-[#2980b9]" /></div>
+                    <div className="flex-1">
+                        <h2 className="text-sm font-bold text-gray-800">Print Labels</h2>
+                        <p className="text-[11px] text-gray-400">
+                            {isBulk ? `Bulk print · ${bulkProducts.length} products selected` : "Configure barcode / QR labels"}
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button type="button" onClick={handleSave}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-500 hover:border-green-300 hover:text-green-600 transition">
+                            <FiSave size={12} /> Save settings
+                        </button>
+                        <button type="button" onClick={handleReset}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-500 hover:border-[#2980b9]/60 hover:text-[#2980b9] transition">
+                            <FiRefreshCw size={12} /> Reset
+                        </button>
+                        <button type="button" onClick={onClose}
+                            className="p-2 rounded-xl hover:bg-gray-100 text-gray-400 transition">
+                            <FiX size={16} />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Body */}
+                <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-4">
+
+                    {savedNotice && (
+                        <div className="flex items-center gap-2 px-4 py-2.5 bg-green-50 border border-green-100 rounded-xl text-xs text-green-700">
+                            <FiCheckCircle size={13} className="text-green-500" />
+                            Settings saved — will be restored next time you open this modal.
+                            <button onClick={() => setSavedNotice(false)} className="ml-auto text-green-500 hover:text-green-700"><FiX size={12} /></button>
+                        </div>
+                    )}
+
+                    {/* Type + Size */}
+                    <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex items-center bg-gray-100 rounded-xl p-1 gap-1">
+                            {["barcode", "qr"].map(t => (
+                                <button key={t} type="button" onClick={() => setPrintType(t)}
+                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition
+                    ${printType === t ? "bg-white text-gray-800 shadow-sm" : "text-gray-400 hover:text-gray-600"}`}>
+                                    {t === "barcode" ? <FiBarChart2 size={14} /> : <FiGrid size={14} />}
+                                    {t === "barcode" ? "Barcode" : "QR Code"}
+                                </button>
+                            ))}
+                        </div>
+                        <LabelSize width={labelSize.width} height={labelSize.height} onChange={setLabelSize} />
+                    </div>
+
+                    {/* N-Up */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Labels per strip</span>
+                        {N_PRESETS.map(n => (
+                            <button key={n} type="button" onClick={() => { setNup(n); setCustomNInput(""); }}
+                                className={`px-3 py-1.5 rounded-xl border text-xs font-semibold transition
+                  ${nup === n && !isCustomN ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#2980b9]/40 hover:text-[#2980b9]"}`}>
+                                {n}-Up
+                            </button>
+                        ))}
+                        <span className="w-px h-5 bg-gray-200" />
+                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition ${isCustomN ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500"}`}>
+                            <FiSliders size={11} className={isCustomN ? "text-[#2980b9]" : "text-gray-400"} />
+                            <span className="text-gray-400 text-[10px]">Custom</span>
+                            <input type="number" min={1} max={32} value={customNInput} placeholder="N"
+                                onChange={e => { setCustomNInput(e.target.value); const p = parseInt(e.target.value, 10); if (!isNaN(p) && p >= 1 && p <= 32) setNup(p); }}
+                                className="w-9 text-center bg-transparent outline-none text-xs font-bold text-gray-700 placeholder:text-gray-300" />
+                            <span className="text-gray-400 text-[10px]">-Up</span>
+                        </div>
+                        {nup > 1 && (
+                            <span className="flex items-center gap-1 text-[9px] bg-[#2980b9] text-white font-bold px-2 py-0.5 rounded-full">
+                                <FiColumns size={9} /> {nup}-Up ON
+                            </span>
+                        )}
+                    </div>
+
+                    {/* Global Quantity */}
+                    <div className="flex items-center gap-4 bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-xl px-4 py-3 flex-wrap">
+                        <div className="flex items-center gap-2">
+                            <FiHash size={13} className="text-[#2980b9]" />
+                            <span className="text-xs font-semibold text-gray-700">Global Quantity</span>
+                        </div>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <div onClick={() => setUseGlobalQty(v => !v)}
+                                className={`relative w-9 h-5 rounded-full transition-colors ${useGlobalQty ? "bg-[#2980b9]" : "bg-gray-300"}`}>
+                                <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${useGlobalQty ? "translate-x-4" : ""}`} />
+                            </div>
+                            <span className="text-xs text-gray-500">{useGlobalQty ? "Override all rows" : "Use per-row qty"}</span>
+                        </label>
+                        {useGlobalQty && (
+                            <>
+                                <QtyStepper value={globalQty} onChange={setGlobalQty} label="" />
+                                <span className="text-[10px] text-[#2980b9]/90 font-semibold">
+                                    → {validRows.length} code{validRows.length !== 1 ? "s" : ""} × {Math.max(1, parseInt(globalQty) || 1)} = {validRows.length * Math.max(1, parseInt(globalQty) || 1)} labels
+                                </span>
+                            </>
+                        )}
+                    </div>
+
+                    {/* Typography & Spacing */}
+                    <Section title="Typography, Spacing & Image Position" icon={FiSliders} badge="font · gap · image side">
+                        <TypographyPanel typo={typo} onChange={setTypo} />
+                    </Section>
+
+                    {/* Field Visibility */}
+                    <Section title="Field Visibility & Store Name" icon={FiEye} defaultOpen>
+                        <div className="flex items-center gap-2 flex-wrap mb-3">
+                            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Show:</span>
+                            {ALL_FIELDS.filter(f => f.key !== "productCode").map(f => {
+                                const sk = SHOW_KEY_MAP[f.key];
+                                const on = globalFields[sk];
+                                return (
+                                    <button key={f.key} type="button" onClick={() => toggleGF(sk, !on)}
+                                        className={`flex items-center gap-1 px-2.5 py-1 rounded-full border text-[10px] font-semibold transition
+                      ${on ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-400 hover:border-gray-300"}`}>
+                                        {on ? <FiEye size={9} /> : <FiEyeOff size={9} />} {f.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        {globalFields.showStoreName && (
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] text-gray-400 whitespace-nowrap">Store name:</span>
+                                <input type="text" value={globalFields.storeName}
+                                    onChange={e => toggleGF("storeName", e.target.value)}
+                                    placeholder="e.g. MY SHOP"
+                                    className="text-xs rounded-lg border border-[#2980b9]/40 px-2 py-1 outline-none focus:border-[#2980b9] text-gray-700 w-40" />
+                            </div>
+                        )}
+                    </Section>
+
+                    {/* Layout Designer */}
+                    <div className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5">
+                        <div className="flex items-center gap-2">
+                            <FiLayout size={13} className="text-[#2980b9]" />
+                            <span className="text-xs font-semibold text-gray-600">Label layout</span>
+                            <span className="text-[10px] text-gray-400">
+                                Above: {(layout.leftAbove || []).length} · LeftImg: {(layout.leftOfImage || []).length} · RightImg: {(layout.rightOfImage || []).length} · Below: {(layout.leftBelow || []).length} · Right: {(layout.right || []).length} fields
+                            </span>
+                        </div>
+                        <button type="button" onClick={() => setShowDesigner(v => !v)}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition
+                ${showDesigner ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#2980b9]/40 hover:text-[#2980b9]"}`}>
+                            <FiMove size={11} /> {showDesigner ? "Close designer" : "Arrange fields"}
+                        </button>
+                    </div>
+
+                    {showDesigner && (
+                        <div className="bg-white border border-[#2980b9]/20 rounded-2xl p-4">
+                            <p className="text-xs text-gray-500 mb-3 flex items-center gap-1.5">
+                                <FiMove size={12} className="text-[#2980b9]" />
+                                Drag fields between zones · use ↑↓ to reorder within a zone
+                            </p>
+                            <LayoutDesigner layout={layout} onChange={setLayout} printType={printType} />
+                        </div>
+                    )}
+
+                    {/* Info bars */}
+                    {nup > 1 && (
+                        <div className="flex items-center gap-2 bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-xl px-4 py-2.5">
+                            <FiColumns size={13} className="text-[#2980b9] flex-shrink-0" />
+                            <p className="text-xs text-[#2980b9]/90">
+                                <strong>{nup}-Up on</strong> — {nup} labels per strip, each cell <strong>~{Math.round(labelSize.width / nup)}mm</strong> wide on a <strong>{labelSize.width}×{labelSize.height}mm</strong> strip.
+                            </p>
+                        </div>
+                    )}
+                    <div className="flex items-center gap-2 bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-xl px-4 py-2.5">
+                        <FiInfo size={13} className="text-[#2980b9]/80 flex-shrink-0" />
+                        <p className="text-xs text-[#2980b9]/90">
+                            Strip: <strong>{labelSize.width}×{labelSize.height}mm</strong>
+                            {nup > 1 && ` · cell ~${Math.round(labelSize.width / nup)}mm wide`}
+                            {validRows.length > 0 && (
+                                <span className="ml-2 font-semibold">
+                                    {validRows.length} code{validRows.length !== 1 ? "s" : ""} · {totalLabels} label{totalLabels !== 1 ? "s" : ""}
+                                    {nup > 1 && <span className="text-[#2980b9]/90"> → {totalStrips} strip{totalStrips !== 1 ? "s" : ""} ({nup}-up)</span>}
+                                    {" "}will print.
+                                </span>
+                            )}
+                        </p>
+                    </div>
+
+                    {/* Label rows */}
+                    <div className="space-y-3">
+                        {rows.map((row, idx) => {
+                            const eqty = effectiveQty(row);
+                            const hasDesc = [...(layout.leftAbove || []), ...(layout.leftBelow || []), ...(layout.right || [])].includes("description");
+
+                            return (
+                                <div key={row.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm">
+                                    <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-100 rounded-t-2xl">
+                                        <div className="flex items-center gap-2">
+                                            <FiHash size={11} className="text-[#2980b9]" />
+                                            <span className="text-[10px] font-bold text-[#2980b9] uppercase tracking-widest">Label {idx + 1}</span>
+                                            <StatusBadge status={row._status} />
+                                        </div>
+                                        {rows.length > 1 && (
+                                            <button type="button" onClick={() => removeRow(row.id)}
+                                                className="p-1.5 rounded-lg hover:bg-red-50 text-red-400 transition">
+                                                <FiTrash2 size={13} />
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    <div className="p-4 space-y-3">
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 flex items-center gap-1">
+                                                    <FiBarChart2 size={9} /> {printType === "barcode" ? "Barcode value *" : "QR value *"}
+                                                </label>
+                                                <div className="relative">
+                                                    <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none" size={12} />
+                                                    <input type="text" value={row.barcodeValue}
+                                                        onChange={e => handleBarcodeChange(row.id, e.target.value)}
+                                                        placeholder="Scan or type code"
+                                                        className={`${inputCls} pl-9`}
+                                                        autoFocus={idx === rows.length - 1} />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 flex items-center gap-1">
+                                                    <FiTag size={9} /> Product Code (printed)
+                                                </label>
+                                                <input type="text" value={row.productCode}
+                                                    onChange={e => setRow(row.id, "productCode", e.target.value)}
+                                                    placeholder="PRD001" className={inputCls} />
+                                            </div>
+                                        </div>
+
+                                        {row._status === "found" && (row.productName || row.mrp || row.brand || row.category) && (
+                                            <div className="flex items-center gap-2 flex-wrap px-3 py-2 bg-green-50 border border-green-100 rounded-xl">
+                                                <FiCheckCircle size={12} className="text-green-500 flex-shrink-0" />
+                                                {row.productName && <span className="flex items-center gap-1 text-[10px] text-green-700 font-semibold"><FiBox size={9} className="text-green-400" />{row.productName}</span>}
+                                                {row.category && <span className="flex items-center gap-1 text-[10px] text-green-600"><FiLayers size={9} className="text-green-400" />{row.category}</span>}
+                                                {row.brand && <span className="flex items-center gap-1 text-[10px] text-green-600"><FiAward size={9} className="text-green-400" />{row.brand}</span>}
+                                                {row.mrp && <span className="flex items-center gap-1 text-[10px] text-green-700 font-bold ml-auto"><FiDollarSign size={9} className="text-green-500" />₹{row.mrp}</span>}
+                                            </div>
+                                        )}
+
+                                        {hasDesc && (
+                                            <div>
+                                                <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 flex items-center gap-1">
+                                                    <FiAlignLeft size={9} /> Description
+                                                </label>
+                                                <textarea value={row.description}
+                                                    onChange={e => setRow(row.id, "description", e.target.value)}
+                                                    placeholder={"e.g. BUY 1 GET 1\nUp To -13/+8 Power"}
+                                                    rows={2}
+                                                    className="w-full text-xs rounded-xl border border-gray-200 px-3 py-2 outline-none resize-none leading-relaxed transition placeholder:text-gray-300 text-gray-700 focus:border-[#2980b9]/60 focus:bg-white bg-white" />
+                                            </div>
+                                        )}
+
+                                        {/* Live preview + individual Qty */}
+                                        <div className="flex items-end justify-between gap-3 flex-wrap">
+                                            <div>
+                                                <div className="text-[9px] font-bold text-gray-300 uppercase tracking-widest mb-1.5">
+                                                    Live preview — actual print scale
+                                                    {typo.imageSide === "hidden" && (
+                                                        <span className="ml-2 text-amber-400 normal-case font-semibold">· image hidden (dashed outline)</span>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <LivePreviewLabel
+                                                        value={row.barcodeValue.trim()}
+                                                        row={row}
+                                                        layout={layout}
+                                                        printType={printType}
+                                                        globalFields={globalFields}
+                                                        typo={typo}
+                                                        labelSize={labelSize}
+                                                    />
+                                                    {row.barcodeValue.trim() && (
+                                                        <span className="text-xs text-gray-400">
+                                                            × <strong className="text-gray-600">{eqty}</strong>
+                                                            {useGlobalQty && <span className="text-[9px] text-[#2980b9] ml-1">(global)</span>}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className={`flex-shrink-0 transition ${useGlobalQty ? "opacity-40 pointer-events-none" : ""}`}>
+                                                <QtyStepper
+                                                    value={useGlobalQty ? globalQty : row.qty}
+                                                    onChange={v => setRow(row.id, "qty", v)}
+                                                    label={useGlobalQty ? "Qty (overridden)" : "Qty (from data)"}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Add row */}
+                    <button type="button" onClick={addRow}
+                        className="w-full py-3 border-2 border-dashed border-[#2980b9]/40 hover:border-[#2980b9] text-[#2980b9] hover:text-[#2980b9]/90 text-xs font-semibold rounded-2xl transition flex items-center justify-center gap-2">
+                        <FiPlus size={14} /> Add Another Code
+                    </button>
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex-shrink-0">
+                    <div className="flex items-center gap-2 text-xs text-gray-400 mr-auto">
+                        <FiPrinter size={12} className="text-[#2980b9]" />
+                        {validRows.length} code{validRows.length !== 1 ? "s" : ""} · {totalLabels} label{totalLabels !== 1 ? "s" : ""}
+                        {nup > 1 && <span className="text-[#2980b9] font-semibold"> · {totalStrips} strip{totalStrips !== 1 ? "s" : ""} ({nup}-up)</span>}
+                    </div>
+                    <button type="button" onClick={onClose}
+                        className="px-4 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition flex items-center gap-1.5">
+                        <FiX size={13} /> Cancel
+                    </button>
+                    <button type="button" onClick={handlePrint} disabled={validRows.length === 0}
+                        className="flex items-center gap-2 px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                        <FiPrinter size={13} />
+                        Print {printType === "qr" ? "QR" : "Barcode"} Labels
+                        {nup > 1 && <span className="text-[#2980b9]/40 text-[9px] font-normal ml-0.5">{nup}-up</span>}
+                    </button>
+                </div>
+
+            </div>
+        </div>,
+        document.body
+    );
+}
+
+
+
+
+
+
+// ─── BulkUploadModal ──────────────────────────────────────────────────────────
+const REQUIRED_FIELDS_BULK = ["productName", "category", "brand", "price", "mrp", "qty"];
+const ACCEPTED_COLUMNS = [
+    "productCode", "productName", "category", "brand", "color", "size",
+    "type", "shape", "sph", "cyl", "index", "axis", "coating", "expiry",
+    "price", "gst", "hsnSac", "mrp", "qty", "addition", "material", "dimensions"
+];
+const TEXT_COLUMNS = new Set(["productCode", "hsnSac"]);
+
+function validateBulkRow(row, rowIndex) {
+    const errors = [];
+    for (const field of REQUIRED_FIELDS_BULK) {
+        const val = row[field];
+        if (val === undefined || val === null || String(val).trim() === "")
+            errors.push(`Row ${rowIndex}: "${field}" is required`);
+    }
+    if (row.price !== undefined && row.price !== "" && Number(row.price) <= 0) errors.push(`Row ${rowIndex}: price must be > 0`);
+    if (row.mrp !== undefined && row.mrp !== "" && Number(row.mrp) <= 0) errors.push(`Row ${rowIndex}: mrp must be > 0`);
+    if (row.qty !== undefined && row.qty !== "" && Number(row.qty) <= 0) errors.push(`Row ${rowIndex}: qty must be > 0`);
+    return errors;
+}
+
+function parseExcel(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const wb = XLSX.read(e.target.result, { type: "array", cellDates: true });
+                const sheetName = wb.SheetNames.includes("Product Data") ? "Product Data" : wb.SheetNames[0];
+                const ws = wb.Sheets[sheetName];
+                const raw = XLSX.utils.sheet_to_json(ws, { defval: "", raw: false });
+                const rows = raw.filter(r =>
+                    !["REQUIRED", "optional", "required"].includes(String(r.productCode).trim())
+                );
+                resolve(rows);
+            } catch (err) {
+                reject(new Error("Failed to parse Excel file: " + err.message));
+            }
+        };
+        reader.onerror = () => reject(new Error("Failed to read file"));
+        reader.readAsArrayBuffer(file);
+    });
+}
+
+function sanitizeRow(raw) {
+    const row = {};
+    for (const col of ACCEPTED_COLUMNS) {
+        let val = raw[col];
+        if (val === undefined || val === null) val = "";
+        if (TEXT_COLUMNS.has(col)) { row[col] = String(val).trim(); continue; }
+        if (col === "expiry" && val instanceof Date) { row[col] = val.toISOString().split("T")[0]; continue; }
+        row[col] = String(val).trim();
+    }
+    row.price = row.price !== "" ? Number(row.price) : "";
+    row.mrp = row.mrp !== "" ? Number(row.mrp) : "";
+    row.qty = row.qty !== "" ? Number(row.qty) : "";
+    row.gst = row.gst !== "" ? Number(row.gst) : 0;
+    return row;
+}
+
+function BulkUploadModal({ onClose }) {
+    const [step, setStep] = useState("upload");
+    const [file, setFile] = useState(null);
+    const [parsing, setParsing] = useState(false);
+    const [parseError, setParseError] = useState("");
+    const [rows, setRows] = useState([]);
+    const [validationErrors, setValidationErrors] = useState([]);
+    const [submitting, setSubmitting] = useState(false);
+    const [result, setResult] = useState(null);
+    const [prefix, setPrefix] = useState("DO");
+    const dropRef = useRef(null);
+
+    const activePrefix = prefix.trim().toUpperCase() || "DO";
+    const autoCodeRows = rows.filter(r => !r.productCode);
+
+    const handleFieldChange = (index, field, value) => {
+        const updated = [...rows];
+        let val = value;
+        if (["price", "mrp", "qty", "gst"].includes(field)) {
+            val = value === "" ? "" : Number(value);
+        }
+        updated[index] = { ...updated[index], [field]: val };
+        setRows(updated);
+        import('./Inventory').then(() => {
+            // handled dynamically to avoid scope error with validateBulkRow
+        });
+        setValidationErrors(updated.flatMap((r, idx) => validateBulkRow(r, idx + 1)));
+    };
+
+    const downloadTemplate = () => {
+        const aoa = [
+            ACCEPTED_COLUMNS,
+            ACCEPTED_COLUMNS.map(h => REQUIRED_FIELDS_BULK.includes(h) ? "REQUIRED" : "optional"),
+            ["100", "Ray-Ban Aviator Frame", "FRAME", "Ray-Ban", "Black", "", "Full Rim", "Aviator", "", "", "", "", "", "", 450, 0, "9004", 1200, 10, "", "", ""],
+        ];
+        const ws = XLSX.utils.aoa_to_sheet(aoa);
+        const textCols = [ACCEPTED_COLUMNS.indexOf("productCode"), ACCEPTED_COLUMNS.indexOf("hsnSac")];
+        for (let r = 3; r <= 200; r++) {
+            for (const ci of textCols) {
+                const addr = XLSX.utils.encode_cell({ r, c: ci });
+                if (!ws[addr]) ws[addr] = { t: "s", v: "" };
+                ws[addr].z = "@";
+            }
+        }
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Product Data");
+        XLSX.writeFile(wb, "inventory_upload_template.xlsx");
+    };
+
+    const handleFile = async (f) => {
+        if (!f) return;
+        const ext = f.name.split(".").pop().toLowerCase();
+        if (!["xlsx", "xls", "csv"].includes(ext)) { setParseError("Only .xlsx, .xls, or .csv files are accepted."); return; }
+        setFile(f); setParseError(""); setParsing(true);
+        try {
+            const rawRows = await parseExcel(f);
+            const sanitized = rawRows.map(sanitizeRow).filter(r => r.productName || r.productCode);
+            if (sanitized.length === 0) { setParseError("No product rows found. Make sure you filled the 'Product Data' sheet."); setParsing(false); return; }
+            setRows(sanitized);
+            setValidationErrors(sanitized.flatMap((r, i) => validateBulkRow(r, i + 1)));
+            setStep("preview");
+        } catch (err) { setParseError(err.message); }
+        finally { setParsing(false); }
+    };
+
+    const onDrop = (e) => { e.preventDefault(); const f = e.dataTransfer.files?.[0]; if (f) handleFile(f); };
+
+    const handleSubmit = async () => {
+        if (validationErrors.length > 0) return;
+        setSubmitting(true);
+        try {
+            const res = await api.post("/api/digi/product/bulk", { products: JSON.stringify(rows), suffix: activePrefix });
+            setResult({ success: res.data.success, count: res.data.count, message: res.data.message, generatedCodes: res.data.generatedCodes || [], existingCodes: res.data.existingCodes || [], duplicateCodes: res.data.duplicateCodes || [] });
+            setStep("result");
+        } catch (err) {
+            setResult({ success: false, message: err.response?.data?.message || "Upload failed.", existingCodes: err.response?.data?.existingCodes || [], duplicateCodes: err.response?.data?.duplicateCodes || [], generatedCodes: [] });
+            setStep("result");
+        } finally { setSubmitting(false); }
+    };
+
+    const resetToUpload = () => { setStep("upload"); setFile(null); setRows([]); setValidationErrors([]); setResult(null); };
+
+    return (
+        <Modal onClose={onClose} maxWidth="max-w-4xl">
+            <ModalHeader title="Bulk Inventory Upload" subtitle="Upload an Excel file to add multiple products at once" icon={FiUpload} onClose={onClose} />
+
+            <div className="flex-1 min-h-0 overflow-y-auto p-6">
+
+                {step === "upload" && (
+                    <div className="space-y-5">
+                        <div className="flex items-center justify-between bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-2xl px-5 py-4 gap-4">
+                            <div>
+                                <p className="text-sm font-semibold text-gray-800">Step 1 — Download the template</p>
+                                <p className="text-xs text-gray-500 mt-0.5">Leave <span className="font-mono font-semibold text-[#2980b9]/90">productCode</span> blank to auto-generate.</p>
+                            </div>
+                            <button onClick={downloadTemplate}
+                                className="flex items-center gap-2 px-4 py-2 bg-white border border-[#2980b9]/60 text-[#2980b9]/90 text-xs font-semibold rounded-xl hover:bg-[#2980b9]/10 transition shadow-sm flex-shrink-0">
+                                <FiDownload size={13} /> Download Template
+                            </button>
+                        </div>
+
+                        <div className="bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4">
+                            <p className="text-sm font-semibold text-gray-800 mb-1">Step 2 — Set auto-code prefix</p>
+                            <p className="text-xs text-gray-500 mb-3">
+                                Blank productCode rows get a code like <span className="font-mono font-semibold text-[#2980b9]/90">1{activePrefix}, 2{activePrefix}…</span>
+                            </p>
+                            <div className="flex items-center gap-3">
+                                <div className="relative w-44">
+                                    <FiTag className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none" size={13} />
+                                    <input type="text" value={prefix}
+                                        onChange={e => setPrefix(e.target.value.toUpperCase().replace(/\s/g, "").slice(0, 6))}
+                                        placeholder="DO" maxLength={6}
+                                        className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-[#2980b9]/60 focus:ring-2 focus:ring-[#2980b9]/20 bg-white text-gray-800 transition font-mono uppercase tracking-widest" />
+                                </div>
+                                <span className="text-xs text-gray-400">Leave blank to default to <span className="font-mono font-semibold">DO</span></span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p className="text-sm font-semibold text-gray-800 mb-2">Step 3 — Upload filled Excel file</p>
+                            <div ref={dropRef} onDrop={onDrop} onDragOver={e => e.preventDefault()}
+                                onClick={() => document.getElementById("bulk-file-input").click()}
+                                className="border-2 border-dashed border-[#2980b9]/40 hover:border-[#2980b9] rounded-2xl p-10 flex flex-col items-center justify-center gap-3 cursor-pointer transition bg-gray-50 hover:bg-[#2980b9]/10">
+                                <div className="w-12 h-12 rounded-2xl bg-[#2980b9]/20 flex items-center justify-center">
+                                    <FiUpload size={20} className="text-[#2980b9]" />
+                                </div>
+                                {parsing ? (
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="w-5 h-5 border-2 border-[#2980b9]/60 border-t-transparent rounded-full animate-spin" />
+                                        <span className="text-sm text-gray-500">Parsing file...</span>
+                                    </div>
+                                ) : (
+                                    <p className="text-sm font-semibold text-gray-700">{file ? file.name : "Drop your Excel file here or click to browse"}</p>
+                                )}
+                                <input id="bulk-file-input" type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={e => handleFile(e.target.files[0])} />
+                            </div>
+                            {parseError && (
+                                <div className="mt-3 flex items-start gap-2 bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                                    <FiAlertCircle size={14} className="text-red-500 flex-shrink-0 mt-0.5" />
+                                    <p className="text-xs text-red-600">{parseError}</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {step === "preview" && (
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-3 flex-wrap">
+                            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2">
+                                <FiCheckCircle size={13} className="text-emerald-500" />
+                                <span className="text-xs font-semibold text-emerald-700">{rows.length} products parsed</span>
+                            </div>
+                            {autoCodeRows.length > 0 && (
+                                <div className="flex items-center gap-2 bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-xl px-4 py-2">
+                                    <FiTag size={13} className="text-[#2980b9]/80" />
+                                    <span className="text-xs font-semibold text-[#2980b9]/90">
+                                        {autoCodeRows.length} auto-code <span className="font-mono">(1{activePrefix}, 2{activePrefix}…)</span>
+                                    </span>
+                                </div>
+                            )}
+                            {validationErrors.length > 0 && (
+                                <div className="flex items-center gap-2 bg-red-50 border border-red-100 rounded-xl px-4 py-2">
+                                    <FiAlertCircle size={13} className="text-red-500" />
+                                    <span className="text-xs font-semibold text-red-700">{validationErrors.length} error{validationErrors.length > 1 ? "s" : ""}</span>
+                                </div>
+                            )}
+                            <button onClick={resetToUpload} className="ml-auto flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition">
+                                <FiX size={12} /> Change file
+                            </button>
+                        </div>
+
+                        {validationErrors.length > 0 && (
+                            <div className="bg-red-50 border border-red-100 rounded-xl p-4 max-h-32 overflow-y-auto">
+                                <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-2">Validation Errors</p>
+                                {validationErrors.map((e, i) => <p key={i} className="text-xs text-red-600 leading-5">• {e}</p>)}
+                            </div>
+                        )}
+
+                        <div className="overflow-x-auto rounded-xl border border-gray-100">
+                            <table className="w-full text-xs border-collapse">
+                                <thead>
+                                    <tr>{["#", "Code", "Name", "Category", "Brand", "Price", "MRP", "Qty", "GST%", "Color", "Type"].map(h => (
+                                        <th key={h} className="px-3 py-2.5 bg-gray-100 text-gray-600 font-semibold text-center whitespace-nowrap uppercase tracking-wider border-b border-gray-200">{h}</th>
+                                    ))}</tr>
+                                </thead>
+                                <tbody>
+                                    {rows.slice(0, 50).map((row, i) => (
+                                        <tr key={i} className={`border-b border-gray-50 ${i % 2 === 0 ? "bg-white" : "bg-gray-50/50"}`}>
+                                            <td className="px-3 py-2 text-center text-gray-400">{i + 1}</td>
+                                            <td className="px-3 py-1 font-mono font-semibold whitespace-nowrap">
+                                                <input 
+                                                    type="text" 
+                                                    value={row.productCode || ""} 
+                                                    onChange={e => handleFieldChange(i, "productCode", e.target.value)}
+                                                    placeholder={`auto-${activePrefix}`}
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                />
+                                            </td>
+                                            <td className="px-3 py-1 text-gray-700 max-w-[160px]">
+                                                <input 
+                                                    type="text" 
+                                                    value={row.productName || ""} 
+                                                    onChange={e => handleFieldChange(i, "productName", e.target.value)}
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                />
+                                            </td>
+                                            <td className="px-3 py-1 text-gray-650">
+                                                <input 
+                                                    type="text" 
+                                                    value={row.category || ""} 
+                                                    onChange={e => handleFieldChange(i, "category", e.target.value)}
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                />
+                                            </td>
+                                            <td className="px-3 py-1 text-gray-650">
+                                                <input 
+                                                    type="text" 
+                                                    value={row.brand || ""} 
+                                                    onChange={e => handleFieldChange(i, "brand", e.target.value)}
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                />
+                                            </td>
+                                            <td className="px-3 py-1 text-center text-gray-750">
+                                                <div className="flex items-center justify-center">
+                                                    <span className="text-[10px] text-gray-400 mr-0.5">₹</span>
+                                                    <input 
+                                                        type="number" 
+                                                        value={row.price} 
+                                                        onChange={e => handleFieldChange(i, "price", e.target.value)}
+                                                        className="w-16 bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
+                                                    />
+                                                </div>
+                                            </td>
+                                            <td className="px-3 py-1 text-center text-gray-750">
+                                                <div className="flex items-center justify-center">
+                                                    <span className="text-[10px] text-gray-400 mr-0.5">₹</span>
+                                                    <input 
+                                                        type="number" 
+                                                        value={row.mrp} 
+                                                        onChange={e => handleFieldChange(i, "mrp", e.target.value)}
+                                                        className="w-16 bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
+                                                    />
+                                                </div>
+                                            </td>
+                                            <td className="px-3 py-1 text-center text-gray-750">
+                                                <input 
+                                                    type="number" 
+                                                    value={row.qty} 
+                                                    onChange={e => handleFieldChange(i, "qty", e.target.value)}
+                                                    className="w-12 bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
+                                                />
+                                            </td>
+                                            <td className="px-3 py-1 text-center text-gray-550">
+                                                <div className="flex items-center justify-center">
+                                                    <input 
+                                                        type="number" 
+                                                        value={row.gst} 
+                                                        onChange={e => handleFieldChange(i, "gst", e.target.value)}
+                                                        className="w-12 bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
+                                                    />
+                                                    <span className="text-[10px] text-gray-400 ml-0.5">%</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-3 py-1 text-gray-550">
+                                                <input 
+                                                    type="text" 
+                                                    value={row.color || ""} 
+                                                    onChange={e => handleFieldChange(i, "color", e.target.value)}
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                />
+                                            </td>
+                                            <td className="px-3 py-1 text-gray-550">
+                                                <input 
+                                                    type="text" 
+                                                    value={row.type || ""} 
+                                                    onChange={e => handleFieldChange(i, "type", e.target.value)}
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {rows.length > 50 && <p className="text-center py-2 text-xs text-gray-400">Showing first 50 of {rows.length} rows</p>}
+                        </div>
+                    </div>
+                )}
+
+                {step === "result" && result && (
+                    <div className="flex flex-col items-center py-8 gap-5">
+                        {result.success ? (
+                            <>
+                                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center">
+                                    <FiCheckCircle size={32} className="text-emerald-500" />
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-lg font-bold text-gray-800">Upload Successful!</p>
+                                    <p className="text-sm text-gray-500 mt-1"><span className="font-semibold text-emerald-600">{result.count}</span> products added.</p>
+                                </div>
+                                {result.generatedCodes?.length > 0 && (
+                                    <div className="w-full max-w-lg bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-xl px-5 py-4">
+                                        <p className="text-xs font-bold text-[#2980b9]/90 uppercase tracking-wider mb-2.5">Auto-generated Codes</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {result.generatedCodes.map(({ index, productCode }) => (
+                                                <span key={productCode} className="text-xs font-mono bg-white border border-[#2980b9]/40 text-[#2980b9]/90 px-2.5 py-1 rounded-lg">
+                                                    Row {index} → <span className="font-bold">{productCode}</span>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                                    <FiAlertCircle size={32} className="text-red-500" />
+                                </div>
+                                <div className="text-center max-w-md w-full">
+                                    <p className="text-lg font-bold text-gray-800">Upload Failed</p>
+                                    <p className="text-sm text-gray-500 mt-1">{result.message}</p>
+                                    {result.existingCodes?.length > 0 && (
+                                        <div className="mt-3 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 text-left">
+                                            <p className="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Already exist in inventory</p>
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {result.existingCodes.map(code => <span key={code} className="text-xs font-mono bg-amber-100 text-amber-800 px-2 py-0.5 rounded-lg">{code}</span>)}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                <button onClick={() => { setStep("preview"); setResult(null); }}
+                                    className="px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition">← Back to Preview</button>
+                            </>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            <ModalFooter>
+                <button onClick={onClose}
+                    className="px-4 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition">
+                    {step === "result" && result?.success ? "Close" : "Cancel"}
+                </button>
+                {step === "preview" && validationErrors.length === 0 && (
+                    <button onClick={handleSubmit} disabled={submitting}
+                        className="flex items-center gap-2 px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm disabled:opacity-60">
+                        {submitting && <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />}
+                        {submitting ? "Uploading..." : `Upload ${rows.length} Products`}
+                    </button>
+                )}
+            </ModalFooter>
+        </Modal>
+    );
+}
+
+const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, loading, allocating, formData, setFormData, onAllocateSubmit }) => {
+    if (!isOpen || !product) return null;
+
+    const { totalStock = 0, allocatedQty = 0, unallocatedQty = 0 } = summary || {};
+    const isUnallocatedEmpty = unallocatedQty <= 0;
+
+    return (
+        <Modal onClose={onClose} maxWidth="max-w-4xl">
+            <ModalHeader
+                title="Batch Allocation & Details"
+                subtitle={`${product.productName || 'Product'} (${product.productCode || 'N/A'})`}
+                onClose={onClose}
+                icon={FiLayers}
+            />
+            <div className="p-6 overflow-y-auto max-h-[75vh] flex flex-col gap-6">
+                {/* Stock Allocation Summary Banner */}
+                <div className="grid grid-cols-3 gap-3 bg-gray-50 border border-gray-100 rounded-2xl p-4">
+                    <div className="text-center border-r border-gray-200/80 pr-2">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Total Inventory Stock</span>
+                        <span className="text-lg font-black text-gray-800">{totalStock}</span>
+                    </div>
+                    <div className="text-center border-r border-gray-200/80 pr-2">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Allocated to Batches</span>
+                        <span className="text-lg font-black text-blue-600">{allocatedQty}</span>
+                    </div>
+                    <div className="text-center">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Remaining Unallocated</span>
+                        <span className={`text-lg font-black ${unallocatedQty > 0 ? 'text-emerald-600' : 'text-amber-600'}`}>{unallocatedQty}</span>
+                    </div>
+                </div>
+
+                {/* Allocate New Batch Form */}
+                <div className={`border rounded-2xl p-5 shadow-2xs transition-all ${isUnallocatedEmpty ? 'bg-amber-50/40 border-amber-200' : 'bg-gradient-to-r from-blue-50/70 to-indigo-50/70 border-blue-100'}`}>
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                            <FiPlus className={isUnallocatedEmpty ? "text-amber-600" : "text-[#2980b9]"} size={16} />
+                            <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">Allocate New Batch Number</h3>
+                        </div>
+                        {isUnallocatedEmpty && (
+                            <span className="text-[11px] font-bold text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-full">
+                                Stock Fully Allocated
+                            </span>
+                        )}
+                    </div>
+
+                    {isUnallocatedEmpty ? (
+                        <div className="p-3 bg-white/80 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-start gap-2">
+                            <FiAlertCircle size={16} className="text-amber-600 flex-shrink-0 mt-0.5" />
+                            <div>
+                                <p className="font-bold">No unallocated stock available!</p>
+                                <p className="text-[11px] text-amber-700 mt-0.5">
+                                    All {totalStock} units of this product are already assigned to active batches.
+                                    To create a new batch, please add more inventory stock or wait until existing batches are sold.
+                                </p>
+                            </div>
+                        </div>
+                    ) : (
+                        <form onSubmit={onAllocateSubmit} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
+                            <div>
+                                <label className="text-[10px] font-bold text-gray-500 uppercase block mb-1">Batch Number</label>
+                                <input
+                                    type="text"
+                                    placeholder="Auto (e.g. BTCN1)"
+                                    className="w-full px-3 py-2 text-xs font-semibold uppercase bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    value={formData.batchNumber}
+                                    onChange={e => setFormData(prev => ({ ...prev, batchNumber: e.target.value }))}
+                                />
+                                <span className="text-[9px] text-gray-400 mt-0.5 block">Leave blank for auto-generate</span>
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-gray-500 uppercase block mb-1">
+                                    Allocated Qty * <span className="text-emerald-600 font-semibold">(Max: {unallocatedQty})</span>
+                                </label>
+                                <input
+                                    type="number"
+                                    required
+                                    min="1"
+                                    max={unallocatedQty}
+                                    placeholder={`Max ${unallocatedQty}`}
+                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    value={formData.qty}
+                                    onChange={e => setFormData(prev => ({ ...prev, qty: e.target.value }))}
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-gray-500 uppercase block mb-1">Buying Price (₹)</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    placeholder="Buying Price"
+                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    value={formData.buyingPrice ?? formData.costPrice ?? ''}
+                                    onChange={e => setFormData(prev => ({ ...prev, buyingPrice: e.target.value, costPrice: e.target.value }))}
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-gray-500 uppercase block mb-1">Selling Price (₹)</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    placeholder="Selling Price"
+                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    value={formData.sellingPrice ?? ''}
+                                    onChange={e => setFormData(prev => ({ ...prev, sellingPrice: e.target.value }))}
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-gray-500 uppercase block mb-1">MRP (₹)</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    placeholder="MRP"
+                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    value={formData.mrp ?? ''}
+                                    onChange={e => setFormData(prev => ({ ...prev, mrp: e.target.value }))}
+                                />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-gray-500 uppercase block mb-1">Remarks</label>
+                                <input
+                                    type="text"
+                                    placeholder="Allocation remarks..."
+                                    className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    value={formData.remarks}
+                                    onChange={e => setFormData(prev => ({ ...prev, remarks: e.target.value }))}
+                                />
+                            </div>
+                            <div className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-6 flex justify-end">
+                                <button
+                                    type="submit"
+                                    disabled={allocating || isUnallocatedEmpty}
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-bold rounded-xl transition shadow-md disabled:opacity-50 cursor-pointer"
+                                >
+                                    {allocating ? (
+                                        <>
+                                            <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                            <span>Allocating...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FiCheckSquare size={15} />
+                                            <span>Allocate Batch</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </form>
+                    )}
+                </div>
+
+                {/* Existing Batches List */}
+                <div>
+                    <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2">
+                            <FiPackage size={14} className="text-gray-500" />
+                            Assigned Batches ({batches.length})
+                        </h3>
+                    </div>
+
+                    {loading ? (
+                        <div className="py-12 text-center text-gray-400 text-xs flex flex-col items-center gap-2">
+                            <div className="w-5 h-5 border-2 border-[#2980b9] border-t-transparent rounded-full animate-spin" />
+                            <span>Loading batches...</span>
+                        </div>
+                    ) : batches.length === 0 ? (
+                        <div className="p-8 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                            <FiAlertCircle size={28} className="mx-auto text-amber-400 mb-2" />
+                            <p className="text-xs font-bold text-gray-700">No Batches Assigned</p>
+                            <p className="text-[11px] text-gray-400 mt-0.5">This product currently does not have any batch allocated. Use the form above to assign a batch number.</p>
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto border border-gray-100 rounded-xl shadow-2xs">
+                            <table className="w-full text-left text-xs">
+                                <thead className="bg-gray-50/80 text-gray-500 font-bold uppercase tracking-wider text-[10px] border-b border-gray-100">
+                                    <tr>
+                                        <th className="px-4 py-3">Batch Number</th>
+                                        <th className="px-4 py-3 text-center">Available Qty</th>
+                                        <th className="px-4 py-3 text-center">Initial Qty</th>
+                                        <th className="px-4 py-3 text-right">Buying Price</th>
+                                        <th className="px-4 py-3 text-right">Selling Price</th>
+                                        <th className="px-4 py-3 text-right">MRP</th>
+                                        <th className="px-4 py-3 text-center">Status</th>
+                                        <th className="px-4 py-3">Inward Date</th>
+                                        <th className="px-4 py-3">Remarks</th>
+                                        <th className="px-4 py-3 text-center">Invoices</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
+                                    {batches.map(b => (
+                                        <tr key={b._id} className="hover:bg-gray-50/60 transition">
+                                            <td className="px-4 py-3 font-bold text-gray-900 font-mono">
+                                                <span className="px-2 py-0.5 bg-blue-50 text-[#2980b9] border border-blue-100 rounded-lg">
+                                                    {b.batchNumber}
+                                                </span>
+                                            </td>
+                                            <td className="px-4 py-3 text-center font-bold text-emerald-600">{b.availableQty}</td>
+                                            <td className="px-4 py-3 text-center text-gray-500">{b.initialQty}</td>
+                                            <td className="px-4 py-3 text-right font-semibold text-amber-700">₹{Number(b.buyingPrice) > 0 ? b.buyingPrice : (Number(b.costPrice) > 0 ? b.costPrice : (product.buyingPrice || product.price || 0))}</td>
+                                            <td className="px-4 py-3 text-right font-semibold text-emerald-700">₹{Number(b.sellingPrice) > 0 ? b.sellingPrice : (product.sellingPrice || product.price || 0)}</td>
+                                            <td className="px-4 py-3 text-right font-semibold text-indigo-700">₹{Number(b.mrp) > 0 ? b.mrp : (product.mrp || 0)}</td>
+                                            <td className="px-4 py-3 text-center">
+                                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${b.status === 'OPEN' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-500'}`}>
+                                                    {b.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-4 py-3 text-gray-500 text-[11px]">{b.inwardDate ? new Date(b.inwardDate).toLocaleDateString('en-IN') : '—'}</td>
+                                            <td className="px-4 py-3 text-gray-400 text-[11px] max-w-[150px] truncate" title={b.remarks}>{b.remarks || '—'}</td>
+                                            <td className="px-4 py-3 text-center">
+                                                {Array.isArray(b.invoices) && b.invoices.length > 0 ? (
+                                                    <div className="flex items-center justify-center gap-1 flex-wrap max-w-[140px] mx-auto">
+                                                        {b.invoices.map((inv, invIdx) => (
+                                                            <a
+                                                                key={invIdx}
+                                                                href={inv.url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-[#1F618D] border border-blue-200 rounded-md text-[10px] font-semibold transition"
+                                                                title={inv.originalName || `Invoice ${invIdx + 1}`}
+                                                            >
+                                                                <FiFileText size={10} className="text-[#2980b9]" />
+                                                                <span className="truncate max-w-[60px]">{inv.originalName || `Inv ${invIdx + 1}`}</span>
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-gray-300">—</span>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            </div>
+            <ModalFooter>
+                <button
+                    onClick={onClose}
+                    className="px-5 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition"
+                >
+                    Close
+                </button>
+            </ModalFooter>
+        </Modal>
+    );
+};
