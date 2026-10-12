@@ -43,8 +43,8 @@ const ModalHeader = ({ title, subtitle, onClose, icon: Icon }) => (
     <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
         <div className="flex items-center gap-3">
             {Icon && (
-                <div className="w-10 h-10 rounded-xl bg-[#2980b9]/10 flex items-center justify-center">
-                    <Icon size={18} className="text-[#2980b9]" />
+                <div className="w-10 h-10 rounded-xl bg-[#6d99cf]/10 flex items-center justify-center">
+                    <Icon size={18} className="text-[#6d99cf]" />
                 </div>
             )}
             <div>
@@ -66,7 +66,7 @@ const ModalFooter = ({ children }) => (
 
 const SectionTitle = ({ children }) => (
     <div className="flex items-center gap-2 mb-4">
-        <div className="w-0.5 h-4 bg-[#2980b9] rounded-full" />
+        <div className="w-0.5 h-4 bg-[#6d99cf] rounded-full" />
         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{children}</span>
     </div>
 );
@@ -78,7 +78,7 @@ const FieldInput = ({ label, children }) => (
     </div>
 );
 
-const inputCls = "w-full px-3 py-2 text-sm border border-gray-300 rounded-xl outline-none focus:border-[#2980b9]/40 focus:ring-2 focus:ring-[#2980b9]/20 hover:border-gray-400 bg-gray-50 text-gray-700 transition placeholder:text-gray-300";
+const inputCls = "w-full px-3 py-2 text-sm border border-gray-300 rounded-xl outline-none focus:border-[#6d99cf]/40 focus:ring-2 focus:ring-[#6d99cf]/20 hover:border-gray-400 bg-gray-50 text-gray-700 transition placeholder:text-gray-300";
 const selectCls = inputCls;
 
 const FETCH_LIMIT = 100;
@@ -97,7 +97,7 @@ function RowCheckbox({ checked, onChange, indeterminate = false }) {
             checked={checked}
             onChange={onChange}
             onClick={(e) => e.stopPropagation()}
-            className="w-3.5 h-3.5 rounded accent-[#2980b9] cursor-pointer"
+            className="w-3.5 h-3.5 rounded accent-[#6d99cf] cursor-pointer"
         />
     );
 }
@@ -154,7 +154,7 @@ function ProductKeywordInput({ value, onChange }) {
             <div className="relative">
                 <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none" size={12} />
                 {searching && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-[#2980b9]/40 border-t-transparent rounded-full animate-spin pointer-events-none" />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-[#6d99cf]/40 border-t-transparent rounded-full animate-spin pointer-events-none" />
                 )}
                 <input
                     type="text"
@@ -162,7 +162,7 @@ function ProductKeywordInput({ value, onChange }) {
                     onChange={handleChange}
                     onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
                     placeholder="Code, brand, category..."
-                    className="w-full pl-8 pr-8 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-[#2980b9]/40 focus:ring-2 focus:ring-[#2980b9]/20 bg-gray-50 text-gray-700 transition placeholder:text-gray-300"
+                    className="w-full pl-8 pr-8 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf]/40 focus:ring-2 focus:ring-[#6d99cf]/20 bg-gray-50 text-gray-700 transition placeholder:text-gray-300"
                 />
                 {value && !searching && (
                     <button onClick={() => { onChange(""); setSuggestions([]); setShowSuggestions(false); }}
@@ -173,16 +173,16 @@ function ProductKeywordInput({ value, onChange }) {
             </div>
             {showSuggestions && suggestions.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
-                    <div className="px-3 py-2 bg-[#2980b9]/10 border-b border-gray-100">
+                    <div className="px-3 py-2 bg-[#6d99cf]/10 border-b border-gray-100">
                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Suggestions</p>
                     </div>
                     <ul className="max-h-52 overflow-y-auto">
                         {suggestions.map((s, i) => (
                             <li key={i}>
                                 <button onMouseDown={() => handleSelect(s)}
-                                    className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[#2980b9]/10 transition text-left">
-                                    <div className="w-7 h-7 rounded-full bg-[#2980b9]/10 border border-[#2980b9]/20 flex items-center justify-center flex-shrink-0">
-                                        <FiPackage size={11} className="text-[#2980b9]" />
+                                    className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[#6d99cf]/10 transition text-left">
+                                    <div className="w-7 h-7 rounded-full bg-[#6d99cf]/10 border border-[#6d99cf]/20 flex items-center justify-center flex-shrink-0">
+                                        <FiPackage size={11} className="text-[#6d99cf]" />
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-sm font-semibold text-gray-800 truncate">
@@ -373,7 +373,7 @@ export default function Inventory() {
         }
 
         copy[rowIndex].colors = colorsCopy;
-        
+
         const totalQty = colorsCopy.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
         if (totalQty > 0 || colorsCopy.some(item => item.qty !== "")) {
             copy[rowIndex].qty = totalQty;
@@ -523,15 +523,15 @@ export default function Inventory() {
                 <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
                         <button onClick={() => setShowAddProductModal(true)}
-                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm">
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 bg-[#6d99cf] hover:bg-[#6d99cf]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm">
                             <FiPlus size={13} /> Add Product
                         </button>
                         <button onClick={() => setShowBulkUploadModal(true)}
-                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 bg-white border border-[#2980b9]/40 hover:bg-[#2980b9]/10 text-[#2980b9]/90 text-xs font-semibold rounded-xl transition shadow-sm">
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 bg-white border border-[#6d99cf]/40 hover:bg-[#6d99cf]/10 text-[#6d99cf]/90 text-xs font-semibold rounded-xl transition shadow-sm">
                             <FiUpload size={13} /> Bulk Upload
                         </button>
                         <button onClick={handleRefresh}
-                            className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white px-3.5 py-2 text-xs font-semibold rounded-xl transition shadow-sm">
+                            className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-[#6d99cf] hover:bg-[#6d99cf]/90 text-white px-3.5 py-2 text-xs font-semibold rounded-xl transition shadow-sm">
                             <FiRefreshCw size={13} /> Refresh
                         </button>
                         <button onClick={() => setShowLensRangeModal(true)}
@@ -551,7 +551,7 @@ export default function Inventory() {
                                 <div className="relative">
                                     <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" size={12} />
                                     <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)}
-                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-[#2980b9]/40 focus:ring-2 focus:ring-[#2980b9]/20 bg-gray-50 text-gray-700 transition" />
+                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf]/40 focus:ring-2 focus:ring-[#6d99cf]/20 bg-gray-50 text-gray-700 transition" />
                                 </div>
                             </div>
                             <div className="flex flex-col flex-1 sm:w-36">
@@ -559,7 +559,7 @@ export default function Inventory() {
                                 <div className="relative">
                                     <FiCalendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" size={12} />
                                     <input type="date" value={toDate} onChange={e => setToDate(e.target.value)}
-                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-[#2980b9]/40 focus:ring-2 focus:ring-[#2980b9]/20 bg-gray-50 text-gray-700 transition" />
+                                        className="w-full pl-8 pr-2 py-2 text-xs border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf]/40 focus:ring-2 focus:ring-[#6d99cf]/20 bg-gray-50 text-gray-700 transition" />
                                 </div>
                             </div>
                         </div>
@@ -568,7 +568,7 @@ export default function Inventory() {
                         </div>
                         <div className="flex gap-2 w-full sm:w-auto flex-shrink-0">
                             <button onClick={() => setTriggerSearch(prev => prev + 1)}
-                                className="w-full sm:w-auto px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm">
+                                className="w-full sm:w-auto px-5 py-2 bg-[#6d99cf] hover:bg-[#6d99cf]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm">
                                 Search
                             </button>
                         </div>
@@ -599,7 +599,7 @@ export default function Inventory() {
                                 return (
                                     <div key={row.id} className="bg-gray-50 rounded-2xl border border-gray-100 p-4">
                                         <div className="flex items-center justify-between mb-3">
-                                            <span className="text-[10px] font-bold text-[#2980b9] uppercase tracking-widest">Product #{i + 1}</span>
+                                            <span className="text-[10px] font-bold text-[#6d99cf] uppercase tracking-widest">Product #{i + 1}</span>
                                             {rows.length > 1 && (
                                                 <button type="button" onClick={() => removeRow(row.id)}
                                                     className="p-1.5 rounded-lg hover:bg-red-50 text-red-400 transition">
@@ -726,7 +726,7 @@ export default function Inventory() {
                                                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/70 rounded-2xl p-4">
                                                     <div className="flex items-center justify-between mb-3">
                                                         <div className="flex items-center gap-2">
-                                                            <span className="w-2.5 h-2.5 rounded-full bg-[#2980b9]" />
+                                                            <span className="w-2.5 h-2.5 rounded-full bg-[#6d99cf]" />
                                                             <label className="text-[11px] font-bold text-[#1a5276] uppercase tracking-wider">
                                                                 Batch Allocation <span className="text-gray-400 font-normal normal-case">(Optional)</span>
                                                             </label>
@@ -737,79 +737,77 @@ export default function Inventory() {
                                                             </span>
                                                             <div
                                                                 onClick={() => handleChange(i, 'allocateBatch', !row.allocateBatch)}
-                                                                className={`relative w-9 h-5 rounded-full transition-colors duration-200 cursor-pointer ${
-                                                                    row.allocateBatch ? 'bg-[#2980b9]' : 'bg-gray-300'
-                                                                }`}
+                                                                className={`relative w-9 h-5 rounded-full transition-colors duration-200 cursor-pointer ${row.allocateBatch ? 'bg-[#6d99cf]' : 'bg-gray-300'
+                                                                    }`}
                                                             >
-                                                                <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${
-                                                                    row.allocateBatch ? 'translate-x-4' : 'translate-x-0'
-                                                                }`} />
+                                                                <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${row.allocateBatch ? 'translate-x-4' : 'translate-x-0'
+                                                                    }`} />
                                                             </div>
                                                         </label>
                                                     </div>
                                                     {row.allocateBatch && (
-                                                       <>
-                                                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                                            <FieldInput label="Batch Number">
-                                                                <input
-                                                                    type="text"
-                                                                    value={row.batchNumber}
-                                                                    className={inputCls}
-                                                                    placeholder="Auto-generated if blank"
-                                                                    onChange={e => handleChange(i, 'batchNumber', e.target.value)}
-                                                                />
-                                                            </FieldInput>
-                                                            <FieldInput label={`Batch Qty (Max: ${row.qty || 0})`}>
-                                                                <input
-                                                                    type="number"
-                                                                    min="1"
-                                                                    max={row.qty || undefined}
-                                                                    value={row.batchQty}
-                                                                    className={inputCls}
-                                                                    placeholder={`Default: full qty (${row.qty || 0})`}
-                                                                    onChange={e => handleChange(i, 'batchQty', e.target.value)}
-                                                                />
-                                                            </FieldInput>
-                                                            <FieldInput label="Batch Remarks">
-                                                                <input
-                                                                    type="text"
-                                                                    value={row.batchRemarks}
-                                                                    className={inputCls}
-                                                                    placeholder="e.g. Initial stock"
-                                                                    onChange={e => handleChange(i, 'batchRemarks', e.target.value)}
-                                                                />
-                                                            </FieldInput>
-                                                        </div>
-                                                    {/* Invoice / Challan Upload */}
-                                                    <div className="mt-3">
-                                                            <label className="text-[10px] font-bold text-gray-600 uppercase tracking-wide block mb-1.5 flex items-center gap-1.5">
-                                                                <FiFileText size={11} className="text-[#2980b9]" /> Invoice / Challan (optional, max 5)
-                                                            </label>
-                                                            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#eaf4fb] hover:bg-[#d5eaf6] border border-[#2980b9]/30 text-[#1F618D] text-[11px] font-semibold rounded-lg cursor-pointer transition">
-                                                                <FiUpload size={11} />
-                                                                Attach Files
-                                                                <input type="file" multiple accept="application/pdf,image/*" className="hidden"
-                                                                    onChange={e => {
-                                                                        const newFiles = Array.from(e.target.files || []);
-                                                                        handleChange(i, 'invoices', [...(row.invoices || []), ...newFiles].slice(0, 5));
-                                                                        e.target.value = '';
-                                                                    }}
-                                                                />
-                                                            </label>
-                                                            {(row.invoices || []).length > 0 && (
-                                                                <div className="flex flex-wrap gap-1.5 mt-2">
-                                                                    {row.invoices.map((f, fi) => (
-                                                                        <span key={fi} className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-medium rounded-full">
-                                                                            <FiFileText size={9} />
-                                                                            {f.name.length > 18 ? f.name.slice(0, 15) + '…' : f.name}
-                                                                            <button type="button" onClick={() => handleChange(i, 'invoices', row.invoices.filter((_, idx) => idx !== fi))} className="text-blue-400 hover:text-red-500 ml-0.5">×</button>
-                                                                        </span>
-                                                                    ))}
-                                                                </div>
-                                                            )}
-                                                        </div>
+                                                        <>
+                                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                                                <FieldInput label="Batch Number">
+                                                                    <input
+                                                                        type="text"
+                                                                        value={row.batchNumber}
+                                                                        className={inputCls}
+                                                                        placeholder="Auto-generated if blank"
+                                                                        onChange={e => handleChange(i, 'batchNumber', e.target.value)}
+                                                                    />
+                                                                </FieldInput>
+                                                                <FieldInput label={`Batch Qty (Max: ${row.qty || 0})`}>
+                                                                    <input
+                                                                        type="number"
+                                                                        min="1"
+                                                                        max={row.qty || undefined}
+                                                                        value={row.batchQty}
+                                                                        className={inputCls}
+                                                                        placeholder={`Default: full qty (${row.qty || 0})`}
+                                                                        onChange={e => handleChange(i, 'batchQty', e.target.value)}
+                                                                    />
+                                                                </FieldInput>
+                                                                <FieldInput label="Batch Remarks">
+                                                                    <input
+                                                                        type="text"
+                                                                        value={row.batchRemarks}
+                                                                        className={inputCls}
+                                                                        placeholder="e.g. Initial stock"
+                                                                        onChange={e => handleChange(i, 'batchRemarks', e.target.value)}
+                                                                    />
+                                                                </FieldInput>
+                                                            </div>
+                                                            {/* Invoice / Challan Upload */}
+                                                            <div className="mt-3">
+                                                                <label className="text-[10px] font-bold text-gray-600 uppercase tracking-wide block mb-1.5 flex items-center gap-1.5">
+                                                                    <FiFileText size={11} className="text-[#6d99cf]" /> Invoice / Challan (optional, max 5)
+                                                                </label>
+                                                                <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#eaf4fb] hover:bg-[#d5eaf6] border border-[#6d99cf]/30 text-[#6d99cf] text-[11px] font-semibold rounded-lg cursor-pointer transition">
+                                                                    <FiUpload size={11} />
+                                                                    Attach Files
+                                                                    <input type="file" multiple accept="application/pdf,image/*" className="hidden"
+                                                                        onChange={e => {
+                                                                            const newFiles = Array.from(e.target.files || []);
+                                                                            handleChange(i, 'invoices', [...(row.invoices || []), ...newFiles].slice(0, 5));
+                                                                            e.target.value = '';
+                                                                        }}
+                                                                    />
+                                                                </label>
+                                                                {(row.invoices || []).length > 0 && (
+                                                                    <div className="flex flex-wrap gap-1.5 mt-2">
+                                                                        {row.invoices.map((f, fi) => (
+                                                                            <span key={fi} className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-medium rounded-full">
+                                                                                <FiFileText size={9} />
+                                                                                {f.name.length > 18 ? f.name.slice(0, 15) + '…' : f.name}
+                                                                                <button type="button" onClick={() => handleChange(i, 'invoices', row.invoices.filter((_, idx) => idx !== fi))} className="text-blue-400 hover:text-red-500 ml-0.5">×</button>
+                                                                            </span>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+                                                            </div>
                                                         </>
-                                                        )}
+                                                    )}
 
                                                     {!row.allocateBatch && (
                                                         <p className="text-[11px] text-gray-400 mt-1">
@@ -824,7 +822,7 @@ export default function Inventory() {
                                                     <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs space-y-3">
                                                         <div className="flex items-center justify-between pb-2 border-b border-gray-100">
                                                             <div className="flex items-center gap-2">
-                                                                <span className="w-2.5 h-2.5 rounded-full bg-[#2980b9]"></span>
+                                                                <span className="w-2.5 h-2.5 rounded-full bg-[#6d99cf]"></span>
                                                                 <label className="text-[11px] font-bold text-gray-700 uppercase tracking-wider">
                                                                     Colors & Variants
                                                                 </label>
@@ -841,7 +839,7 @@ export default function Inventory() {
                                                             {row.colors?.map((cItem, cIdx) => (
                                                                 <div key={cIdx} className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 p-2.5 bg-gray-50/80 rounded-xl border border-gray-200/80 hover:border-gray-300 transition">
                                                                     {/* Color Picker + Name/Hex */}
-                                                                    <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-xl p-1.5 pr-3 flex-1 min-w-[200px] focus-within:border-[#2980b9] focus-within:ring-2 focus-within:ring-[#2980b9]/20 transition">
+                                                                    <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-xl p-1.5 pr-3 flex-1 min-w-[200px] focus-within:border-[#6d99cf] focus-within:ring-2 focus-within:ring-[#6d99cf]/20 transition">
                                                                         <input
                                                                             type="color"
                                                                             value={parseColorToHex(cItem.color)}
@@ -881,7 +879,7 @@ export default function Inventory() {
                                                                                     className="w-full h-full object-contain p-0.5"
                                                                                 />
                                                                                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
-                                                                                    <label className="p-1 text-white hover:text-[#2980b9] cursor-pointer transition" title="Change color image">
+                                                                                    <label className="p-1 text-white hover:text-[#6d99cf] cursor-pointer transition" title="Change color image">
                                                                                         <FiUpload size={12} />
                                                                                         <input
                                                                                             type="file"
@@ -905,8 +903,8 @@ export default function Inventory() {
                                                                                 </div>
                                                                             </div>
                                                                         ) : (
-                                                                            <label className="flex items-center gap-1.5 px-3 py-2 bg-white border border-dashed border-gray-300 hover:border-[#2980b9] hover:bg-[#2980b9]/5 rounded-xl text-xs font-semibold text-gray-600 hover:text-[#2980b9] cursor-pointer transition shadow-2xs">
-                                                                                <FiImage size={13} className="text-[#2980b9]" />
+                                                                            <label className="flex items-center gap-1.5 px-3 py-2 bg-white border border-dashed border-gray-300 hover:border-[#6d99cf] hover:bg-[#6d99cf]/5 rounded-xl text-xs font-semibold text-gray-600 hover:text-[#6d99cf] cursor-pointer transition shadow-2xs">
+                                                                                <FiImage size={13} className="text-[#6d99cf]" />
                                                                                 <span>Upload Image</span>
                                                                                 <input
                                                                                     type="file"
@@ -940,7 +938,7 @@ export default function Inventory() {
                                                         <button
                                                             type="button"
                                                             onClick={() => addColorRow(i)}
-                                                            className="mt-1 px-3.5 py-1.5 border border-dashed border-[#2980b9] text-[#2980b9] hover:bg-blue-50 text-xs font-bold rounded-xl transition flex items-center gap-1.5"
+                                                            className="mt-1 px-3.5 py-1.5 border border-dashed border-[#6d99cf] text-[#6d99cf] hover:bg-blue-50 text-xs font-bold rounded-xl transition flex items-center gap-1.5"
                                                         >
                                                             <FiPlus size={13} /> + Color Variant
                                                         </button>
@@ -952,7 +950,7 @@ export default function Inventory() {
                                 );
                             })}
                             <button type="button" onClick={addRow}
-                                className="w-full py-3 border-2 border-dashed border-[#2980b9]/40 hover:border-[#2980b9]/60 text-[#2980b9] hover:text-[#2980b9]/90 text-xs font-semibold rounded-2xl transition flex items-center justify-center gap-2">
+                                className="w-full py-3 border-2 border-dashed border-[#6d99cf]/40 hover:border-[#6d99cf]/60 text-[#6d99cf] hover:text-[#6d99cf]/90 text-xs font-semibold rounded-2xl transition flex items-center justify-center gap-2">
                                 <FiPlus size={14} /> Add Another Product
                             </button>
                         </div>
@@ -962,7 +960,7 @@ export default function Inventory() {
                                 Cancel
                             </button>
                             <button type="submit"
-                                className="px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm">
+                                className="px-5 py-2 bg-[#6d99cf] hover:bg-[#6d99cf]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm">
                                 Submit Products
                             </button>
                         </ModalFooter>
@@ -2045,14 +2043,14 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                 remarks: batchFormData.remarks
             });
             toast.success(res?.message || "Batch allocated successfully!");
-            setBatchFormData({ 
-                batchNumber: '', 
-                qty: 0, 
-                costPrice: bPrice, 
-                buyingPrice: bPrice, 
-                sellingPrice: sPrice, 
-                mrp: mPrice, 
-                remarks: '' 
+            setBatchFormData({
+                batchNumber: '',
+                qty: 0,
+                costPrice: bPrice,
+                buyingPrice: bPrice,
+                sellingPrice: sPrice,
+                mrp: mPrice,
+                remarks: ''
             });
             fetchBatchesForSelectedProduct(batchProduct._id);
         } catch (err) {
@@ -2280,9 +2278,9 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                 (bulkProducts?.[i]?.category) ||
                 "";
             if (isContactLens(productCategory)) {
-                if (!row.coating?.trim())       return `Coating is required for Contact Lens (Row ${i + 1})`;
+                if (!row.coating?.trim()) return `Coating is required for Contact Lens (Row ${i + 1})`;
                 if (!row.disposability?.trim()) return `Disposability is required for Contact Lens (Row ${i + 1})`;
-                if (!row.expiry)                return `Expiry Date is required for Contact Lens (Row ${i + 1})`;
+                if (!row.expiry) return `Expiry Date is required for Contact Lens (Row ${i + 1})`;
             }
         }
         return null;
@@ -2549,7 +2547,7 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                 <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); handleOpenProductDetailsModal(row.original); }}
-                    className="font-mono text-xs font-bold text-[#2980b9] hover:text-[#1a5276] hover:underline cursor-pointer transition text-center truncate block w-full"
+                    className="font-mono text-xs font-bold text-[#6d99cf] hover:text-[#1a5276] hover:underline cursor-pointer transition text-center truncate block w-full"
                     title={getValue() || "Click to view product details & receiving history"}
                 >
                     {getValue()}
@@ -2563,7 +2561,7 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                 <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); handleOpenProductDetailsModal(row.original); }}
-                    className="font-semibold text-gray-900 hover:text-[#2980b9] hover:underline cursor-pointer transition text-left truncate block w-full"
+                    className="font-semibold text-gray-900 hover:text-[#6d99cf] hover:underline cursor-pointer transition text-left truncate block w-full"
                     title={getValue() || "Click to view product details & receiving history"}
                 >
                     {getValue()}
@@ -2583,7 +2581,7 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                         {displayImg && displayImg !== "/placeholder-product.png" ? (
                             <button
                                 onClick={e => { e.stopPropagation(); window.open(displayImg, "_blank"); }}
-                                className="w-8 h-8 rounded-lg overflow-hidden border border-gray-200 hover:border-[#2980b9] bg-white flex items-center justify-center p-0.5 shadow-2xs transition shrink-0"
+                                className="w-8 h-8 rounded-lg overflow-hidden border border-gray-200 hover:border-[#6d99cf] bg-white flex items-center justify-center p-0.5 shadow-2xs transition shrink-0"
                                 title="Click to view full image"
                             >
                                 <img
@@ -2734,7 +2732,7 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
         return (
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm flex items-center justify-center py-20">
                 <div className="flex flex-col items-center gap-3">
-                    <div className="w-8 h-8 border-2 border-[#2980b9]/40 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-8 h-8 border-2 border-[#6d99cf]/40 border-t-transparent rounded-full animate-spin" />
                     <span className="text-sm text-gray-400">Loading inventory...</span>
                 </div>
             </div>
@@ -2751,9 +2749,9 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                 {selectedCount > 0 ? (
                     <div className="flex items-center gap-3 flex-wrap">
                         {/* Selection summary badge */}
-                        <div className="flex items-center gap-2 bg-[#2980b9]/10 border border-[#2980b9]/40 rounded-xl px-3 py-1.5">
-                            <FiCheckSquare size={13} className="text-[#2980b9]" />
-                            <span className="text-xs font-bold text-[#2980b9]/90">
+                        <div className="flex items-center gap-2 bg-[#6d99cf]/10 border border-[#6d99cf]/40 rounded-xl px-3 py-1.5">
+                            <FiCheckSquare size={13} className="text-[#6d99cf]" />
+                            <span className="text-xs font-bold text-[#6d99cf]/90">
                                 {selectedCount} row{selectedCount > 1 ? "s" : ""} selected
                             </span>
                         </div>
@@ -2792,7 +2790,7 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                     <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" size={13} />
                     <input type="text" value={globalFilter ?? ""} onChange={e => setGlobalFilter(e.target.value)}
                         placeholder="Quick search..."
-                        className="w-full pl-8 pr-7 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-[#2980b9]/40 focus:ring-2 focus:ring-[#2980b9]/20 transition text-gray-600 placeholder:text-gray-300" />
+                        className="w-full pl-8 pr-7 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf]/40 focus:ring-2 focus:ring-[#6d99cf]/20 transition text-gray-600 placeholder:text-gray-300" />
                     {globalFilter && (
                         <button
                             onClick={() => setGlobalFilter("")}
@@ -2812,11 +2810,10 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                     <button
                         type="button"
                         onClick={() => setExpandedGroups({ powers: false, specs: false })}
-                        className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
-                            !expandedGroups.powers && !expandedGroups.specs
-                                ? 'bg-erp-accent text-white shadow-sm ring-2 ring-erp-accent/30'
-                                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
-                        }`}
+                        className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${!expandedGroups.powers && !expandedGroups.specs
+                            ? 'bg-erp-accent text-white shadow-sm ring-2 ring-erp-accent/30'
+                            : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
+                            }`}
                     >
                         <Icon icon="mdi:view-compact-outline" className="text-sm" />
                         Compact Mode (Zero Scroll)
@@ -2824,11 +2821,10 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                     <button
                         type="button"
                         onClick={() => setExpandedGroups({ powers: true, specs: true })}
-                        className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
-                            expandedGroups.powers && expandedGroups.specs
-                                ? 'bg-erp-accent text-white shadow-sm ring-2 ring-erp-accent/30'
-                                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
-                        }`}
+                        className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${expandedGroups.powers && expandedGroups.specs
+                            ? 'bg-erp-accent text-white shadow-sm ring-2 ring-erp-accent/30'
+                            : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-100'
+                            }`}
                     >
                         <Icon icon="mdi:table-eye" className="text-sm" />
                         Full Table (All Columns)
@@ -2840,11 +2836,10 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                     <button
                         type="button"
                         onClick={() => toggleGroup('powers')}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 cursor-pointer ${
-                            expandedGroups.powers
-                                ? 'bg-blue-100 text-erp-accent border-erp-accent/40 font-semibold'
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
-                        }`}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 cursor-pointer ${expandedGroups.powers
+                            ? 'bg-blue-100 text-erp-accent border-erp-accent/40 font-semibold'
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                            }`}
                         title="Expand / Collapse SPH, CYL, Axis, Add columns"
                     >
                         Powers {expandedGroups.powers ? '▴ (Expanded)' : '▸ (Collapsed)'}
@@ -2852,11 +2847,10 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                     <button
                         type="button"
                         onClick={() => toggleGroup('specs')}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 cursor-pointer ${
-                            expandedGroups.specs
-                                ? 'bg-blue-100 text-erp-accent border-erp-accent/40 font-semibold'
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
-                        }`}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 cursor-pointer ${expandedGroups.specs
+                            ? 'bg-blue-100 text-erp-accent border-erp-accent/40 font-semibold'
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                            }`}
                         title="Expand / Collapse Dimensions, Material, Coating, Expiry"
                     >
                         Specs {expandedGroups.specs ? '▴ (Expanded)' : '▸ (Collapsed)'}
@@ -2933,8 +2927,8 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                         {table.getRowModel().rows.map((row, rIdx) => {
                             const isChecked = !!selectedRows[row.original._id];
                             const isEven = rIdx % 2 === 0;
-                            const rowBgClass = isChecked 
-                                ? "bg-blue-50/90 hover:bg-blue-100/90 shadow-[inset_3px_0_0_0_#2980b9]" 
+                            const rowBgClass = isChecked
+                                ? "bg-blue-50/90 hover:bg-blue-100/90 shadow-[inset_3px_0_0_0_#6d99cf]"
                                 : (isEven ? "bg-white hover:bg-blue-50/40" : "bg-gray-50/30 hover:bg-blue-50/40");
 
                             return (
@@ -3052,11 +3046,10 @@ function InventoryTable({ fromDate, setFromDate, toDate, setToDate, keyword, set
                                     <button
                                         key={p}
                                         onClick={() => handlePageChange(p)}
-                                        className={`w-8 h-8 text-xs rounded-lg font-semibold transition ${
-                                            p === page
-                                                ? "bg-[#2980b9] text-white shadow-sm"
-                                                : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
-                                        }`}
+                                        className={`w-8 h-8 text-xs rounded-lg font-semibold transition ${p === page
+                                            ? "bg-[#6d99cf] text-white shadow-sm"
+                                            : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                                            }`}
                                     >
                                         {p}
                                     </button>
@@ -3184,7 +3177,7 @@ function EditProductModal({ product, settings, onClose, onSuccess }) {
     useEffect(() => {
         api.get("/api/vendor", { params: { page: 1, limit: 1000 } })
             .then(res => { if (res.data.success) setVendors(res.data.vendors || []); })
-            .catch(() => {});
+            .catch(() => { });
     }, []);
     useEffect(() => {
         if (!vendors.length) return;
@@ -3200,7 +3193,7 @@ function EditProductModal({ product, settings, onClose, onSuccess }) {
 
     useEffect(() => {
         if (product) {
-            const initialColor = product.color 
+            const initialColor = product.color
                 || (Array.isArray(product.colors) && product.colors.find(c => c?.color)?.color)
                 || (Array.isArray(product.colors) && product.colors[0]?.color)
                 || "";
@@ -3404,7 +3397,7 @@ function EditProductModal({ product, settings, onClose, onSuccess }) {
                     <button type="button" onClick={onClose}
                         className="px-4 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition">Cancel</button>
                     <button type="submit" disabled={saving}
-                        className="flex items-center gap-2 px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm disabled:opacity-60">
+                        className="flex items-center gap-2 px-5 py-2 bg-[#6d99cf] hover:bg-[#6d99cf]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm disabled:opacity-60">
                         {saving && <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />}
                         {saving ? "Saving..." : "Save Changes"}
                     </button>
@@ -3464,12 +3457,12 @@ const InventoryModal = ({
                                     {singleProduct.images?.[0] ? (
                                         <img src={singleProduct.images[0]} alt="" className="w-full h-full object-contain" />
                                     ) : (
-                                        <FiPackage className="text-[#2980b9]" size={22} />
+                                        <FiPackage className="text-[#6d99cf]" size={22} />
                                     )}
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2 flex-wrap">
-                                        <span className="font-mono text-xs font-bold text-[#2980b9] bg-white px-2 py-0.5 rounded-md border border-blue-200">
+                                        <span className="font-mono text-xs font-bold text-[#6d99cf] bg-white px-2 py-0.5 rounded-md border border-blue-200">
                                             {singleProduct.productCode}
                                         </span>
                                         {singleProduct.category && (
@@ -3514,11 +3507,11 @@ const InventoryModal = ({
                     {inventoryRows.map((row, index) => {
                         const associatedProduct = bulkProducts?.[index] || (isSingle ? singleProduct : null);
                         return (
-                            <div key={index} className="bg-white rounded-2xl border border-gray-200 shadow-xs p-5 hover:border-[#2980b9]/40 transition space-y-4">
+                            <div key={index} className="bg-white rounded-2xl border border-gray-200 shadow-xs p-5 hover:border-[#6d99cf]/40 transition space-y-4">
                                 {/* Row Header */}
                                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                                     <div className="flex items-center gap-2 flex-wrap">
-                                        <span className="w-6 h-6 rounded-lg bg-[#2980b9]/10 text-[#2980b9] text-xs font-bold flex items-center justify-center">
+                                        <span className="w-6 h-6 rounded-lg bg-[#6d99cf]/10 text-[#6d99cf] text-xs font-bold flex items-center justify-center">
                                             {index + 1}
                                         </span>
                                         {associatedProduct ? (
@@ -3553,7 +3546,7 @@ const InventoryModal = ({
                                 {/* Section 1: Batch & Quantity */}
                                 <div>
                                     <div className="flex items-center gap-1.5 mb-2">
-                                        <div className="w-1.5 h-3.5 bg-[#2980b9] rounded-full" />
+                                        <div className="w-1.5 h-3.5 bg-[#6d99cf] rounded-full" />
                                         <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                                             Batch Details & Quantity
                                         </span>
@@ -3769,11 +3762,11 @@ const InventoryModal = ({
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                             <div>
                                                 <label className="text-[11px] font-bold text-gray-700 flex items-center gap-1.5">
-                                                    <FiPaperclip size={12} className="text-[#2980b9]" /> Invoice / Challan / Bill (Optional, max 5)
+                                                    <FiPaperclip size={12} className="text-[#6d99cf]" /> Invoice / Challan / Bill (Optional, max 5)
                                                 </label>
                                                 <p className="text-[10px] text-gray-400">Attach purchase invoices, bills, or delivery challans for this inward</p>
                                             </div>
-                                            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#eaf4fb] hover:bg-[#d5eaf6] border border-[#2980b9]/30 text-[#1F618D] text-xs font-semibold rounded-lg cursor-pointer transition self-start sm:self-auto">
+                                            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#eaf4fb] hover:bg-[#d5eaf6] border border-[#6d99cf]/30 text-[#6d99cf] text-xs font-semibold rounded-lg cursor-pointer transition self-start sm:self-auto">
                                                 <FiUpload size={12} />
                                                 <span>Attach Files</span>
                                                 <input
@@ -3794,7 +3787,7 @@ const InventoryModal = ({
                                             <div className="flex flex-wrap gap-1.5 mt-2">
                                                 {row.invoices.map((f, fi) => (
                                                     <span key={fi} className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-800 text-[11px] font-medium rounded-lg">
-                                                        <FiFileText size={11} className="text-[#2980b9]" />
+                                                        <FiFileText size={11} className="text-[#6d99cf]" />
                                                         <span className="truncate max-w-[160px]">{f.name}</span>
                                                         <button
                                                             type="button"
@@ -3817,7 +3810,7 @@ const InventoryModal = ({
                         <button
                             type="button"
                             onClick={addRow}
-                            className="w-full py-3 border-2 border-dashed border-[#2980b9]/40 hover:border-[#2980b9]/60 hover:bg-[#2980b9]/5 text-[#2980b9] text-xs font-semibold rounded-2xl transition flex items-center justify-center gap-2"
+                            className="w-full py-3 border-2 border-dashed border-[#6d99cf]/40 hover:border-[#6d99cf]/60 hover:bg-[#6d99cf]/5 text-[#6d99cf] text-xs font-semibold rounded-2xl transition flex items-center justify-center gap-2"
                         >
                             <FiPlus size={15} /> Add Another Product Row
                         </button>
@@ -3844,7 +3837,7 @@ const InventoryModal = ({
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm flex items-center gap-2 disabled:opacity-60"
+                        className="px-5 py-2 bg-[#6d99cf] hover:bg-[#6d99cf]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm flex items-center gap-2 disabled:opacity-60"
                     >
                         {isSubmitting ? (
                             <>
@@ -3967,13 +3960,13 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0 bg-white">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#2980b9]/10 flex items-center justify-center text-[#2980b9]">
+                    <div className="w-10 h-10 rounded-xl bg-[#6d99cf]/10 flex items-center justify-center text-[#6d99cf]">
                         <FiPackage size={20} />
                     </div>
                     <div>
                         <div className="flex items-center gap-2 flex-wrap">
                             <h2 className="text-base font-bold text-gray-800">{curr.productName}</h2>
-                            <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-blue-50 text-[#2980b9] font-bold border border-blue-100">
+                            <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-blue-50 text-[#6d99cf] font-bold border border-blue-100">
                                 {curr.productCode}
                             </span>
                             {curr.category && (
@@ -3994,14 +3987,12 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <div className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 ${
-                        stockQty > 10 ? "bg-emerald-50 text-emerald-700 border border-emerald-200" :
+                    <div className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 ${stockQty > 10 ? "bg-emerald-50 text-emerald-700 border border-emerald-200" :
                         stockQty > 0 ? "bg-amber-50 text-amber-700 border border-amber-200" :
-                        "bg-red-50 text-red-700 border border-red-200"
-                    }`}>
-                        <span className={`w-2 h-2 rounded-full ${
-                            stockQty > 10 ? "bg-emerald-500" : stockQty > 0 ? "bg-amber-500" : "bg-red-500"
-                        }`} />
+                            "bg-red-50 text-red-700 border border-red-200"
+                        }`}>
+                        <span className={`w-2 h-2 rounded-full ${stockQty > 10 ? "bg-emerald-500" : stockQty > 0 ? "bg-amber-500" : "bg-red-500"
+                            }`} />
                         <span>{stockQty > 0 ? `In Stock: ${stockQty} Units` : "Out of Stock"}</span>
                     </div>
 
@@ -4097,17 +4088,15 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                         <button
                             type="button"
                             onClick={() => setActiveTab("RECEIVING")}
-                            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
-                                activeTab === "RECEIVING"
-                                    ? "bg-[#2980b9] text-white shadow-sm"
-                                    : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-                            }`}
+                            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${activeTab === "RECEIVING"
+                                ? "bg-[#6d99cf] text-white shadow-sm"
+                                : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                                }`}
                         >
                             <FiTruck size={14} />
                             <span>Receiving History</span>
-                            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                                activeTab === "RECEIVING" ? "bg-white/25 text-white" : "bg-gray-200 text-gray-700"
-                            }`}>
+                            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${activeTab === "RECEIVING" ? "bg-white/25 text-white" : "bg-gray-200 text-gray-700"
+                                }`}>
                                 {receivingHistory.length}
                             </span>
                         </button>
@@ -4115,17 +4104,15 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                         <button
                             type="button"
                             onClick={() => setActiveTab("BATCHES")}
-                            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
-                                activeTab === "BATCHES"
-                                    ? "bg-[#2980b9] text-white shadow-sm"
-                                    : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-                            }`}
+                            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${activeTab === "BATCHES"
+                                ? "bg-[#6d99cf] text-white shadow-sm"
+                                : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                                }`}
                         >
                             <FiLayers size={14} />
                             <span>Assigned Batches</span>
-                            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                                activeTab === "BATCHES" ? "bg-white/25 text-white" : "bg-gray-200 text-gray-700"
-                            }`}>
+                            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${activeTab === "BATCHES" ? "bg-white/25 text-white" : "bg-gray-200 text-gray-700"
+                                }`}>
                                 {batches.length}
                             </span>
                         </button>
@@ -4133,11 +4120,10 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                         <button
                             type="button"
                             onClick={() => setActiveTab("SPECS")}
-                            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
-                                activeTab === "SPECS"
-                                    ? "bg-[#2980b9] text-white shadow-sm"
-                                    : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-                            }`}
+                            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${activeTab === "SPECS"
+                                ? "bg-[#6d99cf] text-white shadow-sm"
+                                : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                                }`}
                         >
                             <FiTag size={14} />
                             <span>Product Specifications</span>
@@ -4152,7 +4138,7 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                                 placeholder="Search vendor, batch, invoice..."
                                 value={historySearch}
                                 onChange={e => setHistorySearch(e.target.value)}
-                                className="w-full pl-8 pr-3 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:bg-white font-medium"
+                                className="w-full pl-8 pr-3 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf] focus:bg-white font-medium"
                             />
                         </div>
                     )}
@@ -4161,7 +4147,7 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                 {/* ── Tab Content ── */}
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-16 gap-3">
-                        <div className="w-8 h-8 border-2 border-[#2980b9] border-t-transparent rounded-full animate-spin" />
+                        <div className="w-8 h-8 border-2 border-[#6d99cf] border-t-transparent rounded-full animate-spin" />
                         <span className="text-xs text-gray-400 font-semibold">Loading receiving history & details...</span>
                     </div>
                 ) : (
@@ -4180,7 +4166,7 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                                 ) : (
                                     <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-2xs">
                                         <table className="w-full text-left text-xs border-collapse">
-                                            <thead className="bg-[#eaf4fb]/70 text-[#1F618D] font-bold text-[10px] uppercase tracking-wider border-b border-[#2980b9]/15">
+                                            <thead className="bg-[#eaf4fb]/70 text-[#6d99cf] font-bold text-[10px] uppercase tracking-wider border-b border-[#6d99cf]/15">
                                                 <tr>
                                                     <th className="px-4 py-3 whitespace-nowrap">Purchase Date</th>
                                                     <th className="px-4 py-3 whitespace-nowrap">Received On</th>
@@ -4210,7 +4196,7 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
 
                                                         {/* Received On */}
                                                         <td className="px-4 py-3 whitespace-nowrap">
-                                                            <span className="px-2 py-0.5 rounded-lg bg-blue-50 text-[#1F618D] font-bold text-[11px]">
+                                                            <span className="px-2 py-0.5 rounded-lg bg-blue-50 text-[#6d99cf] font-bold text-[11px]">
                                                                 {formatDate(item.receivedOn || item.inwardDate)}
                                                             </span>
                                                         </td>
@@ -4229,11 +4215,10 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
 
                                                         {/* Batch Stock (Remaining) */}
                                                         <td className="px-4 py-3 text-center whitespace-nowrap">
-                                                            <span className={`px-2.5 py-1 rounded-lg text-xs font-extrabold inline-flex items-center gap-1.5 ${
-                                                                (item.availableQty != null ? item.availableQty : item.receivedQty) > 0
-                                                                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                                                    : "bg-red-50 text-red-600 border border-red-200"
-                                                            }`}>
+                                                            <span className={`px-2.5 py-1 rounded-lg text-xs font-extrabold inline-flex items-center gap-1.5 ${(item.availableQty != null ? item.availableQty : item.receivedQty) > 0
+                                                                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                                                : "bg-red-50 text-red-600 border border-red-200"
+                                                                }`}>
                                                                 <span>{item.availableQty != null ? item.availableQty : item.receivedQty}</span>
                                                                 <span className="text-[10px] font-normal text-gray-500">
                                                                     avail
@@ -4256,11 +4241,10 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                                                         {/* QC Passed */}
                                                         <td className="px-4 py-3 text-center whitespace-nowrap">
                                                             {item.passedQty != null ? (
-                                                                <span className={`px-2 py-0.5 rounded-full text-xs font-bold inline-flex items-center gap-1 ${
-                                                                    Number(item.passedQty) > 0
-                                                                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                                                        : "text-gray-400"
-                                                                }`}>
+                                                                <span className={`px-2 py-0.5 rounded-full text-xs font-bold inline-flex items-center gap-1 ${Number(item.passedQty) > 0
+                                                                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                                                    : "text-gray-400"
+                                                                    }`}>
                                                                     <FiCheckCircle size={11} className={Number(item.passedQty) > 0 ? "text-emerald-600" : "text-gray-400"} />
                                                                     <span>{item.passedQty}</span>
                                                                 </span>
@@ -4318,11 +4302,10 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
 
                                                         {/* Condition */}
                                                         <td className="px-4 py-3 text-center whitespace-nowrap">
-                                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                                                                item.condition === "GOOD" ? "bg-emerald-50 text-emerald-700" :
+                                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${item.condition === "GOOD" ? "bg-emerald-50 text-emerald-700" :
                                                                 item.condition === "DAMAGED" ? "bg-red-50 text-red-700" :
-                                                                "bg-amber-50 text-amber-700"
-                                                            }`}>
+                                                                    "bg-amber-50 text-amber-700"
+                                                                }`}>
                                                                 {item.condition || "GOOD"}
                                                             </span>
                                                         </td>
@@ -4342,10 +4325,10 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                                                                             href={inv.url}
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
-                                                                            className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-[#1F618D] border border-blue-200 rounded-md text-[10px] font-semibold transition"
+                                                                            className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-[#6d99cf] border border-blue-200 rounded-md text-[10px] font-semibold transition"
                                                                             title={inv.originalName || `Invoice ${invIdx + 1}`}
                                                                         >
-                                                                            <FiFileText size={10} className="text-[#2980b9]" />
+                                                                            <FiFileText size={10} className="text-[#6d99cf]" />
                                                                             <span className="truncate max-w-[70px]">{inv.originalName || `Inv ${invIdx + 1}`}</span>
                                                                         </a>
                                                                     ))}
@@ -4394,7 +4377,7 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                                             <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
                                                 {batches.map((b) => (
                                                     <tr key={b._id} className="hover:bg-gray-50/50 transition-colors">
-                                                        <td className="px-4 py-3 font-mono font-bold text-[#2980b9]">
+                                                        <td className="px-4 py-3 font-mono font-bold text-[#6d99cf]">
                                                             <span className="px-2 py-0.5 bg-blue-50 border border-blue-100 rounded-lg">
                                                                 {b.batchNumber}
                                                             </span>
@@ -4415,9 +4398,8 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                                                             ₹{b.mrp != null ? b.mrp : (curr.mrp || 0)}
                                                         </td>
                                                         <td className="px-4 py-3 text-center">
-                                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
-                                                                b.status === "OPEN" ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-500"
-                                                            }`}>
+                                                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${b.status === "OPEN" ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-500"
+                                                                }`}>
                                                                 {b.status}
                                                             </span>
                                                         </td>
@@ -4436,10 +4418,10 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                                                                             href={inv.url}
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
-                                                                            className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-[#1F618D] border border-blue-200 rounded-md text-[10px] font-semibold transition"
+                                                                            className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-[#6d99cf] border border-blue-200 rounded-md text-[10px] font-semibold transition"
                                                                             title={inv.originalName || `Invoice ${invIdx + 1}`}
                                                                         >
-                                                                            <FiFileText size={10} className="text-[#2980b9]" />
+                                                                            <FiFileText size={10} className="text-[#6d99cf]" />
                                                                             <span className="truncate max-w-[60px]">{inv.originalName || `Inv ${invIdx + 1}`}</span>
                                                                         </a>
                                                                     ))}
@@ -4617,7 +4599,7 @@ const ProductDetailsHistoryModal = ({ product, vendors = [], onClose, onOpenEdit
                         <button
                             type="button"
                             onClick={() => onOpenEdit(curr)}
-                            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-[#2980b9] bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl transition cursor-pointer"
+                            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-[#6d99cf] bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl transition cursor-pointer"
                         >
                             <FiEdit2 size={14} />
                             <span>Edit Product</span>
@@ -4744,7 +4726,7 @@ function normPad(v, def) {
 // ─── StatusBadge ─────────────────────────────────────────────────────────────
 function StatusBadge({ status }) {
     const map = {
-        loading: { cls: "bg-[#2980b9]/10 text-[#2980b9] border-[#2980b9]/20", label: "Looking up…" },
+        loading: { cls: "bg-[#6d99cf]/10 text-[#6d99cf] border-[#6d99cf]/20", label: "Looking up…" },
         found: { cls: "bg-green-50 text-green-600 border-green-100", label: "Found" },
         notfound: { cls: "bg-amber-50 text-amber-500 border-amber-100", label: "Not found" },
         error: { cls: "bg-red-50 text-red-400 border-red-100", label: "Error" },
@@ -4771,7 +4753,7 @@ function QtyStepper({ value, onChange, label = "Qty", size = "normal" }) {
                     −
                 </button>
                 <input type="number" min={1} value={value} onChange={e => onChange(e.target.value)}
-                    className={`${sm ? "w-10 text-[10px] py-0.5" : "w-12 text-xs py-1"} text-center font-semibold rounded-lg border border-gray-200 outline-none focus:border-[#2980b9]/60 text-gray-700`} />
+                    className={`${sm ? "w-10 text-[10px] py-0.5" : "w-12 text-xs py-1"} text-center font-semibold rounded-lg border border-gray-200 outline-none focus:border-[#6d99cf]/60 text-gray-700`} />
                 <button type="button" onClick={() => onChange(parsed + 1)}
                     className={`${sm ? "w-6 h-6 text-[10px]" : "w-7 h-7 text-xs"} rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 font-bold flex items-center justify-center`}>
                     +
@@ -4787,13 +4769,13 @@ function SliderRow({ label, min, max, step = 0.1, value, unit = "", onChange }) 
         <div className="mb-3">
             <div className="flex items-center justify-between mb-1">
                 <span className="text-[10px] text-gray-400">{label}</span>
-                <span className="text-[10px] font-semibold text-[#2980b9]">
+                <span className="text-[10px] font-semibold text-[#6d99cf]">
                     {typeof value === "number" ? value.toFixed(step < 1 ? 1 : 0) : value}{unit}
                 </span>
             </div>
             <input type="range" min={min} max={max} step={step} value={value}
                 onChange={e => onChange(parseFloat(e.target.value))}
-                className="w-full accent-[#2980b9] h-1.5" />
+                className="w-full accent-[#6d99cf] h-1.5" />
         </div>
     );
 }
@@ -4811,23 +4793,23 @@ function LabelSize({ width, height, onChange }) {
                     <button key={s.label} type="button"
                         onClick={() => { onChange({ width: s.width, height: s.height }); setCustomOpen(false); }}
                         className={`px-3 py-1.5 rounded-xl border text-xs font-semibold transition
-              ${active ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#2980b9]/40 hover:text-[#2980b9]"}`}>
+              ${active ? "border-[#6d99cf]/60 bg-[#6d99cf]/10 text-[#6d99cf]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#6d99cf]/40 hover:text-[#6d99cf]"}`}>
                         {s.label}
                     </button>
                 );
             })}
             <button type="button" onClick={() => setCustomOpen(v => !v)}
                 className={`px-3 py-1.5 rounded-xl border text-xs font-semibold transition
-          ${customOpen || !isPreset ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#2980b9]/40 hover:text-[#2980b9]"}`}>
+          ${customOpen || !isPreset ? "border-[#6d99cf]/60 bg-[#6d99cf]/10 text-[#6d99cf]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#6d99cf]/40 hover:text-[#6d99cf]"}`}>
                 Custom
             </button>
             {(customOpen || !isPreset) && (
                 <div className="flex items-center gap-1">
                     <input type="number" value={width} onChange={e => onChange({ width: +e.target.value, height })}
-                        className="w-14 text-center text-xs rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60" placeholder="W" />
+                        className="w-14 text-center text-xs rounded-lg border border-gray-200 py-1 outline-none focus:border-[#6d99cf]/60" placeholder="W" />
                     <span className="text-gray-400 text-xs">×</span>
                     <input type="number" value={height} onChange={e => onChange({ width, height: +e.target.value })}
-                        className="w-14 text-center text-xs rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60" placeholder="H" />
+                        className="w-14 text-center text-xs rounded-lg border border-gray-200 py-1 outline-none focus:border-[#6d99cf]/60" placeholder="H" />
                     <span className="text-gray-400 text-xs">mm</span>
                 </div>
             )}
@@ -4848,20 +4830,20 @@ function FieldChip({ fieldKey, zone, layout, dragging, onDragStart, onDragEnd, o
             onDragStart={() => onDragStart(fieldKey)}
             onDragEnd={onDragEnd}
             className={`flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-2.5 py-2 cursor-grab text-xs text-gray-700 transition
-        ${dragging === fieldKey ? "opacity-40 scale-95" : "hover:border-[#2980b9]/40 hover:shadow-sm"}`}
+        ${dragging === fieldKey ? "opacity-40 scale-95" : "hover:border-[#6d99cf]/40 hover:shadow-sm"}`}
         >
             <FiMove size={10} className="text-gray-300 flex-shrink-0" />
-            <Icon size={11} className="text-[#2980b9] flex-shrink-0" />
+            <Icon size={11} className="text-[#6d99cf] flex-shrink-0" />
             <span className="flex-1 font-medium">{field.label}</span>
             <span className="text-[9px] text-gray-400">{field.sub}</span>
             {zone !== "hidden" && (
                 <div className="flex flex-col gap-0.5 ml-1">
                     <button type="button" onClick={() => onReorder(zone, fieldKey, -1)} disabled={idx === 0}
-                        className="p-0.5 rounded hover:bg-[#2980b9]/10 text-gray-300 hover:text-[#2980b9] disabled:opacity-20 transition">
+                        className="p-0.5 rounded hover:bg-[#6d99cf]/10 text-gray-300 hover:text-[#6d99cf] disabled:opacity-20 transition">
                         <FiArrowUp size={9} />
                     </button>
                     <button type="button" onClick={() => onReorder(zone, fieldKey, 1)} disabled={idx === arr.length - 1}
-                        className="p-0.5 rounded hover:bg-[#2980b9]/10 text-gray-300 hover:text-[#2980b9] disabled:opacity-20 transition">
+                        className="p-0.5 rounded hover:bg-[#6d99cf]/10 text-gray-300 hover:text-[#6d99cf] disabled:opacity-20 transition">
                         <FiArrowDown size={9} />
                     </button>
                 </div>
@@ -4880,10 +4862,10 @@ function DropZone({ zoneId, label, icon, hint, overZone, layout, onDragOver, onD
         <div
             onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}
             className={`border-2 border-dashed rounded-2xl p-3 min-h-[72px] transition
-        ${overZone === zoneId ? "border-[#2980b9] bg-[#2980b9]/10" : "border-gray-200 bg-gray-50"}`}
+        ${overZone === zoneId ? "border-[#6d99cf] bg-[#6d99cf]/10" : "border-gray-200 bg-gray-50"}`}
         >
             <div className="flex items-center gap-1.5 mb-2">
-                <span className="text-[#2980b9]">{icon}</span>
+                <span className="text-[#6d99cf]">{icon}</span>
                 <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{label}</span>
                 <span className="text-[9px] text-gray-400 ml-1">{hint}</span>
             </div>
@@ -4977,7 +4959,7 @@ function LayoutDesigner({ layout, onChange, printType }) {
                     <span className="text-[9px] text-gray-400 uppercase tracking-widest font-bold">Unplaced:</span>
                     {unplaced.map(f => (
                         <button key={f.key} type="button" onClick={() => moveField(f.key, "right")}
-                            className="text-[10px] px-2 py-1 rounded-lg border border-dashed border-[#2980b9]/60 text-[#2980b9] hover:bg-[#2980b9]/10 transition">
+                            className="text-[10px] px-2 py-1 rounded-lg border border-dashed border-[#6d99cf]/60 text-[#6d99cf] hover:bg-[#6d99cf]/10 transition">
                             + {f.label}
                         </button>
                     ))}
@@ -4997,34 +4979,34 @@ function PaddingEditor({ label, value, onChange }) {
                 <div className="flex items-center gap-1">
                     <span className="text-[9px] text-gray-400 w-12 text-right">top</span>
                     <input type="number" min={0} max={5} step={0.1} value={value.top} onChange={e => set("top", e.target.value)}
-                        className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60 text-gray-700" />
+                        className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#6d99cf]/60 text-gray-700" />
                     <span className="text-[9px] text-gray-400">mm</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="flex flex-col items-center gap-0.5">
                         <span className="text-[9px] text-gray-400">left</span>
                         <input type="number" min={0} max={5} step={0.1} value={value.left} onChange={e => set("left", e.target.value)}
-                            className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60 text-gray-700" />
+                            className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#6d99cf]/60 text-gray-700" />
                         <span className="text-[9px] text-gray-400">mm</span>
                     </div>
-                    <div className="w-12 h-8 border-2 border-dashed border-[#2980b9]/40 rounded-md bg-[#2980b9]/10 flex items-center justify-center">
-                        <span className="text-[8px] text-[#2980b9]/60 font-bold">zone</span>
+                    <div className="w-12 h-8 border-2 border-dashed border-[#6d99cf]/40 rounded-md bg-[#6d99cf]/10 flex items-center justify-center">
+                        <span className="text-[8px] text-[#6d99cf]/60 font-bold">zone</span>
                     </div>
                     <div className="flex flex-col items-center gap-0.5">
                         <span className="text-[9px] text-gray-400">right</span>
                         <input type="number" min={0} max={5} step={0.1} value={value.right} onChange={e => set("right", e.target.value)}
-                            className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60 text-gray-700" />
+                            className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#6d99cf]/60 text-gray-700" />
                         <span className="text-[9px] text-gray-400">mm</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-1">
                     <span className="text-[9px] text-gray-400 w-12 text-right">bottom</span>
                     <input type="number" min={0} max={5} step={0.1} value={value.bottom} onChange={e => set("bottom", e.target.value)}
-                        className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#2980b9]/60 text-gray-700" />
+                        className="w-14 text-center text-[11px] rounded-lg border border-gray-200 py-1 outline-none focus:border-[#6d99cf]/60 text-gray-700" />
                     <span className="text-[9px] text-gray-400">mm</span>
                 </div>
             </div>
-            <div className="mt-1.5 text-center text-[9px] text-[#2980b9] font-mono">
+            <div className="mt-1.5 text-center text-[9px] text-[#6d99cf] font-mono">
                 {value.top} · {value.right} · {value.bottom} · {value.left} mm
             </div>
         </div>
@@ -5046,7 +5028,7 @@ function ImageSideToggle({ value, onChange }) {
                     return (
                         <button key={opt.value} type="button" onClick={() => onChange(opt.value)}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition
-                ${isActive ? "border-[#2980b9] bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#2980b9]/40 hover:text-[#2980b9]"}`}>
+                ${isActive ? "border-[#6d99cf] bg-[#6d99cf]/10 text-[#6d99cf]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#6d99cf]/40 hover:text-[#6d99cf]"}`}>
                             <Icon size={12} /> {opt.label}
                         </button>
                     );
@@ -5105,9 +5087,9 @@ function Section({ title, icon: Icon, defaultOpen = false, children, badge }) {
             <button type="button" onClick={() => setOpen(v => !v)}
                 className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-gray-100 transition text-left">
                 <div className="flex items-center gap-2">
-                    {Icon && <Icon size={13} className="text-[#2980b9]" />}
+                    {Icon && <Icon size={13} className="text-[#6d99cf]" />}
                     <span className="text-xs font-semibold text-gray-700">{title}</span>
-                    {badge && <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#2980b9]/20 text-[#2980b9]/90 font-semibold">{badge}</span>}
+                    {badge && <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#6d99cf]/20 text-[#6d99cf]/90 font-semibold">{badge}</span>}
                 </div>
                 <FiArrowDown size={13} className={`text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
             </button>
@@ -5611,7 +5593,7 @@ ${pagesHtml}
     }, [rows, printType, labelSize, nup, layout, globalFields, typo, resolveField, useGlobalQty, globalQty]); // eslint-disable-line
 
     // ─── Render ───────────────────────────────────────────────────────────────
-    const inputCls = "w-full text-xs rounded-xl border border-gray-200 px-3 py-2 outline-none focus:border-[#2980b9]/60 focus:bg-white bg-white transition placeholder:text-gray-300 text-gray-700";
+    const inputCls = "w-full text-xs rounded-xl border border-gray-200 px-3 py-2 outline-none focus:border-[#6d99cf]/60 focus:bg-white bg-white transition placeholder:text-gray-300 text-gray-700";
 
     return createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40">
@@ -5619,7 +5601,7 @@ ${pagesHtml}
 
                 {/* Header */}
                 <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-100 flex-shrink-0">
-                    <div className="p-2 bg-[#2980b9]/10 rounded-xl"><FiPrinter size={16} className="text-[#2980b9]" /></div>
+                    <div className="p-2 bg-[#6d99cf]/10 rounded-xl"><FiPrinter size={16} className="text-[#6d99cf]" /></div>
                     <div className="flex-1">
                         <h2 className="text-sm font-bold text-gray-800">Print Labels</h2>
                         <p className="text-[11px] text-gray-400">
@@ -5632,7 +5614,7 @@ ${pagesHtml}
                             <FiSave size={12} /> Save settings
                         </button>
                         <button type="button" onClick={handleReset}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-500 hover:border-[#2980b9]/60 hover:text-[#2980b9] transition">
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-500 hover:border-[#6d99cf]/60 hover:text-[#6d99cf] transition">
                             <FiRefreshCw size={12} /> Reset
                         </button>
                         <button type="button" onClick={onClose}
@@ -5674,13 +5656,13 @@ ${pagesHtml}
                         {N_PRESETS.map(n => (
                             <button key={n} type="button" onClick={() => { setNup(n); setCustomNInput(""); }}
                                 className={`px-3 py-1.5 rounded-xl border text-xs font-semibold transition
-                  ${nup === n && !isCustomN ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#2980b9]/40 hover:text-[#2980b9]"}`}>
+                  ${nup === n && !isCustomN ? "border-[#6d99cf]/60 bg-[#6d99cf]/10 text-[#6d99cf]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#6d99cf]/40 hover:text-[#6d99cf]"}`}>
                                 {n}-Up
                             </button>
                         ))}
                         <span className="w-px h-5 bg-gray-200" />
-                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition ${isCustomN ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500"}`}>
-                            <FiSliders size={11} className={isCustomN ? "text-[#2980b9]" : "text-gray-400"} />
+                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition ${isCustomN ? "border-[#6d99cf]/60 bg-[#6d99cf]/10 text-[#6d99cf]/90" : "border-gray-200 bg-white text-gray-500"}`}>
+                            <FiSliders size={11} className={isCustomN ? "text-[#6d99cf]" : "text-gray-400"} />
                             <span className="text-gray-400 text-[10px]">Custom</span>
                             <input type="number" min={1} max={32} value={customNInput} placeholder="N"
                                 onChange={e => { setCustomNInput(e.target.value); const p = parseInt(e.target.value, 10); if (!isNaN(p) && p >= 1 && p <= 32) setNup(p); }}
@@ -5688,21 +5670,21 @@ ${pagesHtml}
                             <span className="text-gray-400 text-[10px]">-Up</span>
                         </div>
                         {nup > 1 && (
-                            <span className="flex items-center gap-1 text-[9px] bg-[#2980b9] text-white font-bold px-2 py-0.5 rounded-full">
+                            <span className="flex items-center gap-1 text-[9px] bg-[#6d99cf] text-white font-bold px-2 py-0.5 rounded-full">
                                 <FiColumns size={9} /> {nup}-Up ON
                             </span>
                         )}
                     </div>
 
                     {/* Global Quantity */}
-                    <div className="flex items-center gap-4 bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-xl px-4 py-3 flex-wrap">
+                    <div className="flex items-center gap-4 bg-[#6d99cf]/10 border border-[#6d99cf]/20 rounded-xl px-4 py-3 flex-wrap">
                         <div className="flex items-center gap-2">
-                            <FiHash size={13} className="text-[#2980b9]" />
+                            <FiHash size={13} className="text-[#6d99cf]" />
                             <span className="text-xs font-semibold text-gray-700">Global Quantity</span>
                         </div>
                         <label className="flex items-center gap-2 cursor-pointer">
                             <div onClick={() => setUseGlobalQty(v => !v)}
-                                className={`relative w-9 h-5 rounded-full transition-colors ${useGlobalQty ? "bg-[#2980b9]" : "bg-gray-300"}`}>
+                                className={`relative w-9 h-5 rounded-full transition-colors ${useGlobalQty ? "bg-[#6d99cf]" : "bg-gray-300"}`}>
                                 <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${useGlobalQty ? "translate-x-4" : ""}`} />
                             </div>
                             <span className="text-xs text-gray-500">{useGlobalQty ? "Override all rows" : "Use per-row qty"}</span>
@@ -5710,7 +5692,7 @@ ${pagesHtml}
                         {useGlobalQty && (
                             <>
                                 <QtyStepper value={globalQty} onChange={setGlobalQty} label="" />
-                                <span className="text-[10px] text-[#2980b9]/90 font-semibold">
+                                <span className="text-[10px] text-[#6d99cf]/90 font-semibold">
                                     → {validRows.length} code{validRows.length !== 1 ? "s" : ""} × {Math.max(1, parseInt(globalQty) || 1)} = {validRows.length * Math.max(1, parseInt(globalQty) || 1)} labels
                                 </span>
                             </>
@@ -5732,7 +5714,7 @@ ${pagesHtml}
                                 return (
                                     <button key={f.key} type="button" onClick={() => toggleGF(sk, !on)}
                                         className={`flex items-center gap-1 px-2.5 py-1 rounded-full border text-[10px] font-semibold transition
-                      ${on ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-400 hover:border-gray-300"}`}>
+                      ${on ? "border-[#6d99cf]/60 bg-[#6d99cf]/10 text-[#6d99cf]/90" : "border-gray-200 bg-white text-gray-400 hover:border-gray-300"}`}>
                                         {on ? <FiEye size={9} /> : <FiEyeOff size={9} />} {f.label}
                                     </button>
                                 );
@@ -5744,7 +5726,7 @@ ${pagesHtml}
                                 <input type="text" value={globalFields.storeName}
                                     onChange={e => toggleGF("storeName", e.target.value)}
                                     placeholder="e.g. MY SHOP"
-                                    className="text-xs rounded-lg border border-[#2980b9]/40 px-2 py-1 outline-none focus:border-[#2980b9] text-gray-700 w-40" />
+                                    className="text-xs rounded-lg border border-[#6d99cf]/40 px-2 py-1 outline-none focus:border-[#6d99cf] text-gray-700 w-40" />
                             </div>
                         )}
                     </Section>
@@ -5752,7 +5734,7 @@ ${pagesHtml}
                     {/* Layout Designer */}
                     <div className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5">
                         <div className="flex items-center gap-2">
-                            <FiLayout size={13} className="text-[#2980b9]" />
+                            <FiLayout size={13} className="text-[#6d99cf]" />
                             <span className="text-xs font-semibold text-gray-600">Label layout</span>
                             <span className="text-[10px] text-gray-400">
                                 Above: {(layout.leftAbove || []).length} · LeftImg: {(layout.leftOfImage || []).length} · RightImg: {(layout.rightOfImage || []).length} · Below: {(layout.leftBelow || []).length} · Right: {(layout.right || []).length} fields
@@ -5760,15 +5742,15 @@ ${pagesHtml}
                         </div>
                         <button type="button" onClick={() => setShowDesigner(v => !v)}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition
-                ${showDesigner ? "border-[#2980b9]/60 bg-[#2980b9]/10 text-[#2980b9]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#2980b9]/40 hover:text-[#2980b9]"}`}>
+                ${showDesigner ? "border-[#6d99cf]/60 bg-[#6d99cf]/10 text-[#6d99cf]/90" : "border-gray-200 bg-white text-gray-500 hover:border-[#6d99cf]/40 hover:text-[#6d99cf]"}`}>
                             <FiMove size={11} /> {showDesigner ? "Close designer" : "Arrange fields"}
                         </button>
                     </div>
 
                     {showDesigner && (
-                        <div className="bg-white border border-[#2980b9]/20 rounded-2xl p-4">
+                        <div className="bg-white border border-[#6d99cf]/20 rounded-2xl p-4">
                             <p className="text-xs text-gray-500 mb-3 flex items-center gap-1.5">
-                                <FiMove size={12} className="text-[#2980b9]" />
+                                <FiMove size={12} className="text-[#6d99cf]" />
                                 Drag fields between zones · use ↑↓ to reorder within a zone
                             </p>
                             <LayoutDesigner layout={layout} onChange={setLayout} printType={printType} />
@@ -5777,22 +5759,22 @@ ${pagesHtml}
 
                     {/* Info bars */}
                     {nup > 1 && (
-                        <div className="flex items-center gap-2 bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-xl px-4 py-2.5">
-                            <FiColumns size={13} className="text-[#2980b9] flex-shrink-0" />
-                            <p className="text-xs text-[#2980b9]/90">
+                        <div className="flex items-center gap-2 bg-[#6d99cf]/10 border border-[#6d99cf]/20 rounded-xl px-4 py-2.5">
+                            <FiColumns size={13} className="text-[#6d99cf] flex-shrink-0" />
+                            <p className="text-xs text-[#6d99cf]/90">
                                 <strong>{nup}-Up on</strong> — {nup} labels per strip, each cell <strong>~{Math.round(labelSize.width / nup)}mm</strong> wide on a <strong>{labelSize.width}×{labelSize.height}mm</strong> strip.
                             </p>
                         </div>
                     )}
-                    <div className="flex items-center gap-2 bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-xl px-4 py-2.5">
-                        <FiInfo size={13} className="text-[#2980b9]/80 flex-shrink-0" />
-                        <p className="text-xs text-[#2980b9]/90">
+                    <div className="flex items-center gap-2 bg-[#6d99cf]/10 border border-[#6d99cf]/20 rounded-xl px-4 py-2.5">
+                        <FiInfo size={13} className="text-[#6d99cf]/80 flex-shrink-0" />
+                        <p className="text-xs text-[#6d99cf]/90">
                             Strip: <strong>{labelSize.width}×{labelSize.height}mm</strong>
                             {nup > 1 && ` · cell ~${Math.round(labelSize.width / nup)}mm wide`}
                             {validRows.length > 0 && (
                                 <span className="ml-2 font-semibold">
                                     {validRows.length} code{validRows.length !== 1 ? "s" : ""} · {totalLabels} label{totalLabels !== 1 ? "s" : ""}
-                                    {nup > 1 && <span className="text-[#2980b9]/90"> → {totalStrips} strip{totalStrips !== 1 ? "s" : ""} ({nup}-up)</span>}
+                                    {nup > 1 && <span className="text-[#6d99cf]/90"> → {totalStrips} strip{totalStrips !== 1 ? "s" : ""} ({nup}-up)</span>}
                                     {" "}will print.
                                 </span>
                             )}
@@ -5809,8 +5791,8 @@ ${pagesHtml}
                                 <div key={row.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm">
                                     <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-100 rounded-t-2xl">
                                         <div className="flex items-center gap-2">
-                                            <FiHash size={11} className="text-[#2980b9]" />
-                                            <span className="text-[10px] font-bold text-[#2980b9] uppercase tracking-widest">Label {idx + 1}</span>
+                                            <FiHash size={11} className="text-[#6d99cf]" />
+                                            <span className="text-[10px] font-bold text-[#6d99cf] uppercase tracking-widest">Label {idx + 1}</span>
                                             <StatusBadge status={row._status} />
                                         </div>
                                         {rows.length > 1 && (
@@ -5865,7 +5847,7 @@ ${pagesHtml}
                                                     onChange={e => setRow(row.id, "description", e.target.value)}
                                                     placeholder={"e.g. BUY 1 GET 1\nUp To -13/+8 Power"}
                                                     rows={2}
-                                                    className="w-full text-xs rounded-xl border border-gray-200 px-3 py-2 outline-none resize-none leading-relaxed transition placeholder:text-gray-300 text-gray-700 focus:border-[#2980b9]/60 focus:bg-white bg-white" />
+                                                    className="w-full text-xs rounded-xl border border-gray-200 px-3 py-2 outline-none resize-none leading-relaxed transition placeholder:text-gray-300 text-gray-700 focus:border-[#6d99cf]/60 focus:bg-white bg-white" />
                                             </div>
                                         )}
 
@@ -5891,7 +5873,7 @@ ${pagesHtml}
                                                     {row.barcodeValue.trim() && (
                                                         <span className="text-xs text-gray-400">
                                                             × <strong className="text-gray-600">{eqty}</strong>
-                                                            {useGlobalQty && <span className="text-[9px] text-[#2980b9] ml-1">(global)</span>}
+                                                            {useGlobalQty && <span className="text-[9px] text-[#6d99cf] ml-1">(global)</span>}
                                                         </span>
                                                     )}
                                                 </div>
@@ -5913,7 +5895,7 @@ ${pagesHtml}
 
                     {/* Add row */}
                     <button type="button" onClick={addRow}
-                        className="w-full py-3 border-2 border-dashed border-[#2980b9]/40 hover:border-[#2980b9] text-[#2980b9] hover:text-[#2980b9]/90 text-xs font-semibold rounded-2xl transition flex items-center justify-center gap-2">
+                        className="w-full py-3 border-2 border-dashed border-[#6d99cf]/40 hover:border-[#6d99cf] text-[#6d99cf] hover:text-[#6d99cf]/90 text-xs font-semibold rounded-2xl transition flex items-center justify-center gap-2">
                         <FiPlus size={14} /> Add Another Code
                     </button>
                 </div>
@@ -5921,19 +5903,19 @@ ${pagesHtml}
                 {/* Footer */}
                 <div className="flex items-center gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex-shrink-0">
                     <div className="flex items-center gap-2 text-xs text-gray-400 mr-auto">
-                        <FiPrinter size={12} className="text-[#2980b9]" />
+                        <FiPrinter size={12} className="text-[#6d99cf]" />
                         {validRows.length} code{validRows.length !== 1 ? "s" : ""} · {totalLabels} label{totalLabels !== 1 ? "s" : ""}
-                        {nup > 1 && <span className="text-[#2980b9] font-semibold"> · {totalStrips} strip{totalStrips !== 1 ? "s" : ""} ({nup}-up)</span>}
+                        {nup > 1 && <span className="text-[#6d99cf] font-semibold"> · {totalStrips} strip{totalStrips !== 1 ? "s" : ""} ({nup}-up)</span>}
                     </div>
                     <button type="button" onClick={onClose}
                         className="px-4 py-2 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition flex items-center gap-1.5">
                         <FiX size={13} /> Cancel
                     </button>
                     <button type="button" onClick={handlePrint} disabled={validRows.length === 0}
-                        className="flex items-center gap-2 px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                        className="flex items-center gap-2 px-5 py-2 bg-[#6d99cf] hover:bg-[#6d99cf]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                         <FiPrinter size={13} />
                         Print {printType === "qr" ? "QR" : "Barcode"} Labels
-                        {nup > 1 && <span className="text-[#2980b9]/40 text-[9px] font-normal ml-0.5">{nup}-up</span>}
+                        {nup > 1 && <span className="text-[#6d99cf]/40 text-[9px] font-normal ml-0.5">{nup}-up</span>}
                     </button>
                 </div>
 
@@ -6098,13 +6080,13 @@ function BulkUploadModal({ onClose }) {
 
                 {step === "upload" && (
                     <div className="space-y-5">
-                        <div className="flex items-center justify-between bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-2xl px-5 py-4 gap-4">
+                        <div className="flex items-center justify-between bg-[#6d99cf]/10 border border-[#6d99cf]/20 rounded-2xl px-5 py-4 gap-4">
                             <div>
                                 <p className="text-sm font-semibold text-gray-800">Step 1 — Download the template</p>
-                                <p className="text-xs text-gray-500 mt-0.5">Leave <span className="font-mono font-semibold text-[#2980b9]/90">productCode</span> blank to auto-generate.</p>
+                                <p className="text-xs text-gray-500 mt-0.5">Leave <span className="font-mono font-semibold text-[#6d99cf]/90">productCode</span> blank to auto-generate.</p>
                             </div>
                             <button onClick={downloadTemplate}
-                                className="flex items-center gap-2 px-4 py-2 bg-white border border-[#2980b9]/60 text-[#2980b9]/90 text-xs font-semibold rounded-xl hover:bg-[#2980b9]/10 transition shadow-sm flex-shrink-0">
+                                className="flex items-center gap-2 px-4 py-2 bg-white border border-[#6d99cf]/60 text-[#6d99cf]/90 text-xs font-semibold rounded-xl hover:bg-[#6d99cf]/10 transition shadow-sm flex-shrink-0">
                                 <FiDownload size={13} /> Download Template
                             </button>
                         </div>
@@ -6112,7 +6094,7 @@ function BulkUploadModal({ onClose }) {
                         <div className="bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4">
                             <p className="text-sm font-semibold text-gray-800 mb-1">Step 2 — Set auto-code prefix</p>
                             <p className="text-xs text-gray-500 mb-3">
-                                Blank productCode rows get a code like <span className="font-mono font-semibold text-[#2980b9]/90">1{activePrefix}, 2{activePrefix}…</span>
+                                Blank productCode rows get a code like <span className="font-mono font-semibold text-[#6d99cf]/90">1{activePrefix}, 2{activePrefix}…</span>
                             </p>
                             <div className="flex items-center gap-3">
                                 <div className="relative w-44">
@@ -6120,7 +6102,7 @@ function BulkUploadModal({ onClose }) {
                                     <input type="text" value={prefix}
                                         onChange={e => setPrefix(e.target.value.toUpperCase().replace(/\s/g, "").slice(0, 6))}
                                         placeholder="DO" maxLength={6}
-                                        className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-[#2980b9]/60 focus:ring-2 focus:ring-[#2980b9]/20 bg-white text-gray-800 transition font-mono uppercase tracking-widest" />
+                                        className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf]/60 focus:ring-2 focus:ring-[#6d99cf]/20 bg-white text-gray-800 transition font-mono uppercase tracking-widest" />
                                 </div>
                                 <span className="text-xs text-gray-400">Leave blank to default to <span className="font-mono font-semibold">DO</span></span>
                             </div>
@@ -6130,13 +6112,13 @@ function BulkUploadModal({ onClose }) {
                             <p className="text-sm font-semibold text-gray-800 mb-2">Step 3 — Upload filled Excel file</p>
                             <div ref={dropRef} onDrop={onDrop} onDragOver={e => e.preventDefault()}
                                 onClick={() => document.getElementById("bulk-file-input").click()}
-                                className="border-2 border-dashed border-[#2980b9]/40 hover:border-[#2980b9] rounded-2xl p-10 flex flex-col items-center justify-center gap-3 cursor-pointer transition bg-gray-50 hover:bg-[#2980b9]/10">
-                                <div className="w-12 h-12 rounded-2xl bg-[#2980b9]/20 flex items-center justify-center">
-                                    <FiUpload size={20} className="text-[#2980b9]" />
+                                className="border-2 border-dashed border-[#6d99cf]/40 hover:border-[#6d99cf] rounded-2xl p-10 flex flex-col items-center justify-center gap-3 cursor-pointer transition bg-gray-50 hover:bg-[#6d99cf]/10">
+                                <div className="w-12 h-12 rounded-2xl bg-[#6d99cf]/20 flex items-center justify-center">
+                                    <FiUpload size={20} className="text-[#6d99cf]" />
                                 </div>
                                 {parsing ? (
                                     <div className="flex flex-col items-center gap-2">
-                                        <div className="w-5 h-5 border-2 border-[#2980b9]/60 border-t-transparent rounded-full animate-spin" />
+                                        <div className="w-5 h-5 border-2 border-[#6d99cf]/60 border-t-transparent rounded-full animate-spin" />
                                         <span className="text-sm text-gray-500">Parsing file...</span>
                                     </div>
                                 ) : (
@@ -6162,9 +6144,9 @@ function BulkUploadModal({ onClose }) {
                                 <span className="text-xs font-semibold text-emerald-700">{rows.length} products parsed</span>
                             </div>
                             {autoCodeRows.length > 0 && (
-                                <div className="flex items-center gap-2 bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-xl px-4 py-2">
-                                    <FiTag size={13} className="text-[#2980b9]/80" />
-                                    <span className="text-xs font-semibold text-[#2980b9]/90">
+                                <div className="flex items-center gap-2 bg-[#6d99cf]/10 border border-[#6d99cf]/20 rounded-xl px-4 py-2">
+                                    <FiTag size={13} className="text-[#6d99cf]/80" />
+                                    <span className="text-xs font-semibold text-[#6d99cf]/90">
                                         {autoCodeRows.length} auto-code <span className="font-mono">(1{activePrefix}, 2{activePrefix}…)</span>
                                     </span>
                                 </div>
@@ -6199,93 +6181,93 @@ function BulkUploadModal({ onClose }) {
                                         <tr key={i} className={`border-b border-gray-50 ${i % 2 === 0 ? "bg-white" : "bg-gray-50/50"}`}>
                                             <td className="px-3 py-2 text-center text-gray-400">{i + 1}</td>
                                             <td className="px-3 py-1 font-mono font-semibold whitespace-nowrap">
-                                                <input 
-                                                    type="text" 
-                                                    value={row.productCode || ""} 
+                                                <input
+                                                    type="text"
+                                                    value={row.productCode || ""}
                                                     onChange={e => handleFieldChange(i, "productCode", e.target.value)}
                                                     placeholder={`auto-${activePrefix}`}
-                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#6d99cf]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
                                                 />
                                             </td>
                                             <td className="px-3 py-1 text-gray-700 max-w-[160px]">
-                                                <input 
-                                                    type="text" 
-                                                    value={row.productName || ""} 
+                                                <input
+                                                    type="text"
+                                                    value={row.productName || ""}
                                                     onChange={e => handleFieldChange(i, "productName", e.target.value)}
-                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#6d99cf]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
                                                 />
                                             </td>
                                             <td className="px-3 py-1 text-gray-650">
-                                                <input 
-                                                    type="text" 
-                                                    value={row.category || ""} 
+                                                <input
+                                                    type="text"
+                                                    value={row.category || ""}
                                                     onChange={e => handleFieldChange(i, "category", e.target.value)}
-                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#6d99cf]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
                                                 />
                                             </td>
                                             <td className="px-3 py-1 text-gray-650">
-                                                <input 
-                                                    type="text" 
-                                                    value={row.brand || ""} 
+                                                <input
+                                                    type="text"
+                                                    value={row.brand || ""}
                                                     onChange={e => handleFieldChange(i, "brand", e.target.value)}
-                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#6d99cf]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
                                                 />
                                             </td>
                                             <td className="px-3 py-1 text-center text-gray-750">
                                                 <div className="flex items-center justify-center">
                                                     <span className="text-[10px] text-gray-400 mr-0.5">₹</span>
-                                                    <input 
-                                                        type="number" 
-                                                        value={row.price} 
+                                                    <input
+                                                        type="number"
+                                                        value={row.price}
                                                         onChange={e => handleFieldChange(i, "price", e.target.value)}
-                                                        className="w-16 bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
+                                                        className="w-16 bg-transparent border-0 focus:ring-1 focus:ring-[#6d99cf]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
                                                     />
                                                 </div>
                                             </td>
                                             <td className="px-3 py-1 text-center text-gray-750">
                                                 <div className="flex items-center justify-center">
                                                     <span className="text-[10px] text-gray-400 mr-0.5">₹</span>
-                                                    <input 
-                                                        type="number" 
-                                                        value={row.mrp} 
+                                                    <input
+                                                        type="number"
+                                                        value={row.mrp}
                                                         onChange={e => handleFieldChange(i, "mrp", e.target.value)}
-                                                        className="w-16 bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
+                                                        className="w-16 bg-transparent border-0 focus:ring-1 focus:ring-[#6d99cf]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
                                                     />
                                                 </div>
                                             </td>
                                             <td className="px-3 py-1 text-center text-gray-750">
-                                                <input 
-                                                    type="number" 
-                                                    value={row.qty} 
+                                                <input
+                                                    type="number"
+                                                    value={row.qty}
                                                     onChange={e => handleFieldChange(i, "qty", e.target.value)}
-                                                    className="w-12 bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
+                                                    className="w-12 bg-transparent border-0 focus:ring-1 focus:ring-[#6d99cf]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
                                                 />
                                             </td>
                                             <td className="px-3 py-1 text-center text-gray-550">
                                                 <div className="flex items-center justify-center">
-                                                    <input 
-                                                        type="number" 
-                                                        value={row.gst} 
+                                                    <input
+                                                        type="number"
+                                                        value={row.gst}
                                                         onChange={e => handleFieldChange(i, "gst", e.target.value)}
-                                                        className="w-12 bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
+                                                        className="w-12 bg-transparent border-0 focus:ring-1 focus:ring-[#6d99cf]/40 rounded px-1 py-0.5 text-xs text-gray-800 text-center focus:bg-white outline-none"
                                                     />
                                                     <span className="text-[10px] text-gray-400 ml-0.5">%</span>
                                                 </div>
                                             </td>
                                             <td className="px-3 py-1 text-gray-550">
-                                                <input 
-                                                    type="text" 
-                                                    value={row.color || ""} 
+                                                <input
+                                                    type="text"
+                                                    value={row.color || ""}
                                                     onChange={e => handleFieldChange(i, "color", e.target.value)}
-                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#6d99cf]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
                                                 />
                                             </td>
                                             <td className="px-3 py-1 text-gray-550">
-                                                <input 
-                                                    type="text" 
-                                                    value={row.type || ""} 
+                                                <input
+                                                    type="text"
+                                                    value={row.type || ""}
                                                     onChange={e => handleFieldChange(i, "type", e.target.value)}
-                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#2980b9]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
+                                                    className="w-full bg-transparent border-0 focus:ring-1 focus:ring-[#6d99cf]/40 rounded px-1 py-0.5 text-xs text-gray-800 focus:bg-white outline-none"
                                                 />
                                             </td>
                                         </tr>
@@ -6309,11 +6291,11 @@ function BulkUploadModal({ onClose }) {
                                     <p className="text-sm text-gray-500 mt-1"><span className="font-semibold text-emerald-600">{result.count}</span> products added.</p>
                                 </div>
                                 {result.generatedCodes?.length > 0 && (
-                                    <div className="w-full max-w-lg bg-[#2980b9]/10 border border-[#2980b9]/20 rounded-xl px-5 py-4">
-                                        <p className="text-xs font-bold text-[#2980b9]/90 uppercase tracking-wider mb-2.5">Auto-generated Codes</p>
+                                    <div className="w-full max-w-lg bg-[#6d99cf]/10 border border-[#6d99cf]/20 rounded-xl px-5 py-4">
+                                        <p className="text-xs font-bold text-[#6d99cf]/90 uppercase tracking-wider mb-2.5">Auto-generated Codes</p>
                                         <div className="flex flex-wrap gap-2">
                                             {result.generatedCodes.map(({ index, productCode }) => (
-                                                <span key={productCode} className="text-xs font-mono bg-white border border-[#2980b9]/40 text-[#2980b9]/90 px-2.5 py-1 rounded-lg">
+                                                <span key={productCode} className="text-xs font-mono bg-white border border-[#6d99cf]/40 text-[#6d99cf]/90 px-2.5 py-1 rounded-lg">
                                                     Row {index} → <span className="font-bold">{productCode}</span>
                                                 </span>
                                             ))}
@@ -6339,7 +6321,7 @@ function BulkUploadModal({ onClose }) {
                                     )}
                                 </div>
                                 <button onClick={() => { setStep("preview"); setResult(null); }}
-                                    className="px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition">← Back to Preview</button>
+                                    className="px-5 py-2 bg-[#6d99cf] hover:bg-[#6d99cf]/90 text-white text-xs font-semibold rounded-xl transition">← Back to Preview</button>
                             </>
                         )}
                     </div>
@@ -6353,7 +6335,7 @@ function BulkUploadModal({ onClose }) {
                 </button>
                 {step === "preview" && validationErrors.length === 0 && (
                     <button onClick={handleSubmit} disabled={submitting}
-                        className="flex items-center gap-2 px-5 py-2 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm disabled:opacity-60">
+                        className="flex items-center gap-2 px-5 py-2 bg-[#6d99cf] hover:bg-[#6d99cf]/90 text-white text-xs font-semibold rounded-xl transition shadow-sm disabled:opacity-60">
                         {submitting && <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />}
                         {submitting ? "Uploading..." : `Upload ${rows.length} Products`}
                     </button>
@@ -6398,7 +6380,7 @@ const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, load
                 <div className={`border rounded-2xl p-5 shadow-2xs transition-all ${isUnallocatedEmpty ? 'bg-amber-50/40 border-amber-200' : 'bg-gradient-to-r from-blue-50/70 to-indigo-50/70 border-blue-100'}`}>
                     <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                            <FiPlus className={isUnallocatedEmpty ? "text-amber-600" : "text-[#2980b9]"} size={16} />
+                            <FiPlus className={isUnallocatedEmpty ? "text-amber-600" : "text-[#6d99cf]"} size={16} />
                             <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">Allocate New Batch Number</h3>
                         </div>
                         {isUnallocatedEmpty && (
@@ -6426,7 +6408,7 @@ const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, load
                                 <input
                                     type="text"
                                     placeholder="Auto (e.g. BTCN1)"
-                                    className="w-full px-3 py-2 text-xs font-semibold uppercase bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    className="w-full px-3 py-2 text-xs font-semibold uppercase bg-white border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf] focus:ring-1 focus:ring-[#6d99cf]/30"
                                     value={formData.batchNumber}
                                     onChange={e => setFormData(prev => ({ ...prev, batchNumber: e.target.value }))}
                                 />
@@ -6442,7 +6424,7 @@ const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, load
                                     min="1"
                                     max={unallocatedQty}
                                     placeholder={`Max ${unallocatedQty}`}
-                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf] focus:ring-1 focus:ring-[#6d99cf]/30"
                                     value={formData.qty}
                                     onChange={e => setFormData(prev => ({ ...prev, qty: e.target.value }))}
                                 />
@@ -6453,7 +6435,7 @@ const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, load
                                     type="number"
                                     min="0"
                                     placeholder="Buying Price"
-                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf] focus:ring-1 focus:ring-[#6d99cf]/30"
                                     value={formData.buyingPrice ?? formData.costPrice ?? ''}
                                     onChange={e => setFormData(prev => ({ ...prev, buyingPrice: e.target.value, costPrice: e.target.value }))}
                                 />
@@ -6464,7 +6446,7 @@ const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, load
                                     type="number"
                                     min="0"
                                     placeholder="Selling Price"
-                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf] focus:ring-1 focus:ring-[#6d99cf]/30"
                                     value={formData.sellingPrice ?? ''}
                                     onChange={e => setFormData(prev => ({ ...prev, sellingPrice: e.target.value }))}
                                 />
@@ -6475,7 +6457,7 @@ const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, load
                                     type="number"
                                     min="0"
                                     placeholder="MRP"
-                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    className="w-full px-3 py-2 text-xs font-semibold bg-white border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf] focus:ring-1 focus:ring-[#6d99cf]/30"
                                     value={formData.mrp ?? ''}
                                     onChange={e => setFormData(prev => ({ ...prev, mrp: e.target.value }))}
                                 />
@@ -6485,7 +6467,7 @@ const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, load
                                 <input
                                     type="text"
                                     placeholder="Allocation remarks..."
-                                    className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl outline-none focus:border-[#2980b9] focus:ring-1 focus:ring-[#2980b9]/30"
+                                    className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl outline-none focus:border-[#6d99cf] focus:ring-1 focus:ring-[#6d99cf]/30"
                                     value={formData.remarks}
                                     onChange={e => setFormData(prev => ({ ...prev, remarks: e.target.value }))}
                                 />
@@ -6494,7 +6476,7 @@ const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, load
                                 <button
                                     type="submit"
                                     disabled={allocating || isUnallocatedEmpty}
-                                    className="flex items-center gap-2 px-5 py-2.5 bg-[#2980b9] hover:bg-[#2980b9]/90 text-white text-xs font-bold rounded-xl transition shadow-md disabled:opacity-50 cursor-pointer"
+                                    className="flex items-center gap-2 px-5 py-2.5 bg-[#6d99cf] hover:bg-[#6d99cf]/90 text-white text-xs font-bold rounded-xl transition shadow-md disabled:opacity-50 cursor-pointer"
                                 >
                                     {allocating ? (
                                         <>
@@ -6524,7 +6506,7 @@ const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, load
 
                     {loading ? (
                         <div className="py-12 text-center text-gray-400 text-xs flex flex-col items-center gap-2">
-                            <div className="w-5 h-5 border-2 border-[#2980b9] border-t-transparent rounded-full animate-spin" />
+                            <div className="w-5 h-5 border-2 border-[#6d99cf] border-t-transparent rounded-full animate-spin" />
                             <span>Loading batches...</span>
                         </div>
                     ) : batches.length === 0 ? (
@@ -6554,7 +6536,7 @@ const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, load
                                     {batches.map(b => (
                                         <tr key={b._id} className="hover:bg-gray-50/60 transition">
                                             <td className="px-4 py-3 font-bold text-gray-900 font-mono">
-                                                <span className="px-2 py-0.5 bg-blue-50 text-[#2980b9] border border-blue-100 rounded-lg">
+                                                <span className="px-2 py-0.5 bg-blue-50 text-[#6d99cf] border border-blue-100 rounded-lg">
                                                     {b.batchNumber}
                                                 </span>
                                             </td>
@@ -6579,10 +6561,10 @@ const BatchManagementModal = ({ isOpen, onClose, product, batches, summary, load
                                                                 href={inv.url}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-[#1F618D] border border-blue-200 rounded-md text-[10px] font-semibold transition"
+                                                                className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 hover:bg-blue-100 text-[#6d99cf] border border-blue-200 rounded-md text-[10px] font-semibold transition"
                                                                 title={inv.originalName || `Invoice ${invIdx + 1}`}
                                                             >
-                                                                <FiFileText size={10} className="text-[#2980b9]" />
+                                                                <FiFileText size={10} className="text-[#6d99cf]" />
                                                                 <span className="truncate max-w-[60px]">{inv.originalName || `Inv ${invIdx + 1}`}</span>
                                                             </a>
                                                         ))}

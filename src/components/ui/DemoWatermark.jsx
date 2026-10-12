@@ -33,9 +33,9 @@ const DemoWatermark = () => {
 
     // Retrieve active Unique Demo ID & User Details
     const demoId = user?.demoId || user?.demo_id || user?.uniqueDemoId ||
-                   tenant?.demoId || tenant?.demo_id || tenant?.uniqueDemoId ||
-                   localStorage.getItem('digioptics_unique_demo_id') ||
-                   'DEMO-DIGI-ACCESS';
+        tenant?.demoId || tenant?.demo_id || tenant?.uniqueDemoId ||
+        localStorage.getItem('digioptics_unique_demo_id') ||
+        'DEMO-DIGI-ACCESS';
 
     const userName = (user?.ownerName || user?.name || user?.employeeName || user?.username || tenant?.owner?.ownerName || 'Demo User').trim();
     const shopName = (tenant?.storeInformation?.storeName || tenant?.storeName || tenant?.businessName || user?.shopName || 'Demo Shop').trim();
@@ -66,7 +66,7 @@ const DemoWatermark = () => {
                 <button
                     type="button"
                     onClick={() => window.dispatchEvent(new Event('open-demo-modal'))}
-                    className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-slate-900 via-[#2980B9] to-blue-700 text-white shadow-2xl hover:shadow-2xl border border-white/30 backdrop-blur-md transition-all duration-200 hover:scale-105 cursor-pointer"
+                    className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-slate-900 via-[#6d99cf] to-blue-700 text-white shadow-2xl hover:shadow-2xl border border-white/30 backdrop-blur-md transition-all duration-200 hover:scale-105 cursor-pointer"
                     title="DigiOptics Demo Active - Click to view NDA Agreement"
                 >
                     <span className="relative flex h-2.5 w-2.5 shrink-0">

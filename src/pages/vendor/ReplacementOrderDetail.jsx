@@ -7,8 +7,8 @@ import { toast } from 'react-toastify';
 import { PATHS } from '../../routes/paths';
 
 const categoryIcon = {
-    LENS:         'lucide:eye',
-    FRAME:        'lucide:glasses',
+    LENS: 'lucide:eye',
+    FRAME: 'lucide:glasses',
     CONTACT_LENS: 'lucide:circle-dot',
 };
 
@@ -28,8 +28,8 @@ const ReplacementOrderDetail = () => {
     const [submittingInward, setSubmittingInward] = useState(false);
 
     // Receipt tracking fields
-    const [inwardReceivedBy, setInwardReceivedBy]     = useState('');
-    const [inwardReceivedOn, setInwardReceivedOn]     = useState('');
+    const [inwardReceivedBy, setInwardReceivedBy] = useState('');
+    const [inwardReceivedOn, setInwardReceivedOn] = useState('');
     const [inwardReceivedFrom, setInwardReceivedFrom] = useState('');
 
     // QC Modal State
@@ -91,8 +91,8 @@ const ReplacementOrderDetail = () => {
             const payload = {
                 purchaseOrderId: detail.replacementOrder._id,
                 remarks: inwardRemarks || `Inward for replacement PO item ${selectedInwardItem.itemName}`,
-                receivedBy:   inwardReceivedBy.trim()   || null,
-                receivedOn:   inwardReceivedOn          || new Date().toISOString().split('T')[0],
+                receivedBy: inwardReceivedBy.trim() || null,
+                receivedOn: inwardReceivedOn || new Date().toISOString().split('T')[0],
                 receivedFrom: inwardReceivedFrom.trim() || null,
                 items: [{
                     itemId: selectedInwardItem.itemId || selectedInwardItem._id,
@@ -214,7 +214,7 @@ const ReplacementOrderDetail = () => {
                 </button>
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                        <Icon icon="lucide:package-check" className="text-[#2980B9]" />
+                        <Icon icon="lucide:package-check" className="text-[#6d99cf]" />
                         Replacement Order Details
                     </h1>
                     <p className="text-sm text-gray-500 mt-1 font-mono">#{replacementOrder._id}</p>
@@ -226,7 +226,7 @@ const ReplacementOrderDetail = () => {
                 {/* Vendor Card */}
                 <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-3">
                     <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
-                        <Icon icon="lucide:truck" className="text-[#2980B9] text-lg" />
+                        <Icon icon="lucide:truck" className="text-[#6d99cf] text-lg" />
                         <h2 className="text-sm font-bold text-gray-800">Vendor Details</h2>
                     </div>
                     <div className="space-y-1.5 text-xs text-gray-600">
@@ -241,7 +241,7 @@ const ReplacementOrderDetail = () => {
                 {/* References Card */}
                 <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-3">
                     <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
-                        <Icon icon="lucide:link" className="text-[#2980B9] text-lg" />
+                        <Icon icon="lucide:link" className="text-[#6d99cf] text-lg" />
                         <h2 className="text-sm font-bold text-gray-800">Linked Records</h2>
                     </div>
                     <div className="space-y-3 text-xs">
@@ -250,7 +250,7 @@ const ReplacementOrderDetail = () => {
                                 <p className="text-gray-500">Original Purchase Order</p>
                                 <button
                                     onClick={() => navigate(`/vendor/purchase-items/${originalPurchaseOrder._id}`)}
-                                    className="text-[#1F618D] font-bold hover:underline flex items-center gap-1 mt-1"
+                                    className="text-[#6d99cf] font-bold hover:underline flex items-center gap-1 mt-1"
                                 >
                                     <Icon icon="lucide:receipt" />
                                     #{originalPurchaseOrder.orderNumber || originalPurchaseOrder._id?.slice(-8).toUpperCase()}
@@ -262,7 +262,7 @@ const ReplacementOrderDetail = () => {
                                 <p className="text-gray-500">Linked Purchase Return</p>
                                 <button
                                     onClick={() => navigate(PATHS.VENDOR.PURCHASE_RETURNS)}
-                                    className="text-[#1F618D] font-bold hover:underline flex items-center gap-1 mt-1"
+                                    className="text-[#6d99cf] font-bold hover:underline flex items-center gap-1 mt-1"
                                 >
                                     <Icon icon="lucide:undo-2" />
                                     #{purchaseReturn._id?.slice(-8).toUpperCase()}
@@ -275,7 +275,7 @@ const ReplacementOrderDetail = () => {
                 {/* Metadata Card */}
                 <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-3">
                     <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
-                        <Icon icon="lucide:info" className="text-[#2980B9] text-lg" />
+                        <Icon icon="lucide:info" className="text-[#6d99cf] text-lg" />
                         <h2 className="text-sm font-bold text-gray-800">Order Metadata</h2>
                     </div>
                     <div className="space-y-1.5 text-xs text-gray-600">
@@ -318,8 +318,8 @@ const ReplacementOrderDetail = () => {
 
             {/* Items List inside replacement order */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm flex-1 overflow-hidden flex flex-col min-h-[300px]">
-                <div className="p-4 bg-[#eaf4fb] border-b border-[#2980B9]/15 flex items-center justify-between shrink-0">
-                    <h2 className="text-xs font-bold text-[#1F618D] uppercase tracking-wider">Replacement Order Items</h2>
+                <div className="p-4 bg-[#eaf4fb] border-b border-[#6d99cf]/15 flex items-center justify-between shrink-0">
+                    <h2 className="text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Replacement Order Items</h2>
                 </div>
                 <div className="overflow-x-auto flex-1">
                     <table className="w-full text-left border-collapse text-xs">
@@ -343,7 +343,7 @@ const ReplacementOrderDetail = () => {
                                             <td className="p-4">
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-6 h-6 rounded-full bg-[#eaf4fb] flex items-center justify-center">
-                                                        <Icon icon={categoryIcon[item.category] || 'lucide:box'} className="text-[#2980B9]" />
+                                                        <Icon icon={categoryIcon[item.category] || 'lucide:box'} className="text-[#6d99cf]" />
                                                     </div>
                                                     <div>
                                                         <p className="font-semibold text-gray-800">{item.itemName}</p>
@@ -358,21 +358,19 @@ const ReplacementOrderDetail = () => {
                                             <td className="p-4 font-bold text-gray-800">{item.qty} {item.unit}</td>
                                             <td className="p-4 font-bold text-gray-800">{item.receivedQty || 0} {item.unit}</td>
                                             <td className="p-4">
-                                                <span className={`inline-flex px-2 py-0.5 rounded-full font-semibold ${
-                                                    item.inwardStatus === 'RECEIVED' ? 'bg-[#eaf4fb] text-[#1F618D]' :
+                                                <span className={`inline-flex px-2 py-0.5 rounded-full font-semibold ${item.inwardStatus === 'RECEIVED' ? 'bg-[#eaf4fb] text-[#6d99cf]' :
                                                     item.inwardStatus === 'PARTIAL' ? 'bg-[#fdf8ed] text-[#b45309]' :
-                                                    'bg-gray-100 text-gray-500'
-                                                }`}>
+                                                        'bg-gray-100 text-gray-500'
+                                                    }`}>
                                                     {item.inwardStatus || 'PENDING'}
                                                 </span>
                                             </td>
                                             <td className="p-4">
-                                                <span className={`inline-flex px-2 py-0.5 rounded-full font-semibold ${
-                                                    item.qcStatus === 'PASSED' ? 'bg-[#eaf4fb] text-[#1F618D]' :
+                                                <span className={`inline-flex px-2 py-0.5 rounded-full font-semibold ${item.qcStatus === 'PASSED' ? 'bg-[#eaf4fb] text-[#6d99cf]' :
                                                     item.qcStatus === 'FAILED' ? 'bg-[#fef2f0] text-[#E74C3C]' :
-                                                    item.qcStatus === 'PARTIAL' ? 'bg-[#fdf8ed] text-[#b45309]' :
-                                                    'bg-gray-100 text-gray-500'
-                                                }`}>
+                                                        item.qcStatus === 'PARTIAL' ? 'bg-[#fdf8ed] text-[#b45309]' :
+                                                            'bg-gray-100 text-gray-500'
+                                                    }`}>
                                                     {item.qcStatus || 'PENDING'}
                                                 </span>
                                             </td>
@@ -381,7 +379,7 @@ const ReplacementOrderDetail = () => {
                                                     {item.inwardStatus !== 'RECEIVED' && (
                                                         <button
                                                             onClick={() => handleOpenInward(item)}
-                                                            className="px-2.5 py-1.5 bg-[#eaf4fb] hover:bg-[#1F618D] hover:text-white text-[#1F618D] border border-[#2980B9]/20 rounded-lg transition-colors font-bold"
+                                                            className="px-2.5 py-1.5 bg-[#eaf4fb] hover:bg-[#6d99cf] hover:text-white text-[#6d99cf] border border-[#6d99cf]/20 rounded-lg transition-colors font-bold"
                                                         >
                                                             Inward
                                                         </button>
@@ -389,7 +387,7 @@ const ReplacementOrderDetail = () => {
                                                     {item.inwardStatus === 'RECEIVED' && item.qcStatus === 'PENDING' && (
                                                         <button
                                                             onClick={() => handleOpenQC(item)}
-                                                            className="px-2.5 py-1.5 bg-[#eaf4fb] hover:bg-[#1F618D] hover:text-white text-[#1F618D] border border-[#2980B9]/20 rounded-lg transition-colors font-bold"
+                                                            className="px-2.5 py-1.5 bg-[#eaf4fb] hover:bg-[#6d99cf] hover:text-white text-[#6d99cf] border border-[#6d99cf]/20 rounded-lg transition-colors font-bold"
                                                         >
                                                             QC Check
                                                         </button>
@@ -410,15 +408,15 @@ const ReplacementOrderDetail = () => {
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSelectedInwardItem(null)} />
                     <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
-                        
+
                         <div className="p-5 border-b border-gray-100 bg-[#eaf4fb] flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-[#1F618D] flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-xl bg-[#6d99cf] flex items-center justify-center">
                                     <Icon icon="lucide:package-check" className="text-white text-xl" />
                                 </div>
                                 <div>
-                                    <h2 className="text-base font-bold text-[#1F618D]">Inward Item Receipt</h2>
-                                    <p className="text-xs text-[#2980B9] mt-0.5">Replacement Inward</p>
+                                    <h2 className="text-base font-bold text-[#6d99cf]">Inward Item Receipt</h2>
+                                    <p className="text-xs text-[#6d99cf] mt-0.5">Replacement Inward</p>
                                 </div>
                             </div>
                             <button onClick={() => setSelectedInwardItem(null)} className="p-2 hover:bg-white/50 rounded-lg transition-colors">
@@ -427,7 +425,7 @@ const ReplacementOrderDetail = () => {
                         </div>
 
                         <div className="p-6 space-y-4">
-                            <div className="bg-[#eaf4fb]/30 border border-[#2980B9]/15 rounded-xl p-3">
+                            <div className="bg-[#eaf4fb]/30 border border-[#6d99cf]/15 rounded-xl p-3">
                                 <p className="text-xs font-bold text-gray-700">{selectedInwardItem.itemName}</p>
                                 <p className="text-[11px] text-gray-500 mt-1">
                                     Total Expected: <strong>{selectedInwardItem.qty} {selectedInwardItem.unit}</strong> | Remaining: <strong>{selectedInwardItem.qty - (selectedInwardItem.receivedQty || 0)}</strong>
@@ -442,7 +440,7 @@ const ReplacementOrderDetail = () => {
                                     max={selectedInwardItem.qty - (selectedInwardItem.receivedQty || 0)}
                                     value={receivedQty}
                                     onChange={e => setReceivedQty(e.target.value)}
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                 />
                             </div>
 
@@ -451,7 +449,7 @@ const ReplacementOrderDetail = () => {
                                 <select
                                     value={inwardCondition}
                                     onChange={e => setInwardCondition(e.target.value)}
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] bg-white"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] bg-white"
                                 >
                                     <option value="GOOD">Good</option>
                                     <option value="DAMAGED">Damaged</option>
@@ -467,13 +465,13 @@ const ReplacementOrderDetail = () => {
                                     value={vendorRefId}
                                     onChange={e => setVendorRefId(e.target.value)}
                                     placeholder="Enter reference ID"
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                 />
                             </div>
 
                             {/* Receipt Details */}
-                            <div className="bg-[#eaf4fb]/40 border border-[#2980B9]/15 rounded-xl p-3 space-y-3">
-                                <p className="text-[11px] font-bold text-[#1F618D] uppercase tracking-wider flex items-center gap-1.5">
+                            <div className="bg-[#eaf4fb]/40 border border-[#6d99cf]/15 rounded-xl p-3 space-y-3">
+                                <p className="text-[11px] font-bold text-[#6d99cf] uppercase tracking-wider flex items-center gap-1.5">
                                     <Icon icon="lucide:clipboard-list" className="text-sm" />
                                     Receipt Details
                                 </p>
@@ -485,7 +483,7 @@ const ReplacementOrderDetail = () => {
                                         value={inwardReceivedBy}
                                         onChange={e => setInwardReceivedBy(e.target.value)}
                                         placeholder="Name of person who received the goods"
-                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                     />
                                 </div>
 
@@ -496,7 +494,7 @@ const ReplacementOrderDetail = () => {
                                         value={inwardReceivedOn}
                                         max={new Date().toISOString().split('T')[0]}
                                         onChange={e => setInwardReceivedOn(e.target.value)}
-                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                     />
                                 </div>
 
@@ -507,7 +505,7 @@ const ReplacementOrderDetail = () => {
                                         value={inwardReceivedFrom}
                                         onChange={e => setInwardReceivedFrom(e.target.value)}
                                         placeholder="Vendor rep / courier / delivery person"
-                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                     />
                                 </div>
                             </div>
@@ -519,7 +517,7 @@ const ReplacementOrderDetail = () => {
                                     value={inwardRemarks}
                                     onChange={e => setInwardRemarks(e.target.value)}
                                     placeholder="Any notes..."
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] resize-none"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] resize-none"
                                 />
                             </div>
                         </div>
@@ -532,7 +530,7 @@ const ReplacementOrderDetail = () => {
                             <button
                                 onClick={handleSubmitInward}
                                 disabled={submittingInward}
-                                className="px-6 py-2.5 text-xs font-bold text-white bg-[#1F618D] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+                                className="px-6 py-2.5 text-xs font-bold text-white bg-[#6d99cf] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
                             >
                                 {submittingInward ? <Icon icon="lucide:loader-2" className="animate-spin" /> : <Icon icon="lucide:check" />}
                                 Submit Inward
@@ -548,15 +546,15 @@ const ReplacementOrderDetail = () => {
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSelectedQCItem(null)} />
                     <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
-                        
+
                         <div className="p-5 border-b border-gray-100 bg-[#eaf4fb] flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-[#1F618D] flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-xl bg-[#6d99cf] flex items-center justify-center">
                                     <Icon icon="lucide:shield-check" className="text-white text-xl" />
                                 </div>
                                 <div>
-                                    <h2 className="text-base font-bold text-[#1F618D]">QC Check Details</h2>
-                                    <p className="text-xs text-[#2980B9] mt-0.5">Replacement QC</p>
+                                    <h2 className="text-base font-bold text-[#6d99cf]">QC Check Details</h2>
+                                    <p className="text-xs text-[#6d99cf] mt-0.5">Replacement QC</p>
                                 </div>
                             </div>
                             <button onClick={() => setSelectedQCItem(null)} className="p-2 hover:bg-white/50 rounded-lg transition-colors">
@@ -565,7 +563,7 @@ const ReplacementOrderDetail = () => {
                         </div>
 
                         <div className="p-6 space-y-4">
-                            <div className="bg-[#eaf4fb]/30 border border-[#2980B9]/15 rounded-xl p-3">
+                            <div className="bg-[#eaf4fb]/30 border border-[#6d99cf]/15 rounded-xl p-3">
                                 <p className="text-xs font-bold text-gray-700">{selectedQCItem.itemName}</p>
                                 <p className="text-[11px] text-gray-500 mt-1">
                                     Received Qty: <strong>{selectedQCItem.receivedQty || selectedQCItem.qty || 0} {selectedQCItem.unit}</strong>
@@ -581,7 +579,7 @@ const ReplacementOrderDetail = () => {
                                         max={selectedQCItem.receivedQty || selectedQCItem.qty || 0}
                                         value={passedQty}
                                         onChange={e => handlePassedQtyChange(e.target.value, selectedQCItem.receivedQty || selectedQCItem.qty || 0)}
-                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                     />
                                 </div>
                                 <div>
@@ -592,7 +590,7 @@ const ReplacementOrderDetail = () => {
                                         max={selectedQCItem.receivedQty || selectedQCItem.qty || 0}
                                         value={failedQty}
                                         onChange={e => handleFailedQtyChange(e.target.value, selectedQCItem.receivedQty || selectedQCItem.qty || 0)}
-                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                     />
                                 </div>
                             </div>
@@ -625,7 +623,7 @@ const ReplacementOrderDetail = () => {
                                     value={qcRemarks}
                                     onChange={e => setQcRemarks(e.target.value)}
                                     placeholder="Remarks..."
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] resize-none"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] resize-none"
                                 />
                             </div>
 
@@ -635,7 +633,7 @@ const ReplacementOrderDetail = () => {
                                     id="notifyVendorCheckbox"
                                     checked={notifyVendor}
                                     onChange={e => setNotifyVendor(e.target.checked)}
-                                    className="w-4 h-4 text-[#1F618D] border-gray-300 rounded focus:ring-[#1F618D]"
+                                    className="w-4 h-4 text-[#6d99cf] border-gray-300 rounded focus:ring-[#6d99cf]"
                                 />
                                 <label htmlFor="notifyVendorCheckbox" className="text-xs font-semibold text-gray-700 cursor-pointer select-none">
                                     Notify Vendor
@@ -651,7 +649,7 @@ const ReplacementOrderDetail = () => {
                             <button
                                 onClick={handleSubmitQC}
                                 disabled={submittingQC}
-                                className="px-6 py-2.5 text-xs font-bold text-white bg-[#1F618D] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+                                className="px-6 py-2.5 text-xs font-bold text-white bg-[#6d99cf] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
                             >
                                 {submittingQC ? <Icon icon="lucide:loader-2" className="animate-spin" /> : <Icon icon="lucide:check" />}
                                 Submit QC Report

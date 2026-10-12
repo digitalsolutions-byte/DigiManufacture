@@ -249,7 +249,7 @@ export default function Settings() {
         try {
             const config = getTabConfig(activeTab);
             let response;
-            
+
             const submitPayload = {
                 name: formData.name.trim(),
                 description: formData.description.trim(),
@@ -274,7 +274,7 @@ export default function Settings() {
         } catch (error) {
             console.error('Submit failed:', error);
             const msg = error.response?.data?.message || error.message || 'Operation failed';
-            
+
             // Map validation/duplicate error messages back into form validation state
             if (msg.toLowerCase().includes('duplicate') || msg.toLowerCase().includes('already exists')) {
                 setFormErrors({ name: { message: msg } });
@@ -294,8 +294,8 @@ export default function Settings() {
             <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-100 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-4">
                 <div>
                     <h1 className="text-lg sm:text-xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
-                        <Icon icon="lucide:settings" className="text-[#2980B9] text-xl sm:text-2xl" />
-                        Wholesaler Master Settings
+                        <Icon icon="lucide:settings" className="text-[#6d99cf] text-xl sm:text-2xl" />
+                        Manufacturer Master Settings
                     </h1>
                     <p className="text-[11px] sm:text-xs text-slate-500 font-medium mt-1">
                         Isolated dropdown configurations — manage plants, labs, fitting locations, courier partners, and inventory taxonomy
@@ -303,7 +303,7 @@ export default function Settings() {
                 </div>
                 <button
                     onClick={handleAddClick}
-                    className="w-full md:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-semibold rounded-xl transition-all shadow-xs active:scale-95 flex-shrink-0"
+                    className="w-full md:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-semibold rounded-xl transition-all shadow-xs active:scale-95 flex-shrink-0"
                 >
                     <Icon icon="lucide:plus" className="text-base" />
                     Add New {currentTabConfig?.entityName}
@@ -316,7 +316,7 @@ export default function Settings() {
                     <div className="hidden sm:block px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100/80 mb-2">
                         Settings Categories
                     </div>
-                    
+
                     {/* Responsive horizontal scrollable icon bar on mobile, vertical stack on desktop */}
                     <div className="flex flex-row overflow-x-auto custom-scrollbar sm:flex-col gap-1.5 pb-1 sm:pb-0">
                         {TABS.map((tab) => {
@@ -329,15 +329,14 @@ export default function Settings() {
                                         setSearchTerm('');
                                         setSelectedBrandFilter('');
                                     }}
-                                    className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all flex-shrink-0 sm:flex-shrink ${
-                                        isActive
-                                            ? 'bg-[#eaf4fb] text-[#1F618D] shadow-xs'
-                                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border border-slate-100 sm:border-0'
-                                    }`}
+                                    className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs font-bold transition-all flex-shrink-0 sm:flex-shrink ${isActive
+                                        ? 'bg-[#eaf4fb] text-[#6d99cf] shadow-xs'
+                                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border border-slate-100 sm:border-0'
+                                        }`}
                                 >
-                                    <Icon icon={tab.icon} className={`text-base sm:text-lg ${isActive ? 'text-[#1F618D]' : 'text-slate-400'}`} />
+                                    <Icon icon={tab.icon} className={`text-base sm:text-lg ${isActive ? 'text-[#6d99cf]' : 'text-slate-400'}`} />
                                     <span className="whitespace-nowrap sm:flex-1">{tab.label}</span>
-                                    {isActive && <div className="hidden sm:block w-1.5 h-1.5 rounded-full bg-[#1F618D]" />}
+                                    {isActive && <div className="hidden sm:block w-1.5 h-1.5 rounded-full bg-[#6d99cf]" />}
                                 </button>
                             );
                         })}
@@ -355,7 +354,7 @@ export default function Settings() {
                                 placeholder={`Search in ${currentTabConfig?.label}...`}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all"
+                                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all"
                             />
                         </div>
 
@@ -401,7 +400,7 @@ export default function Settings() {
                                         <tr>
                                             <td colSpan={activeTab === 'categories' ? 5 : 4} className="py-12 text-center text-slate-400 font-semibold">
                                                 <div className="flex items-center justify-center gap-2">
-                                                    <Icon icon="lucide:loader-2" className="animate-spin text-lg text-[#2980B9]" />
+                                                    <Icon icon="lucide:loader-2" className="animate-spin text-lg text-[#6d99cf]" />
                                                     <span>Loading {currentTabConfig?.label}...</span>
                                                 </div>
                                             </td>
@@ -421,7 +420,7 @@ export default function Settings() {
                                                     {item.name}
                                                 </td>
                                                 {activeTab === 'categories' && (
-                                                    <td className="px-5 py-4 font-semibold text-[#1F618D]">
+                                                    <td className="px-5 py-4 font-semibold text-[#6d99cf]">
                                                         {item.brand?.name || item.brand || '—'}
                                                     </td>
                                                 )}
@@ -431,11 +430,10 @@ export default function Settings() {
                                                 <td className="px-5 py-4 text-center">
                                                     <button
                                                         onClick={() => handleToggleActive(item)}
-                                                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold border transition-all ${
-                                                            item.isActive
-                                                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                                                                : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-200'
-                                                        }`}
+                                                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold border transition-all ${item.isActive
+                                                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                                                            : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-200'
+                                                            }`}
                                                     >
                                                         <span className={`w-1.5 h-1.5 rounded-full ${item.isActive ? 'bg-emerald-500' : 'bg-slate-400'}`} />
                                                         {item.isActive ? 'Active' : 'Inactive'}
@@ -445,7 +443,7 @@ export default function Settings() {
                                                     <div className="flex justify-end gap-2">
                                                         <button
                                                             onClick={() => handleEditClick(item)}
-                                                            className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-[#2980B9] transition-all"
+                                                            className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-[#6d99cf] transition-all"
                                                             title="Edit"
                                                         >
                                                             <Icon icon="lucide:pencil" className="text-base" />
@@ -482,7 +480,7 @@ export default function Settings() {
                         {/* Modal Header */}
                         <div className="px-6 py-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
                             <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                                <Icon icon={editingItem ? 'lucide:pencil' : 'lucide:plus'} className="text-[#2980B9]" />
+                                <Icon icon={editingItem ? 'lucide:pencil' : 'lucide:plus'} className="text-[#6d99cf]" />
                                 {editingItem ? 'Edit' : 'Add New'} {currentTabConfig?.entityName}
                             </h3>
                             <button
@@ -547,14 +545,12 @@ export default function Settings() {
                                 <button
                                     type="button"
                                     onClick={() => setFormData(prev => ({ ...prev, isActive: !prev.isActive }))}
-                                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                                        formData.isActive ? 'bg-[#2980B9]' : 'bg-slate-200'
-                                    }`}
+                                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${formData.isActive ? 'bg-[#6d99cf]' : 'bg-slate-200'
+                                        }`}
                                 >
                                     <span
-                                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                                            formData.isActive ? 'translate-x-5' : 'translate-x-0'
-                                        }`}
+                                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${formData.isActive ? 'translate-x-5' : 'translate-x-0'
+                                            }`}
                                     />
                                 </button>
                             </div>
@@ -571,7 +567,7 @@ export default function Settings() {
                                 <button
                                     type="submit"
                                     disabled={submitLoading}
-                                    className="flex-1 py-3 px-6 text-xs font-bold text-white bg-[#2980B9] hover:bg-[#2471A3] rounded-xl transition-all shadow-xs flex items-center justify-center gap-2 active:scale-98 disabled:opacity-50"
+                                    className="flex-1 py-3 px-6 text-xs font-bold text-white bg-[#6d99cf] hover:bg-[#2471A3] rounded-xl transition-all shadow-xs flex items-center justify-center gap-2 active:scale-98 disabled:opacity-50"
                                 >
                                     {submitLoading && <Icon icon="lucide:loader-2" className="animate-spin text-sm" />}
                                     Save {currentTabConfig?.entityName}

@@ -76,7 +76,7 @@ const DamagedItems = () => {
                 </div>
                 <button
                     onClick={fetchDamaged}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#2980B9] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#6d99cf] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
                 >
                     <Icon icon="lucide:refresh-cw" className={loading ? 'animate-spin' : ''} />
                     Refresh
@@ -92,7 +92,7 @@ const DamagedItems = () => {
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         placeholder="Search by vendor, order #, return #, or item name..."
-                        className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                        className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                     />
                 </div>
                 {search && (
@@ -124,7 +124,7 @@ const DamagedItems = () => {
                                 <tr>
                                     <td colSpan="6" className="p-8 text-center text-gray-500">
                                         <div className="flex justify-center items-center gap-2">
-                                            <Icon icon="lucide:loader-2" className="animate-spin text-xl text-[#2980B9]" />
+                                            <Icon icon="lucide:loader-2" className="animate-spin text-xl text-[#6d99cf]" />
                                             <span>Loading damaged items...</span>
                                         </div>
                                     </td>

@@ -15,12 +15,12 @@ const StatCard = ({ icon, label, value, sub, color = "blue" }) => {
     orange: "bg-orange-50 text-orange-600 border-orange-200",
     green: "bg-emerald-50 text-emerald-600 border-emerald-200",
     red: "bg-rose-50 text-rose-600 border-rose-200",
-    blue: "bg-blue-50 text-[#2980B9] border-blue-200",
+    blue: "bg-blue-50 text-[#6d99cf] border-blue-200",
     teal: "bg-teal-50 text-teal-600 border-teal-200"
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex items-start gap-4 hover:border-[#2980B9]/30 transition-all">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex items-start gap-4 hover:border-[#6d99cf]/30 transition-all">
       <div className={`p-3 rounded-lg ${themes[color] || themes.blue} flex-shrink-0 flex items-center justify-center`}>
         <Icon icon={icon} className="text-xl" />
       </div>
@@ -36,7 +36,7 @@ const StatCard = ({ icon, label, value, sub, color = "blue" }) => {
 const DataCard = ({ title, icon, children, footer }) => (
   <div className="bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden">
     <div className="px-5 py-3.5 border-b border-gray-100 flex items-center gap-2.5 bg-gray-50/80">
-      <div className="w-6 h-6 rounded bg-[#2980B9]/10 text-[#2980B9] flex items-center justify-center">
+      <div className="w-6 h-6 rounded bg-[#6d99cf]/10 text-[#6d99cf] flex items-center justify-center">
         <Icon icon={icon} className="text-sm" />
       </div>
       <h3 className="text-xs font-black text-gray-700 uppercase tracking-widest">{title}</h3>
@@ -69,7 +69,7 @@ const InnerTable = ({ headers, rows, emptyMsg = "No records available", highligh
         : rows.map((row, i) => {
           const hi = highlightLast && i === rows.length - 1;
           return (
-            <tr key={i} className={`transition-colors ${hi ? "bg-[#2980B9] text-white" : "hover:bg-blue-50/30"}`}>
+            <tr key={i} className={`transition-colors ${hi ? "bg-[#6d99cf] text-white" : "hover:bg-blue-50/30"}`}>
               {row.map((cell, j) => (
                 <td key={j} className={`px-5 py-2.5 whitespace-nowrap text-xs font-semibold border-r border-gray-50 last:border-r-0 ${hi ? "text-white font-extrabold" : "text-gray-700"}`}>
                   {cell}
@@ -162,11 +162,11 @@ export default function DailyReport() {
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 space-y-4">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mr-2 flex items-center gap-1">
-            <Icon icon="mdi:clock-fast" className="text-sm text-[#2980B9]" /> Presets:
+            <Icon icon="mdi:clock-fast" className="text-sm text-[#6d99cf]" /> Presets:
           </span>
           {presets.map(({ label, fn }) => (
             <button key={label} type="button" onClick={() => { setForm(fn()); setErrors({}); }}
-              className="px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border border-gray-200 text-gray-600 hover:border-[#2980B9] hover:text-[#2980B9] bg-white transition-all">
+              className="px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border border-gray-200 text-gray-600 hover:border-[#6d99cf] hover:text-[#6d99cf] bg-white transition-all">
               {label}
             </button>
           ))}
@@ -178,17 +178,17 @@ export default function DailyReport() {
               <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Start</span>
               <input type="date" value={form.startDate} max={today()}
                 onChange={(e) => { setForm(p => ({ ...p, startDate: e.target.value })); setErrors(p => ({ ...p, startDate: "" })); }}
-                className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-[#2980B9]" />
+                className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-[#6d99cf]" />
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">End</span>
               <input type="date" value={form.endDate} min={form.startDate} max={today()}
                 onChange={(e) => { setForm(p => ({ ...p, endDate: e.target.value })); setErrors(p => ({ ...p, endDate: "" })); }}
-                className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-[#2980B9]" />
+                className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-[#6d99cf]" />
             </div>
           </div>
           <button type="button" onClick={handleFetch} disabled={loading}
-            className="w-full lg:w-auto flex items-center justify-center gap-1.5 px-6 py-2 bg-[#2980B9] hover:bg-[#2471a3] text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm transition-all disabled:opacity-50 active:scale-95">
+            className="w-full lg:w-auto flex items-center justify-center gap-1.5 px-6 py-2 bg-[#6d99cf] hover:bg-[#2471a3] text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm transition-all disabled:opacity-50 active:scale-95">
             {loading ? (
               <Icon icon="mdi:loading" className="animate-spin text-base" />
             ) : (

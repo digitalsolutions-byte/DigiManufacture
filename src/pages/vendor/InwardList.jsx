@@ -44,7 +44,7 @@ const InwardList = () => {
             <div className="flex justify-between items-center mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                        <Icon icon="lucide:package-check" className="text-[#2980B9]" />
+                        <Icon icon="lucide:package-check" className="text-[#6d99cf]" />
                         Purchase Inwarded Items
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">View all received purchased items</p>
@@ -55,16 +55,16 @@ const InwardList = () => {
                 <div className="overflow-x-auto flex-1">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-[#eaf4fb]/50 border-b border-[#2980B9]/15">
-                                <th className="py-2.5 px-4 w-12 text-[#1F618D]"></th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Inward ID</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Vendor</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Received By</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Items</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Condition</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Status</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider text-center">Invoices</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Inward Date</th>
+                            <tr className="bg-[#eaf4fb]/50 border-b border-[#6d99cf]/15">
+                                <th className="py-2.5 px-4 w-12 text-[#6d99cf]"></th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Inward ID</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Vendor</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Received By</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Items</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Condition</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Status</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider text-center">Invoices</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Inward Date</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -94,7 +94,7 @@ const InwardList = () => {
                                         >
                                             <td className="px-4 py-2">
                                                 <div className="w-6 h-6 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#eaf4fb] transition-colors">
-                                                    <Icon icon="lucide:arrow-right" className="text-gray-400 group-hover:text-[#1F618D] text-xs" />
+                                                    <Icon icon="lucide:arrow-right" className="text-gray-400 group-hover:text-[#6d99cf] text-xs" />
                                                 </div>
                                             </td>
                                             <td className="px-4 py-2">
@@ -129,7 +129,7 @@ const InwardList = () => {
                                             </td>
                                             <td className="px-4 py-2 text-center" onClick={e => e.stopPropagation()}>
                                                 {Array.isArray(inward.invoices) && inward.invoices.length > 0 ? (
-                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#1F618D] border border-blue-200">
+                                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-[#6d99cf] border border-blue-200">
                                                         <Icon icon="lucide:paperclip" className="text-xs" />
                                                         <span>{inward.invoices.length}</span>
                                                     </span>

@@ -45,7 +45,7 @@ export const FileUploadField = ({ label, name, placeholder, fileRef: externalFil
                                 type="button"
                                 className={(uploading || isReadOnlyMode)
                                     ? "flex items-center justify-center gap-1.5 px-3 h-9 rounded-lg bg-gray-200 text-gray-400 text-[11px] font-semibold cursor-not-allowed opacity-60 border border-gray-200"
-                                    : "flex items-center justify-center gap-1.5 px-3 h-9 rounded-lg bg-[#2980B9] hover:bg-[#2471a3] text-white text-[11px] font-semibold transition-all shadow-sm border border-[#2471a3] active:scale-95"}
+                                    : "flex items-center justify-center gap-1.5 px-3 h-9 rounded-lg bg-[#6d99cf] hover:bg-[#2471a3] text-white text-[11px] font-semibold transition-all shadow-sm border border-[#2471a3] active:scale-95"}
                             >
                                 <Icon icon={uploading ? "mdi:loading" : "mdi:folder-upload"} className={uploading ? "animate-spin text-sm" : "text-sm"} />
                                 {uploading ? 'Uploading...' : 'Files/Gallery'}
@@ -70,7 +70,7 @@ export const FileUploadField = ({ label, name, placeholder, fileRef: externalFil
                         type="button"
                         className={(uploading || isReadOnlyMode)
                             ? "flex items-center justify-center gap-2 px-4 h-9 rounded-lg bg-gray-200 text-gray-400 text-[11px] font-semibold cursor-not-allowed opacity-60 border border-gray-200 w-full"
-                            : "flex items-center justify-center gap-2 px-4 h-9 rounded-lg bg-[#2980B9] hover:bg-[#2471a3] text-white text-[11px] font-semibold transition-all shadow-sm border border-[#2471a3] w-full active:scale-95"}
+                            : "flex items-center justify-center gap-2 px-4 h-9 rounded-lg bg-[#6d99cf] hover:bg-[#2471a3] text-white text-[11px] font-semibold transition-all shadow-sm border border-[#2471a3] w-full active:scale-95"}
                     >
                         <Icon icon={uploading ? "mdi:loading" : "mdi:cloud-upload"} className={uploading ? "animate-spin text-sm" : "text-sm"} />
                         {uploading ? 'Uploading...' : 'Upload Document'}

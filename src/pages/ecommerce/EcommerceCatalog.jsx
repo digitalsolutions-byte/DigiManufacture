@@ -307,14 +307,14 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                         Optical Frames & Sunglasses Catalog
                     </h1>
                     <p className="text-xs text-gray-400 font-semibold hidden sm:block">
-                        Select multiple frames & color shades directly to build your wholesale order
+                        Select multiple frames & color shades directly to build your manufacturing order
                     </p>
                 </div>
 
                 {/* Always-visible Header Cart Button */}
                 <button
                     onClick={() => setIsMobileCartOpen(true)}
-                    className="relative px-3.5 sm:px-4 py-2.5 bg-[#2980B9] hover:bg-[#2471A3] text-white rounded-xl text-xs font-bold transition shadow-md active:scale-95 flex items-center gap-2 flex-shrink-0"
+                    className="relative px-3.5 sm:px-4 py-2.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white rounded-xl text-xs font-bold transition shadow-md active:scale-95 flex items-center gap-2 flex-shrink-0"
                 >
                     <Icon icon="lucide:shopping-cart" className="text-base text-amber-300" />
                     <span>Cart</span>
@@ -337,7 +337,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                             placeholder="Search frames by model, brand, name..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-9 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9] focus:bg-white"
+                            className="w-full pl-9 pr-10 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf] focus:bg-white"
                         />
                         {search && (
                             <button type="button" onClick={() => { setSearch(''); fetchProducts(1, activeTab, ''); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -363,7 +363,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                             {uniqueShapes.map(s => <option key={s} value={s}>{s}</option>)}
                         </select>
 
-                        <button onClick={() => { setSearch(''); setSelectedBrand('ALL'); setSelectedShape('ALL'); setInStockOnly(false); }} className="px-2.5 py-1.5 text-xs font-bold text-[#2980B9] hover:bg-blue-50 rounded-xl transition ml-auto flex items-center gap-1">
+                        <button onClick={() => { setSearch(''); setSelectedBrand('ALL'); setSelectedShape('ALL'); setInStockOnly(false); }} className="px-2.5 py-1.5 text-xs font-bold text-[#6d99cf] hover:bg-blue-50 rounded-xl transition ml-auto flex items-center gap-1">
                             <Icon icon="lucide:refresh-cw" className="text-xs" /> Reset
                         </button>
                     </div>
@@ -373,7 +373,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
 
                         <div className="flex items-center gap-1.5">
                             <span className="text-[10px] font-bold text-gray-400 uppercase">Sort by:</span>
-                            <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="bg-transparent text-xs font-bold text-[#2980B9] outline-none cursor-pointer">
+                            <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="bg-transparent text-xs font-bold text-[#6d99cf] outline-none cursor-pointer">
                                 <option value="NEWEST">Newest</option>
                                 <option value="PRICE_LOW_HIGH">Price: Low to High</option>
                                 <option value="PRICE_HIGH_LOW">Price: High to Low</option>
@@ -415,7 +415,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                         setIsMobileDetailsOpen(true);
                                     }}
                                     className={`group bg-white rounded-2xl border p-3.5 transition-all duration-200 cursor-pointer flex flex-col justify-between relative ${isSelected
-                                        ? 'border-[#2980B9] ring-2 ring-[#2980B9]/20 shadow-md bg-blue-50/20'
+                                        ? 'border-[#6d99cf] ring-2 ring-[#6d99cf]/20 shadow-md bg-blue-50/20'
                                         : 'border-gray-100 hover:border-blue-200 shadow-sm hover:shadow-md'
                                         }`}
                                 >
@@ -453,11 +453,10 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                                                 type="button"
                                                                 onClick={(e) => handleSelectCardColor(e, product._id, c.color)}
                                                                 title={`${c.color} (${c.qty || 0} pcs)`}
-                                                                className={`w-4 h-4 rounded-full border transition-all duration-150 relative cursor-pointer ${
-                                                                    isSelectedColor
-                                                                        ? 'ring-2 ring-[#2980B9] ring-offset-1 scale-110 border-white shadow-xs z-10'
+                                                                className={`w-4 h-4 rounded-full border transition-all duration-150 relative cursor-pointer ${isSelectedColor
+                                                                        ? 'ring-2 ring-[#6d99cf] ring-offset-1 scale-110 border-white shadow-xs z-10'
                                                                         : 'border-gray-300 hover:scale-105 opacity-75 hover:opacity-100'
-                                                                }`}
+                                                                    }`}
                                                                 style={{ backgroundColor: colorHex }}
                                                             />
                                                         );
@@ -502,7 +501,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                                     handleAddToCart(product, null, 1);
                                                 }
                                             }}
-                                            className="px-3 py-1.5 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-bold rounded-xl transition shadow-2xs active:scale-95 flex items-center gap-1 flex-shrink-0"
+                                            className="px-3 py-1.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-bold rounded-xl transition shadow-2xs active:scale-95 flex items-center gap-1 flex-shrink-0"
                                         >
                                             <Icon icon="lucide:plus" className="text-xs" />
                                             <span>Add</span>
@@ -529,7 +528,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                 <Icon icon="lucide:chevron-left" className="text-sm" />
                                 <span>Previous</span>
                             </button>
-                            <span className="px-3 py-1 bg-blue-50 text-[#2980B9] font-black rounded-lg text-xs border border-blue-100">
+                            <span className="px-3 py-1 bg-blue-50 text-[#6d99cf] font-black rounded-lg text-xs border border-blue-100">
                                 {pagination.page}
                             </span>
                             <button
@@ -547,7 +546,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
 
             {/* ── Floating Bottom Quick-Cart Bar (Visible on smaller screens when cart has items) ── */}
             {cartTotals.totalItems > 0 && (
-                <div className="lg:hidden fixed bottom-4 left-4 right-4 z-40 bg-[#2980B9] text-white p-3 px-4 rounded-2xl shadow-xl border border-white/20 flex items-center justify-between animate-in slide-in-from-bottom-6 fade-in duration-300 ease-out">
+                <div className="lg:hidden fixed bottom-4 left-4 right-4 z-40 bg-[#6d99cf] text-white p-3 px-4 rounded-2xl shadow-xl border border-white/20 flex items-center justify-between animate-in slide-in-from-bottom-6 fade-in duration-300 ease-out">
                     <div className="flex items-center gap-2.5">
                         <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center font-black text-xs text-white shadow-xs">
                             <Icon icon="lucide:shopping-bag" className="text-base" />
@@ -564,7 +563,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
 
                     <button
                         onClick={() => setIsMobileCartOpen(true)}
-                        className="px-4 py-2 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-extrabold rounded-xl transition shadow-md active:scale-95 flex items-center gap-1.5"
+                        className="px-4 py-2 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-extrabold rounded-xl transition shadow-md active:scale-95 flex items-center gap-1.5"
                     >
                         <span>View Cart</span>
                         <Icon icon="lucide:arrow-right" className="text-xs" />
@@ -585,7 +584,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                         {/* Modal Header */}
                         <div className="flex items-center justify-between border-b border-gray-100 pb-3 shrink-0">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-[#2980B9]">
+                                <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-[#6d99cf]">
                                     <Icon icon="lucide:shopping-bag" className="text-xl" />
                                 </div>
                                 <div>
@@ -662,7 +661,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                         setIsMobileCartOpen(false);
                                         handleCheckout();
                                     }}
-                                    className="w-full py-3.5 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-black rounded-xl transition shadow-lg active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                                    className="w-full py-3.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-black rounded-xl transition shadow-lg active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                                 >
                                     <Icon icon="lucide:check-circle" className="text-base" />
                                     <span>Proceed to Order Checkout</span>
@@ -736,11 +735,10 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                                         type="button"
                                                         onClick={() => setSelectedColor(c.color)}
                                                         title={`${c.color} (${c.qty || 0} pcs)`}
-                                                        className={`w-5 h-5 rounded-full border transition-all duration-200 relative cursor-pointer flex items-center justify-center ${
-                                                            isSelected
-                                                                ? 'ring-2 ring-[#2980B9] ring-offset-2 scale-110 border-white shadow-md z-10'
+                                                        className={`w-5 h-5 rounded-full border transition-all duration-200 relative cursor-pointer flex items-center justify-center ${isSelected
+                                                                ? 'ring-2 ring-[#6d99cf] ring-offset-2 scale-110 border-white shadow-md z-10'
                                                                 : 'border-gray-300 hover:scale-105 opacity-80 hover:opacity-100'
-                                                        }`}
+                                                            }`}
                                                         style={{ backgroundColor: colorHex }}
                                                     >
                                                         {isSelected && (
@@ -787,9 +785,8 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                             <div
                                                 key={idx}
                                                 onClick={() => setSelectedColor(c.color)}
-                                                className={`p-3 transition flex items-center justify-between gap-2 cursor-pointer ${
-                                                    isCurrentColorActive ? 'bg-blue-50/60 ring-1 ring-[#2980B9]' : 'bg-white hover:bg-gray-50'
-                                                }`}
+                                                className={`p-3 transition flex items-center justify-between gap-2 cursor-pointer ${isCurrentColorActive ? 'bg-blue-50/60 ring-1 ring-[#6d99cf]' : 'bg-white hover:bg-gray-50'
+                                                    }`}
                                             >
                                                 <div className="flex items-center gap-2 min-w-[85px]">
                                                     <span style={{ backgroundColor: getValidColorHex(c.color) }} className="w-5 h-5 rounded-full border border-gray-300 flex-shrink-0" />
@@ -825,7 +822,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                                 {isAvailable ? (
                                                     <button
                                                         onClick={() => handleAddToCart(selectedProduct, c, currentQty)}
-                                                        className="px-3 py-1.5 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-bold rounded-lg transition shadow-2xs active:scale-95 flex items-center gap-1"
+                                                        className="px-3 py-1.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-bold rounded-lg transition shadow-2xs active:scale-95 flex items-center gap-1"
                                                     >
                                                         <Icon icon="lucide:plus" className="text-xs" />
                                                         <span>Add</span>
@@ -847,7 +844,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                         <span className="text-xs font-bold text-emerald-600">{selectedProduct.qty || 0} pcs</span>
                                         <button
                                             onClick={() => handleAddToCart(selectedProduct)}
-                                            className="px-4 py-1.5 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-bold rounded-lg transition shadow-2xs flex items-center gap-1"
+                                            className="px-4 py-1.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-bold rounded-lg transition shadow-2xs flex items-center gap-1"
                                         >
                                             <Icon icon="lucide:plus" className="text-xs" />
                                             <span>Add</span>
@@ -861,7 +858,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                         <div className="pt-2 border-t border-gray-100 flex items-center gap-3">
                             <button
                                 onClick={() => setIsMobileDetailsOpen(false)}
-                                className="flex-1 py-3 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-black rounded-xl transition shadow-md active:scale-95 flex items-center justify-center gap-2"
+                                className="flex-1 py-3 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-black rounded-xl transition shadow-md active:scale-95 flex items-center justify-center gap-2"
                             >
                                 <Icon icon="lucide:check-circle" className="text-base" />
                                 <span>Done</span>
@@ -872,9 +869,9 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                         setIsMobileDetailsOpen(false);
                                         setIsMobileCartOpen(true);
                                     }}
-                                    className="py-3 px-4 bg-blue-50 hover:bg-blue-100 text-[#2980B9] border border-blue-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-2xs active:scale-95"
+                                    className="py-3 px-4 bg-blue-50 hover:bg-blue-100 text-[#6d99cf] border border-blue-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-2xs active:scale-95"
                                 >
-                                    <Icon icon="lucide:shopping-cart" className="text-[#2980B9] text-sm" />
+                                    <Icon icon="lucide:shopping-cart" className="text-[#6d99cf] text-sm" />
                                     <span>Cart ({cartTotals.totalPcs})</span>
                                 </button>
                             )}
@@ -953,11 +950,10 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                                             type="button"
                                                             onClick={() => setSelectedColor(c.color)}
                                                             title={`${c.color} (${c.qty || 0} pcs)`}
-                                                            className={`w-6 h-6 rounded-full border transition-all duration-200 relative cursor-pointer flex items-center justify-center ${
-                                                                isSelected
-                                                                    ? 'ring-2 ring-[#2980B9] ring-offset-2 scale-110 border-white shadow-md z-10'
+                                                            className={`w-6 h-6 rounded-full border transition-all duration-200 relative cursor-pointer flex items-center justify-center ${isSelected
+                                                                    ? 'ring-2 ring-[#6d99cf] ring-offset-2 scale-110 border-white shadow-md z-10'
                                                                     : 'border-gray-300 hover:scale-105 opacity-80 hover:opacity-100'
-                                                            }`}
+                                                                }`}
                                                             style={{ backgroundColor: colorHex }}
                                                         >
                                                             {isSelected && (
@@ -1004,9 +1000,8 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                                 <div
                                                     key={idx}
                                                     onClick={() => setSelectedColor(c.color)}
-                                                    className={`p-3 transition flex items-center justify-between gap-3 cursor-pointer ${
-                                                        isCurrentColorActive ? 'bg-blue-50/60 ring-1 ring-[#2980B9]' : 'bg-white hover:bg-gray-50'
-                                                    }`}
+                                                    className={`p-3 transition flex items-center justify-between gap-3 cursor-pointer ${isCurrentColorActive ? 'bg-blue-50/60 ring-1 ring-[#6d99cf]' : 'bg-white hover:bg-gray-50'
+                                                        }`}
                                                 >
                                                     <div className="flex items-center gap-2 min-w-[100px]">
                                                         <span style={{ backgroundColor: getValidColorHex(c.color) }} className="w-5 h-5 rounded-full border border-gray-300 flex-shrink-0" />
@@ -1042,7 +1037,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                                     {isAvailable ? (
                                                         <button
                                                             onClick={() => handleAddToCart(selectedProduct, c, currentQty)}
-                                                            className="px-3.5 py-1.5 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-bold rounded-lg transition shadow-2xs active:scale-95 flex items-center gap-1"
+                                                            className="px-3.5 py-1.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-bold rounded-lg transition shadow-2xs active:scale-95 flex items-center gap-1"
                                                         >
                                                             <Icon icon="lucide:plus" className="text-xs" />
                                                             <span>Add</span>
@@ -1065,7 +1060,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                             <span className="font-black text-gray-900">₹{selectedProduct.price}</span>
                                             <button
                                                 onClick={() => handleAddToCart(selectedProduct)}
-                                                className="px-4 py-1.5 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-bold rounded-lg transition shadow-2xs flex items-center gap-1"
+                                                className="px-4 py-1.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-bold rounded-lg transition shadow-2xs flex items-center gap-1"
                                             >
                                                 <Icon icon="lucide:plus" className="text-xs" />
                                                 <span>Add</span>
@@ -1104,7 +1099,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                             <div className="bg-blue-50/60 rounded-2xl border border-blue-100 p-4 space-y-3 mt-4">
                                 <div className="flex items-center justify-between border-b border-blue-100 pb-2">
                                     <div className="flex items-center gap-2">
-                                        <Icon icon="lucide:shopping-bag" className="text-base text-[#2980B9]" />
+                                        <Icon icon="lucide:shopping-bag" className="text-base text-[#6d99cf]" />
                                         <h4 className="text-xs font-black uppercase text-gray-900">Order Cart ({cartTotals.totalItems} Items, {cartTotals.totalPcs} Pcs)</h4>
                                     </div>
                                     <button onClick={() => setCart([])} className="text-[10px] text-gray-400 hover:text-red-500 font-bold">Clear Cart</button>
@@ -1138,7 +1133,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                                     </div>
                                     <button
                                         onClick={handleCheckout}
-                                        className="px-5 py-2.5 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-black rounded-xl transition shadow-md active:scale-95 flex items-center gap-2"
+                                        className="px-5 py-2.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-black rounded-xl transition shadow-md active:scale-95 flex items-center gap-2"
                                     >
                                         <Icon icon="lucide:check-circle" className="text-sm" />
                                         <span>Proceed to Checkout</span>
@@ -1152,14 +1147,14 @@ const EcommerceCatalog = ({ defaultCategory }) => {
             )}
             {/* ── Sticky Mobile Floating Checkout Bar (Always visible at bottom on Mobile when cart > 0) ── */}
             {cart.length > 0 && createPortal(
-                <div className="lg:hidden fixed bottom-4 left-4 right-4 z-[9990] bg-[#2980B9] text-white p-3.5 rounded-2xl shadow-2xl flex items-center justify-between border border-blue-400/30 animate-in slide-in-from-bottom duration-300">
+                <div className="lg:hidden fixed bottom-4 left-4 right-4 z-[9990] bg-[#6d99cf] text-white p-3.5 rounded-2xl shadow-2xl flex items-center justify-between border border-blue-400/30 animate-in slide-in-from-bottom duration-300">
                     <div
                         onClick={() => setIsMobileCartOpen(true)}
                         className="flex items-center gap-3 cursor-pointer min-w-0"
                     >
                         <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-white shrink-0 relative">
                             <Icon icon="lucide:shopping-bag" className="text-xl" />
-                            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-rose-500 text-white font-black text-[10px] flex items-center justify-center border-2 border-[#2980B9]">
+                            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-rose-500 text-white font-black text-[10px] flex items-center justify-center border-2 border-[#6d99cf]">
                                 {cartTotals.totalItems}
                             </span>
                         </div>
@@ -1170,7 +1165,7 @@ const EcommerceCatalog = ({ defaultCategory }) => {
                     </div>
                     <button
                         onClick={handleCheckout}
-                        className="px-5 py-2.5 bg-white text-[#2980B9] hover:bg-blue-50 font-black text-xs rounded-xl shadow-md transition active:scale-95 flex items-center gap-1.5 shrink-0 cursor-pointer"
+                        className="px-5 py-2.5 bg-white text-[#6d99cf] hover:bg-blue-50 font-black text-xs rounded-xl shadow-md transition active:scale-95 flex items-center gap-1.5 shrink-0 cursor-pointer"
                     >
                         <span>Proceed to Checkout</span>
                         <Icon icon="lucide:arrow-right" className="text-sm" />

@@ -6,14 +6,14 @@ import { useDispatch } from "react-redux";
 import { hideLoader, showLoader } from "../../features/loader/loaderSlice";
 import { Icon } from "@iconify/react";
 
-const inputCls = "w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-[#2980B9] focus:ring-2 focus:ring-[#2980B9]/20 hover:border-[#2980B9]/50 bg-white text-gray-700 transition-all placeholder:text-gray-300 font-semibold";
+const inputCls = "w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-[#6d99cf] focus:ring-2 focus:ring-[#6d99cf]/20 hover:border-[#6d99cf]/50 bg-white text-gray-700 transition-all placeholder:text-gray-300 font-semibold";
 const labelCls = "text-xs font-semibold text-gray-500 block mb-2 ml-2";
 
 const Field = ({ label, icon, error, children }) => (
     <div className="flex flex-col">
         <label className={labelCls}>
             <span className="flex items-center gap-2">
-                {icon && <Icon icon={icon} className="text-sm text-[#1F618D]" />}
+                {icon && <Icon icon={icon} className="text-sm text-[#6d99cf]" />}
                 {label}
             </span>
         </label>
@@ -74,7 +74,7 @@ export default function AddVendor() {
             <div className="flex justify-between items-center mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                        <Icon icon="mdi:account-plus" className="text-[#1F618D]" />
+                        <Icon icon="mdi:account-plus" className="text-[#6d99cf]" />
                         Add Vendor
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">Fill details to add vendor</p>
@@ -84,87 +84,87 @@ export default function AddVendor() {
                 <form onSubmit={handleSubmit} noValidate className="flex flex-col h-full">
                     <div className="p-6 overflow-y-auto flex-1">
                         {/* Section label */}
-                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-1.5 h-6 bg-[#1F618D] rounded-sm" />
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-1.5 h-6 bg-[#6d99cf] rounded-sm" />
                             <span className="text-sm font-bold text-gray-700">Vendor Details</span>
                         </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
 
-                                <Field label="Name *" icon="mdi:account-outline" error={errors.name}>
-                                    <input
-                                        name="name" value={formData.name} onChange={handleChange}
-                                        placeholder="Full name"
-                                        className={`${inputCls} ${errors.name ? "border-red-200 bg-red-50/30" : ""}`}
-                                    />
-                                </Field>
+                            <Field label="Name *" icon="mdi:account-outline" error={errors.name}>
+                                <input
+                                    name="name" value={formData.name} onChange={handleChange}
+                                    placeholder="Full name"
+                                    className={`${inputCls} ${errors.name ? "border-red-200 bg-red-50/30" : ""}`}
+                                />
+                            </Field>
 
-                                <Field label="Firm Name *" icon="mdi:office-building-outline" error={errors.firm}>
-                                    <input
-                                        name="firm" value={formData.firm} onChange={handleChange}
-                                        placeholder="Company / Shop name"
-                                        className={`${inputCls} ${errors.firm ? "border-red-200 bg-red-50/30" : ""}`}
-                                    />
-                                </Field>
+                            <Field label="Firm Name *" icon="mdi:office-building-outline" error={errors.firm}>
+                                <input
+                                    name="firm" value={formData.firm} onChange={handleChange}
+                                    placeholder="Company / Shop name"
+                                    className={`${inputCls} ${errors.firm ? "border-red-200 bg-red-50/30" : ""}`}
+                                />
+                            </Field>
 
-                                <Field label="Mobile *" icon="mdi:phone-outline" error={errors.mobile}>
-                                    <input
-                                        name="mobile" value={formData.mobile} onChange={handleChange}
-                                        placeholder="10-digit primary mobile"
-                                        maxLength={10}
-                                        className={`${inputCls} ${errors.mobile ? "border-red-200 bg-red-50/30" : ""}`}
-                                    />
-                                </Field>
+                            <Field label="Mobile *" icon="mdi:phone-outline" error={errors.mobile}>
+                                <input
+                                    name="mobile" value={formData.mobile} onChange={handleChange}
+                                    placeholder="10-digit primary mobile"
+                                    maxLength={10}
+                                    className={`${inputCls} ${errors.mobile ? "border-red-200 bg-red-50/30" : ""}`}
+                                />
+                            </Field>
 
-                                <Field label="Email *" icon="mdi:email-outline" error={errors.email}>
-                                    <input
-                                        type="email" name="email" value={formData.email} onChange={handleChange}
-                                        placeholder="vendor@company.com"
-                                        className={`${inputCls} ${errors.email ? "border-red-200 bg-red-50/30" : ""}`}
-                                    />
-                                </Field>
+                            <Field label="Email *" icon="mdi:email-outline" error={errors.email}>
+                                <input
+                                    type="email" name="email" value={formData.email} onChange={handleChange}
+                                    placeholder="vendor@company.com"
+                                    className={`${inputCls} ${errors.email ? "border-red-200 bg-red-50/30" : ""}`}
+                                />
+                            </Field>
 
-                                <Field label="GST Number" icon="mdi:card-account-details-outline">
-                                    <input
-                                        name="gstNumber" value={formData.gstNumber} onChange={handleChange}
-                                        placeholder="22AAAAA0000A1Z5"
-                                        className={inputCls}
-                                    />
-                                </Field>
+                            <Field label="GST Number" icon="mdi:card-account-details-outline">
+                                <input
+                                    name="gstNumber" value={formData.gstNumber} onChange={handleChange}
+                                    placeholder="22AAAAA0000A1Z5"
+                                    className={inputCls}
+                                />
+                            </Field>
 
-                                <Field label="Payment Terms" icon="mdi:clock-outline">
-                                    <select
-                                        name="paymentTerms" value={formData.paymentTerms} onChange={handleChange}
-                                        className={inputCls}
-                                    >
-                                        <option value="">Select terms</option>
-                                        <option value="Immediate">Immediate</option>
-                                        <option value="Net 7">Net 7 Days</option>
-                                        <option value="Net 15">Net 15 Days</option>
-                                        <option value="Net 30">Net 30 Days</option>
-                                        <option value="Advance">Advance Payment</option>
-                                    </select>
-                                </Field>
+                            <Field label="Payment Terms" icon="mdi:clock-outline">
+                                <select
+                                    name="paymentTerms" value={formData.paymentTerms} onChange={handleChange}
+                                    className={inputCls}
+                                >
+                                    <option value="">Select terms</option>
+                                    <option value="Immediate">Immediate</option>
+                                    <option value="Net 7">Net 7 Days</option>
+                                    <option value="Net 15">Net 15 Days</option>
+                                    <option value="Net 30">Net 30 Days</option>
+                                    <option value="Advance">Advance Payment</option>
+                                </select>
+                            </Field>
 
-                                <Field label="Address" icon="mdi:map-marker-outline">
-                                    <input
-                                        name="address" value={formData.address} onChange={handleChange}
-                                        placeholder="Full location details"
-                                        className={inputCls}
-                                    />
-                                </Field>
+                            <Field label="Address" icon="mdi:map-marker-outline">
+                                <input
+                                    name="address" value={formData.address} onChange={handleChange}
+                                    placeholder="Full location details"
+                                    className={inputCls}
+                                />
+                            </Field>
 
-                                <Field label="Notes" icon="mdi:note-text-outline">
-                                    <input
-                                        name="notes" value={formData.notes} onChange={handleChange}
-                                        placeholder="Any special instructions"
-                                        className={inputCls}
-                                    />
-                                </Field>
-
-                            </div>
+                            <Field label="Notes" icon="mdi:note-text-outline">
+                                <input
+                                    name="notes" value={formData.notes} onChange={handleChange}
+                                    placeholder="Any special instructions"
+                                    className={inputCls}
+                                />
+                            </Field>
 
                         </div>
+
+                    </div>
                     <div className="bg-gray-50/50 p-6 border-t border-gray-100 flex items-center justify-end gap-4 mt-auto">
                         <button type="button" onClick={handleReset}
                             className="px-8 py-3 rounded-full text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all">

@@ -4,6 +4,7 @@ export const PATHS = {
     LOGIN: '/login',
     WELCOME: '/welcome',
     UNAUTHORIZED: '/unauthorized',
+    PLACEHOLDERPAGE: '/placeholder',
 
     // PASSWORD RESET
     FORGOT_PASSWORD: '/forgot-password',
@@ -54,13 +55,14 @@ export const PATHS = {
 
     // OPERATIONS MODULE
     OPERATIONS: {
-        SURFACING: '/surfacing',
-        TINT: '/process-1',
-        HARD_COAT: '/process-2',
-        ARC: '/process-3',
+        LAB: '/lab',
+        TINT: '/tint',
+        HARD_COAT: '/hard-coat',
+        ARC: '/arc',
         QC: '/qc',
         FITTING: '/fitting',
         DISPATCH: '/dispatch',
+        SURFACING: '/surfacing',
         DMS: '/dms',
         FINANCE: '/finance',
         REPORTS: '/reports',
@@ -121,14 +123,14 @@ export const PATHS = {
         LIST: '/tenants/list',
         DETAILS: '/tenants/view/:id',
         EDIT: '/tenants/edit/:id',
-        SETTINGS: '/owner/wholesalers/:id/settings',
+        SETTINGS: '/owner/manufacturers/:id/settings',
     },
     // E-COMMERCE MODULE
     ECOMMERCE: {
         SUNGLASSES: '/ecommerce/sunglasses',
         FRAMES: '/ecommerce/frames',
     },
-        // ACCOUNTING & PAYMENTS MODULE
+    // ACCOUNTING & PAYMENTS MODULE
     ACCOUNTING: {
         CUSTOMER_LEDGERS: '/accounting/customer-ledgers',
         CUSTOMER_STATEMENT: '/accounting/customer-statement/:customerId',
@@ -137,6 +139,14 @@ export const PATHS = {
         PAYMENTS: '/accounting/payments',
     },
     SETTINGS: '/settings',
+
+    // LAB PROCESS MODULE
+    LAB_PROCESS: {
+        PROCESS_1: '/lab-process/process-1',
+        PROCESS_2: '/lab-process/process-2',
+        PROCESS_3: '/lab-process/process-3',
+        QC_1: '/lab-process/qc-1',
+    },
 
     // EXTERNAL / CROSS-PLATFORM MODULE
     EXTERNAL: {

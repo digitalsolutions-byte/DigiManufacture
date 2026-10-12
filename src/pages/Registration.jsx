@@ -49,31 +49,31 @@ const PAGE_ACCESS_OPTIONS = [
 ];
 
 const ACCESS_PERMISSION_OPTIONS = [
-    { value: 'ADD_STAFF',         label: 'Add Staff' },
-    { value: 'UPDATE_STAFF',      label: 'Update Staff' },
-    { value: 'DELETE_STAFF',      label: 'Delete Staff' },
-    { value: 'ADD_CUSTOMER',      label: 'Add Customer' },
-    { value: 'UPDATE_CUSTOMER',   label: 'Update Customer' },
-    { value: 'DELETE_CUSTOMER',   label: 'Delete Customer' },
-    { value: 'ADD_ORDER',         label: 'Add Order' },
-    { value: 'UPDATE_ORDER',      label: 'Update Order' },
-    { value: 'DELETE_ORDER',      label: 'Delete Order' },
-    { value: 'APPROVE_ORDER',     label: 'Approve Order' },
-    { value: 'ADD_DRAFT',         label: 'Add Draft' },
-    { value: 'UPDATE_DRAFT',      label: 'Update Draft' },
-    { value: 'DELETE_DRAFT',      label: 'Delete Draft' },
-    { value: 'ADD_REPAIR',        label: 'Add Repair' },
-    { value: 'UPDATE_REPAIR',     label: 'Update Repair' },
-    { value: 'DELETE_REPAIR',     label: 'Delete Repair' },
-    { value: 'ADD_VENDOR',        label: 'Add Vendor' },
-    { value: 'UPDATE_VENDOR',     label: 'Update Vendor' },
-    { value: 'DELETE_VENDOR',     label: 'Delete Vendor' },
-    { value: 'UPDATE_QUALITY',    label: 'Update Quality' },
-    { value: 'UPDATE_FITTING',    label: 'Update Fitting' },
-    { value: 'UPDATE_SHIPPING',   label: 'Update Shipping' },
-    { value: 'UPDATE_INVENTORY',  label: 'Update Inventory' },
-    { value: 'VIEW_REPORTS',      label: 'View Reports' },
-    { value: 'EXPORT_REPORTS',    label: 'Export Reports' },
+    { value: 'ADD_STAFF', label: 'Add Staff' },
+    { value: 'UPDATE_STAFF', label: 'Update Staff' },
+    { value: 'DELETE_STAFF', label: 'Delete Staff' },
+    { value: 'ADD_CUSTOMER', label: 'Add Customer' },
+    { value: 'UPDATE_CUSTOMER', label: 'Update Customer' },
+    { value: 'DELETE_CUSTOMER', label: 'Delete Customer' },
+    { value: 'ADD_ORDER', label: 'Add Order' },
+    { value: 'UPDATE_ORDER', label: 'Update Order' },
+    { value: 'DELETE_ORDER', label: 'Delete Order' },
+    { value: 'APPROVE_ORDER', label: 'Approve Order' },
+    { value: 'ADD_DRAFT', label: 'Add Draft' },
+    { value: 'UPDATE_DRAFT', label: 'Update Draft' },
+    { value: 'DELETE_DRAFT', label: 'Delete Draft' },
+    { value: 'ADD_REPAIR', label: 'Add Repair' },
+    { value: 'UPDATE_REPAIR', label: 'Update Repair' },
+    { value: 'DELETE_REPAIR', label: 'Delete Repair' },
+    { value: 'ADD_VENDOR', label: 'Add Vendor' },
+    { value: 'UPDATE_VENDOR', label: 'Update Vendor' },
+    { value: 'DELETE_VENDOR', label: 'Delete Vendor' },
+    { value: 'UPDATE_QUALITY', label: 'Update Quality' },
+    { value: 'UPDATE_FITTING', label: 'Update Fitting' },
+    { value: 'UPDATE_SHIPPING', label: 'Update Shipping' },
+    { value: 'UPDATE_INVENTORY', label: 'Update Inventory' },
+    { value: 'VIEW_REPORTS', label: 'View Reports' },
+    { value: 'EXPORT_REPORTS', label: 'Export Reports' },
 ];
 
 const datePickerStyles = {
@@ -506,7 +506,7 @@ const Registration = () => {
                 setLoadingLocation(false);
             }
         }
-        
+
         applyDefaultPermissions(formik.values.employeeType, deptId, '');
     };
 
@@ -656,7 +656,7 @@ const Registration = () => {
                     </button>
                     <div className="h-5 w-px bg-gray-200 flex-shrink-0" />
                     <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#2980B9] flex items-center justify-center flex-shrink-0">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#6d99cf] flex items-center justify-center flex-shrink-0">
                             <Icon icon="mdi:account-plus" className="text-white text-base sm:text-lg" />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -670,7 +670,7 @@ const Registration = () => {
                         type="button"
                         onClick={handleSaveDraft}
                         disabled={savingDraft}
-                        className="flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg border border-[#2980B9] text-[#2980B9] text-[11px] sm:text-[12px] font-bold hover:bg-blue-50 transition-all disabled:opacity-50"
+                        className="flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg border border-[#6d99cf] text-[#6d99cf] text-[11px] sm:text-[12px] font-bold hover:bg-blue-50 transition-all disabled:opacity-50"
                     >
                         <Icon icon={savingDraft ? "mdi:loading" : "mdi:content-save-outline"} className={savingDraft ? "animate-spin text-xs sm:text-sm" : "text-xs sm:text-sm"} />
                         <span className="hidden xs:inline">{savingDraft ? 'Saving...' : draftEmployeeId ? 'Update Draft' : 'Save Draft'}</span>
@@ -685,8 +685,8 @@ const Registration = () => {
                     {/* ── Section: Personal & Account Info ── */}
                     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                         <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2.5 bg-gray-50">
-                            <div className="w-6 h-6 rounded-md bg-[#2980B9]/10 flex items-center justify-center">
-                                <Icon icon="mdi:account-outline" className="text-[#2980B9] text-sm" />
+                            <div className="w-6 h-6 rounded-md bg-[#6d99cf]/10 flex items-center justify-center">
+                                <Icon icon="mdi:account-outline" className="text-[#6d99cf] text-sm" />
                             </div>
                             <span className="text-[11px] font-black uppercase tracking-widest text-gray-600">Personal &amp; Account Information</span>
                         </div>
@@ -760,8 +760,8 @@ const Registration = () => {
                     {/* ── Section: Work Details ── */}
                     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                         <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2.5 bg-gray-50">
-                            <div className="w-6 h-6 rounded-md bg-[#2980B9]/10 flex items-center justify-center">
-                                <Icon icon="mdi:briefcase-outline" className="text-[#2980B9] text-sm" />
+                            <div className="w-6 h-6 rounded-md bg-[#6d99cf]/10 flex items-center justify-center">
+                                <Icon icon="mdi:briefcase-outline" className="text-[#6d99cf] text-sm" />
                             </div>
                             <span className="text-[11px] font-black uppercase tracking-widest text-gray-600">Work Details</span>
                         </div>
@@ -820,8 +820,8 @@ const Registration = () => {
                     {/* ── Section: Location ── */}
                     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                         <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2.5 bg-gray-50">
-                            <div className="w-6 h-6 rounded-md bg-[#2980B9]/10 flex items-center justify-center">
-                                <Icon icon="mdi:map-marker-outline" className="text-[#2980B9] text-sm" />
+                            <div className="w-6 h-6 rounded-md bg-[#6d99cf]/10 flex items-center justify-center">
+                                <Icon icon="mdi:map-marker-outline" className="text-[#6d99cf] text-sm" />
                             </div>
                             <span className="text-[11px] font-black uppercase tracking-widest text-gray-600">Location</span>
                         </div>
@@ -907,8 +907,8 @@ const Registration = () => {
                     {showDocumentFields && (
                         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                             <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2.5 bg-gray-50">
-                                <div className="w-6 h-6 rounded-md bg-[#2980B9]/10 flex items-center justify-center">
-                                    <Icon icon="mdi:file-document-outline" className="text-[#2980B9] text-sm" />
+                                <div className="w-6 h-6 rounded-md bg-[#6d99cf]/10 flex items-center justify-center">
+                                    <Icon icon="mdi:file-document-outline" className="text-[#6d99cf] text-sm" />
                                 </div>
                                 <span className="text-[11px] font-black uppercase tracking-widest text-gray-600">Identity Documents</span>
                             </div>
@@ -919,12 +919,12 @@ const Registration = () => {
                                     <input type="file" hidden ref={aadharInputRef} onChange={(e) => handleFileSelect(e, 'aadhar')} accept="image/*" />
                                     <div
                                         onClick={() => aadharInputRef.current.click()}
-                                        className={`relative h-36 border-2 border-dashed rounded-xl flex items-center justify-center overflow-hidden cursor-pointer transition-all group ${formik.touched.aadharCard && formik.errors.aadharCard ? 'border-red-400 bg-red-50' : 'border-gray-300 hover:border-[#2980B9] hover:bg-blue-50/30'}`}
+                                        className={`relative h-36 border-2 border-dashed rounded-xl flex items-center justify-center overflow-hidden cursor-pointer transition-all group ${formik.touched.aadharCard && formik.errors.aadharCard ? 'border-red-400 bg-red-50' : 'border-gray-300 hover:border-[#6d99cf] hover:bg-blue-50/30'}`}
                                     >
                                         {images.aadhar.preview ? (
                                             <img src={images.aadhar.preview} alt="Aadhar Preview" className="w-full h-full object-cover" />
                                         ) : (
-                                            <div className="flex flex-col items-center gap-2 text-gray-400 group-hover:text-[#2980B9] transition-colors">
+                                            <div className="flex flex-col items-center gap-2 text-gray-400 group-hover:text-[#6d99cf] transition-colors">
                                                 <Icon icon="ph:identification-card-bold" className="text-4xl" />
                                                 <span className="text-[11px] font-bold uppercase tracking-wide">Click to upload Aadhar</span>
                                             </div>
@@ -935,7 +935,7 @@ const Registration = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => handleUpload('aadhar')}
-                                                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[#2980B9] text-white text-[11px] font-bold hover:bg-[#2471a3] transition-all shadow-sm"
+                                                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[#6d99cf] text-white text-[11px] font-bold hover:bg-[#2471a3] transition-all shadow-sm"
                                             >
                                                 <Icon icon={images.aadhar.uploading ? "mdi:loading" : "mdi:cloud-upload"} className={images.aadhar.uploading ? "animate-spin text-sm" : "text-sm"} />
                                                 {images.aadhar.uploading ? 'Uploading...' : 'Upload Aadhar'}
@@ -958,12 +958,12 @@ const Registration = () => {
                                     <input type="file" hidden ref={panInputRef} onChange={(e) => handleFileSelect(e, 'pan')} accept="image/*" />
                                     <div
                                         onClick={() => panInputRef.current.click()}
-                                        className={`relative h-36 border-2 border-dashed rounded-xl flex items-center justify-center overflow-hidden cursor-pointer transition-all group ${formik.touched.panCard && formik.errors.panCard ? 'border-red-400 bg-red-50' : 'border-gray-300 hover:border-[#2980B9] hover:bg-blue-50/30'}`}
+                                        className={`relative h-36 border-2 border-dashed rounded-xl flex items-center justify-center overflow-hidden cursor-pointer transition-all group ${formik.touched.panCard && formik.errors.panCard ? 'border-red-400 bg-red-50' : 'border-gray-300 hover:border-[#6d99cf] hover:bg-blue-50/30'}`}
                                     >
                                         {images.pan.preview ? (
                                             <img src={images.pan.preview} alt="PAN Preview" className="w-full h-full object-cover" />
                                         ) : (
-                                            <div className="flex flex-col items-center gap-2 text-gray-400 group-hover:text-[#2980B9] transition-colors">
+                                            <div className="flex flex-col items-center gap-2 text-gray-400 group-hover:text-[#6d99cf] transition-colors">
                                                 <Icon icon="ph:credit-card-bold" className="text-4xl" />
                                                 <span className="text-[11px] font-bold uppercase tracking-wide">Click to upload PAN</span>
                                             </div>
@@ -974,7 +974,7 @@ const Registration = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => handleUpload('pan')}
-                                                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[#2980B9] text-white text-[11px] font-bold hover:bg-[#2471a3] transition-all shadow-sm"
+                                                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[#6d99cf] text-white text-[11px] font-bold hover:bg-[#2471a3] transition-all shadow-sm"
                                             >
                                                 <Icon icon={images.pan.uploading ? "mdi:loading" : "mdi:cloud-upload"} className={images.pan.uploading ? "animate-spin text-sm" : "text-sm"} />
                                                 {images.pan.uploading ? 'Uploading...' : 'Upload PAN'}
@@ -998,18 +998,18 @@ const Registration = () => {
                     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                         <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between bg-gray-50">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-6 h-6 rounded-md bg-[#2980B9]/10 flex items-center justify-center">
-                                    <Icon icon="mdi:monitor-dashboard" className="text-[#2980B9] text-sm" />
+                                <div className="w-6 h-6 rounded-md bg-[#6d99cf]/10 flex items-center justify-center">
+                                    <Icon icon="mdi:monitor-dashboard" className="text-[#6d99cf] text-sm" />
                                 </div>
                                 <span className="text-[11px] font-black uppercase tracking-widest text-gray-600">Page Access</span>
                                 {pageAccess.length > 0 && (
-                                    <span className="ml-1 px-2 py-0.5 rounded-full bg-[#2980B9] text-white text-[10px] font-black">{pageAccess.length}</span>
+                                    <span className="ml-1 px-2 py-0.5 rounded-full bg-[#6d99cf] text-white text-[10px] font-black">{pageAccess.length}</span>
                                 )}
                             </div>
                             <button
                                 type="button"
                                 onClick={() => toggleAll(PAGE_ACCESS_OPTIONS, pageAccess, setPageAccess)}
-                                className="text-[10px] font-black uppercase tracking-widest text-[#2980B9] hover:text-[#2471a3] border border-[#2980B9]/30 hover:border-[#2980B9]/60 px-3 py-1 rounded-lg transition-all hover:bg-blue-50"
+                                className="text-[10px] font-black uppercase tracking-widest text-[#6d99cf] hover:text-[#2471a3] border border-[#6d99cf]/30 hover:border-[#6d99cf]/60 px-3 py-1 rounded-lg transition-all hover:bg-blue-50"
                             >
                                 {pageAccess.length === PAGE_ACCESS_OPTIONS.length ? 'Deselect All' : 'Select All'}
                             </button>
@@ -1024,7 +1024,7 @@ const Registration = () => {
                                             checked={pageAccess.includes(option.value)}
                                             onChange={() => toggleItem(pageAccess, setPageAccess, option.value)}
                                         />
-                                        <div className="w-4 h-4 rounded border-2 border-gray-300 peer-checked:bg-[#2980B9] peer-checked:border-[#2980B9] transition-all group-hover:border-[#2980B9]/50 flex items-center justify-center">
+                                        <div className="w-4 h-4 rounded border-2 border-gray-300 peer-checked:bg-[#6d99cf] peer-checked:border-[#6d99cf] transition-all group-hover:border-[#6d99cf]/50 flex items-center justify-center">
                                             {pageAccess.includes(option.value) && <Icon icon="mdi:check" className="text-white text-[10px]" />}
                                         </div>
                                     </div>
@@ -1038,18 +1038,18 @@ const Registration = () => {
                     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                         <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between bg-gray-50">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-6 h-6 rounded-md bg-[#2980B9]/10 flex items-center justify-center">
-                                    <Icon icon="mdi:shield-lock-outline" className="text-[#2980B9] text-sm" />
+                                <div className="w-6 h-6 rounded-md bg-[#6d99cf]/10 flex items-center justify-center">
+                                    <Icon icon="mdi:shield-lock-outline" className="text-[#6d99cf] text-sm" />
                                 </div>
                                 <span className="text-[11px] font-black uppercase tracking-widest text-gray-600">Access Permissions</span>
                                 {accessPermissions.length > 0 && (
-                                    <span className="ml-1 px-2 py-0.5 rounded-full bg-[#2980B9] text-white text-[10px] font-black">{accessPermissions.length}</span>
+                                    <span className="ml-1 px-2 py-0.5 rounded-full bg-[#6d99cf] text-white text-[10px] font-black">{accessPermissions.length}</span>
                                 )}
                             </div>
                             <button
                                 type="button"
                                 onClick={() => toggleAll(ACCESS_PERMISSION_OPTIONS, accessPermissions, setAccessPermissions)}
-                                className="text-[10px] font-black uppercase tracking-widest text-[#2980B9] hover:text-[#2471a3] border border-[#2980B9]/30 hover:border-[#2980B9]/60 px-3 py-1 rounded-lg transition-all hover:bg-blue-50"
+                                className="text-[10px] font-black uppercase tracking-widest text-[#6d99cf] hover:text-[#2471a3] border border-[#6d99cf]/30 hover:border-[#6d99cf]/60 px-3 py-1 rounded-lg transition-all hover:bg-blue-50"
                             >
                                 {accessPermissions.length === ACCESS_PERMISSION_OPTIONS.length ? 'Deselect All' : 'Select All'}
                             </button>
@@ -1064,7 +1064,7 @@ const Registration = () => {
                                             checked={accessPermissions.includes(option.value)}
                                             onChange={() => toggleItem(accessPermissions, setAccessPermissions, option.value)}
                                         />
-                                        <div className="w-4 h-4 rounded border-2 border-gray-300 peer-checked:bg-[#2980B9] peer-checked:border-[#2980B9] transition-all group-hover:border-[#2980B9]/50 flex items-center justify-center">
+                                        <div className="w-4 h-4 rounded border-2 border-gray-300 peer-checked:bg-[#6d99cf] peer-checked:border-[#6d99cf] transition-all group-hover:border-[#6d99cf]/50 flex items-center justify-center">
                                             {accessPermissions.includes(option.value) && <Icon icon="mdi:check" className="text-white text-[10px]" />}
                                         </div>
                                     </div>
@@ -1080,7 +1080,7 @@ const Registration = () => {
                             type="button"
                             onClick={handleSaveDraft}
                             disabled={savingDraft}
-                            className="flex items-center gap-2 px-6 py-2.5 rounded-lg border border-[#2980B9] text-[#2980B9] text-sm font-bold hover:bg-blue-50 transition-all disabled:opacity-50"
+                            className="flex items-center gap-2 px-6 py-2.5 rounded-lg border border-[#6d99cf] text-[#6d99cf] text-sm font-bold hover:bg-blue-50 transition-all disabled:opacity-50"
                         >
                             <Icon icon={savingDraft ? "mdi:loading" : "mdi:content-save-outline"} className={savingDraft ? "animate-spin" : ""} />
                             {savingDraft ? 'Saving...' : draftEmployeeId ? 'Update Draft' : 'Save as Draft'}
@@ -1088,7 +1088,7 @@ const Registration = () => {
                         <button
                             type="submit"
                             disabled={formik.isSubmitting}
-                            className="flex items-center gap-2 px-8 py-2.5 rounded-lg bg-[#2980B9] hover:bg-[#2471a3] text-white text-sm font-bold transition-all shadow-sm disabled:opacity-60 active:scale-95"
+                            className="flex items-center gap-2 px-8 py-2.5 rounded-lg bg-[#6d99cf] hover:bg-[#2471a3] text-white text-sm font-bold transition-all shadow-sm disabled:opacity-60 active:scale-95"
                         >
                             <Icon icon={formik.isSubmitting ? "mdi:loading" : "mdi:account-plus"} className={formik.isSubmitting ? "animate-spin" : ""} />
                             {formik.isSubmitting ? 'Submitting...' : 'Register Staff'}

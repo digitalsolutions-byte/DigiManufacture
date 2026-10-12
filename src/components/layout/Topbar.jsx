@@ -45,7 +45,7 @@ const Topbar = ({ onMenuClick }) => {
             sx={{
                 width: '100%',
                 borderRadius: '16px',
-                background: ' #1f618d ',
+                background: ' #6d99cf ',
                 border: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
                 boxShadow: '0 1px 4px 0 rgba(0,0,0,0.06)',
                 p: { xs: '10px 14px', md: '10px 20px' },
@@ -209,7 +209,7 @@ const Topbar = ({ onMenuClick }) => {
                 )}
 
                 {/* Notifications */}
-                <Tooltip title="Notifications" placement="bottom">
+                {/* <Tooltip title="Notifications" placement="bottom">
                     <IconButton
                         size="small"
                         sx={{
@@ -244,20 +244,20 @@ const Topbar = ({ onMenuClick }) => {
                             <Icon icon="lucide:bell" style={{ fontSize: '17px' }} />
                         </Badge>
                     </IconButton>
-                </Tooltip>
+                </Tooltip> */}
 
                 {/* Divider */}
-                <Box
+                {/* <Box
                     sx={{
                         width: '1px',
                         height: '22px',
                         bgcolor: alpha(theme.palette.divider, 0.15),
                         flexShrink: 0,
                     }}
-                />
+                /> */}
 
                 {/* Settings */}
-                <Tooltip title="Settings" placement="bottom">
+                {/* <Tooltip title="Settings" placement="bottom">
                     <IconButton
                         size="small"
                         sx={{
@@ -276,7 +276,7 @@ const Topbar = ({ onMenuClick }) => {
                     >
                         <Icon icon="lucide:settings" style={{ fontSize: '17px' }} />
                     </IconButton>
-                </Tooltip>
+                </Tooltip> */}
             </Stack>
         </Paper>
     );

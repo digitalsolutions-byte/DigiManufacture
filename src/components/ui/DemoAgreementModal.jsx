@@ -88,9 +88,9 @@ const DemoAgreementModal = ({ forceOpen = false, onClose }) => {
 
     // Unique Demo ID resolution
     const demoId = user?.demoId || user?.demo_id || user?.uniqueDemoId ||
-                   tenant?.demoId || tenant?.demo_id || tenant?.uniqueDemoId ||
-                   localStorage.getItem('digioptics_unique_demo_id') ||
-                   'DEMO-DIGI-ACCESS';
+        tenant?.demoId || tenant?.demo_id || tenant?.uniqueDemoId ||
+        localStorage.getItem('digioptics_unique_demo_id') ||
+        'DEMO-DIGI-ACCESS';
 
     // Dynamic User Data Fields
     const [repName, setRepName] = useState(
@@ -126,17 +126,17 @@ const DemoAgreementModal = ({ forceOpen = false, onClose }) => {
     if (!modalOpen || !isDemoMode || isExpired) return null;
 
     return (
-        <div 
+        <div
             className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
         >
-            <div 
+            <div
                 className="relative w-full max-w-3xl my-auto bg-white rounded-3xl shadow-2xl border border-blue-100 overflow-hidden flex flex-col max-h-[92vh]"
                 onClick={(e) => e.stopPropagation()}
             >
-                
+
                 {/* ── Modal Header Banner ────────────────────────────────────── */}
-                <div className="bg-gradient-to-r from-erp-accent via-[#2980b9] to-blue-600 text-white px-6 py-5 flex items-center justify-between shrink-0 shadow-md">
+                <div className="bg-gradient-to-r from-erp-accent via-[#6d99cf] to-blue-600 text-white px-6 py-5 flex items-center justify-between shrink-0 shadow-md">
                     <div className="flex items-center gap-3">
                         <div className="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-inner">
                             <Icon icon="mdi:shield-lock-outline" className="text-2xl" />
@@ -166,7 +166,7 @@ const DemoAgreementModal = ({ forceOpen = false, onClose }) => {
 
                 {/* ── Modal Scrollable Body Content ────────────────────────────── */}
                 <div className="p-5 sm:p-7 overflow-y-auto flex-1 space-y-6 text-gray-800 text-xs sm:text-sm bg-white">
-                    
+
                     {/* Declaration Box */}
                     <div className="p-4 sm:p-5 bg-gradient-to-br from-blue-50/80 via-white to-blue-50/50 rounded-2xl border border-blue-200 shadow-xs relative">
                         <div className="flex items-center justify-between mb-2">
@@ -304,11 +304,10 @@ const DemoAgreementModal = ({ forceOpen = false, onClose }) => {
                             type="button"
                             onClick={handleAccept}
                             disabled={!isChecked}
-                            className={`w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md ${
-                                isChecked
+                            className={`w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-md ${isChecked
                                     ? 'bg-erp-accent hover:bg-erp-accent/90 text-white cursor-pointer ring-2 ring-erp-accent/30'
                                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                            }`}
+                                }`}
                         >
                             <Icon icon="mdi:shield-check" className="text-base" />
                             Accept & Proceed to Demo

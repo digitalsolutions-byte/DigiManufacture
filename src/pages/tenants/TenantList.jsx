@@ -35,7 +35,7 @@ export default function TenantList() {
             }
         } catch (error) {
             console.error('Error fetching tenants:', error);
-            toast.error(error.message || 'Failed to fetch wholesalers.');
+            toast.error(error.message || 'Failed to fetch manufacturers.');
         } finally {
             setLoading(false);
         }
@@ -51,12 +51,12 @@ export default function TenantList() {
         try {
             const res = await suspendTenant(suspendModal.tenant._id, suspendModal.reason);
             if (res.success) {
-                toast.success(`Wholesaler "${suspendModal.tenant.storeInformation?.storeName}" suspended.`);
+                toast.success(`Manufacturer "${suspendModal.tenant.storeInformation?.storeName}" suspended.`);
                 setSuspendModal({ isOpen: false, tenant: null, reason: '' });
                 fetchTenants();
             }
         } catch (error) {
-            toast.error(error.message || 'Failed to suspend wholesaler.');
+            toast.error(error.message || 'Failed to suspend manufacturer.');
         } finally {
             setActionLoading(false);
         }
@@ -66,26 +66,26 @@ export default function TenantList() {
         try {
             const res = await activateTenant(tenant._id);
             if (res.success) {
-                toast.success(`Wholesaler "${tenant.storeInformation?.storeName}" reactivated.`);
+                toast.success(`Manufacturer "${tenant.storeInformation?.storeName}" reactivated.`);
                 fetchTenants();
             }
         } catch (error) {
-            toast.error(error.message || 'Failed to activate wholesaler.');
+            toast.error(error.message || 'Failed to activate manufacturer.');
         }
     };
 
     const handleDelete = async (tenant) => {
-        if (!window.confirm(`Are you sure you want to PERMANENTLY delete wholesaler "${tenant.storeInformation?.storeName}"? This action cannot be undone.`)) {
+        if (!window.confirm(`Are you sure you want to PERMANENTLY delete manufacturer "${tenant.storeInformation?.storeName}"? This action cannot be undone.`)) {
             return;
         }
         try {
             const res = await deleteTenant(tenant._id);
             if (res.success) {
-                toast.success('Wholesaler account deleted successfully.');
+                toast.success('Manufacturer account deleted successfully.');
                 fetchTenants();
             }
         } catch (error) {
-            toast.error(error.message || 'Failed to delete wholesaler.');
+            toast.error(error.message || 'Failed to delete manufacturer.');
         }
     };
 
@@ -95,19 +95,19 @@ export default function TenantList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-xs">
                 <div>
                     <h1 className="text-xl font-bold text-slate-800 tracking-tight flex items-center gap-2.5">
-                        <Icon icon="lucide:building-2" className="text-[#2980B9] text-2xl" />
-                        Wholesaler Directory
+                        <Icon icon="lucide:building-2" className="text-[#6d99cf] text-2xl" />
+                        Manufacturer Directory
                     </h1>
                     <p className="text-xs text-slate-500 font-medium mt-1">
-                        SaaS multi-tenant administration — view, filter, and manage onboarded wholesalers
+                        SaaS multi-tenant administration — view, filter, and manage onboarded manufacturers
                     </p>
                 </div>
                 <button
                     onClick={() => navigate(PATHS.TENANTS.REGISTER)}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-semibold rounded-xl transition-all shadow-xs active:scale-95"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-semibold rounded-xl transition-all shadow-xs active:scale-95"
                 >
                     <Icon icon="lucide:plus" className="text-base" />
-                    + Create Wholesaler
+                    + Create Manufacturer
                 </button>
             </div>
 
@@ -117,17 +117,17 @@ export default function TenantList() {
                     <Icon icon="lucide:search" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
                     <input
                         type="text"
-                        placeholder="Search by wholesaler name, ID, email, or phone..."
+                        placeholder="Search by manufacturer name, ID, email, or phone..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all"
                     />
                 </div>
                 <div className="flex items-center gap-3 w-full md:w-auto justify-end">
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:border-[#2980B9] transition-all"
+                        className="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:border-[#6d99cf] transition-all"
                     >
                         <option value="">All Statuses</option>
                         <option value="ACTIVE">ACTIVE</option>
@@ -143,20 +143,20 @@ export default function TenantList() {
                 </div>
             </div>
 
-            {/* Wholesalers Container */}
+            {/* Manufacturers Container */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
                 {/* Mobile View (md:hidden) */}
                 <div className="block md:hidden divide-y divide-slate-100">
                     {loading ? (
                         <div className="p-8 text-center text-slate-400 font-medium text-xs flex items-center justify-center gap-2">
-                            <Icon icon="lucide:loader-2" className="animate-spin text-lg text-[#2980B9]" />
-                            <span>Loading wholesalers...</span>
+                            <Icon icon="lucide:loader-2" className="animate-spin text-lg text-[#6d99cf]" />
+                            <span>Loading manufacturers...</span>
                         </div>
                     ) : tenants.length === 0 ? (
                         <div className="p-8 text-center text-slate-400 text-xs">
                             <Icon icon="lucide:building-2" className="text-3xl mx-auto mb-2 text-slate-300" />
-                            <p className="font-semibold text-slate-600">No wholesalers found.</p>
-                            <p className="text-[11px] mt-1">Register a new wholesaler using the button above.</p>
+                            <p className="font-semibold text-slate-600">No manufacturers found.</p>
+                            <p className="text-[11px] mt-1">Register a new manufacturer using the button above.</p>
                         </div>
                     ) : (
                         tenants.map((t) => {
@@ -174,18 +174,16 @@ export default function TenantList() {
                                             <div className="flex items-center gap-2">
                                                 <h3 className="font-bold text-slate-800 text-sm leading-snug">{store.storeName || 'N/A'}</h3>
                                                 {isDemoMode && (
-                                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black border ${
-                                                        isDemoExpired ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200'
-                                                    }`}>
+                                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black border ${isDemoExpired ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+                                                        }`}>
                                                         {isDemoExpired ? 'DEMO EXPIRED' : 'DEMO'}
                                                     </span>
                                                 )}
                                             </div>
-                                            <span className="font-mono text-[11px] text-[#2980B9] font-semibold block mt-0.5">{t.tenantId || 'N/A'}</span>
+                                            <span className="font-mono text-[11px] text-[#6d99cf] font-semibold block mt-0.5">{t.tenantId || 'N/A'}</span>
                                         </div>
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold border flex-shrink-0 ${
-                                            isSuspended ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                                        }`}>
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold border flex-shrink-0 ${isSuspended ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                            }`}>
                                             {t.status || 'ACTIVE'}
                                         </span>
                                     </div>
@@ -216,8 +214,8 @@ export default function TenantList() {
 
                                     <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
                                         <button
-                                            onClick={() => navigate(`/owner/wholesalers/${t._id}/settings`)}
-                                            className="p-2 text-slate-400 hover:text-[#2980B9] rounded-xl transition-colors"
+                                            onClick={() => navigate(`/owner/manufacturers/${t._id}/settings`)}
+                                            className="p-2 text-slate-400 hover:text-[#6d99cf] rounded-xl transition-colors"
                                             title="Feature Settings"
                                         >
                                             <Icon icon="lucide:settings-2" className="text-base" />
@@ -246,7 +244,7 @@ export default function TenantList() {
                                         <button
                                             onClick={() => handleDelete(t)}
                                             className="p-2 text-slate-400 hover:text-rose-600 rounded-xl transition-colors"
-                                            title="Delete Wholesaler"
+                                            title="Delete Manufacturer"
                                         >
                                             <Icon icon="lucide:trash-2" className="text-base" />
                                         </button>
@@ -263,7 +261,7 @@ export default function TenantList() {
                         <thead>
                             <tr className="bg-slate-50 border-b border-slate-100 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                 <th className="py-3.5 px-4">Tenant ID</th>
-                                <th className="py-3.5 px-4">Wholesaler Name</th>
+                                <th className="py-3.5 px-4">Manufacturer Name</th>
                                 <th className="py-3.5 px-4">Owner Info</th>
                                 <th className="py-3.5 px-4">Plan</th>
                                 <th className="py-3.5 px-4">Expiry Date</th>
@@ -276,8 +274,8 @@ export default function TenantList() {
                                 <tr>
                                     <td colSpan="7" className="p-8 text-center text-slate-400 font-medium">
                                         <div className="flex items-center justify-center gap-2">
-                                            <Icon icon="lucide:loader-2" className="animate-spin text-lg text-[#2980B9]" />
-                                            <span>Loading wholesalers...</span>
+                                            <Icon icon="lucide:loader-2" className="animate-spin text-lg text-[#6d99cf]" />
+                                            <span>Loading manufacturers...</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -285,8 +283,8 @@ export default function TenantList() {
                                 <tr>
                                     <td colSpan="7" className="p-12 text-center text-slate-400">
                                         <Icon icon="lucide:building-2" className="text-3xl mx-auto mb-2 text-slate-300" />
-                                        <p className="font-semibold text-slate-600">No wholesalers found.</p>
-                                        <p className="text-[11px] mt-1">Register a new wholesaler using the button above.</p>
+                                        <p className="font-semibold text-slate-600">No manufacturers found.</p>
+                                        <p className="text-[11px] mt-1">Register a new manufacturer using the button above.</p>
                                     </td>
                                 </tr>
                             ) : (
@@ -294,21 +292,20 @@ export default function TenantList() {
                                     const isSuspended = t.status === 'SUSPENDED';
                                     const store = t.storeInformation || {};
                                     const owner = t.owner || {};
-                            const isDemoMode = Boolean(t.demoMode || t.featureFlags?.demoMode);
-                            const demoExpiryDate = t.demoExpiry || t.featureFlags?.demoExpiry;
-                            const isDemoExpired = demoExpiryDate ? new Date() > new Date(demoExpiryDate) : false;
+                                    const isDemoMode = Boolean(t.demoMode || t.featureFlags?.demoMode);
+                                    const demoExpiryDate = t.demoExpiry || t.featureFlags?.demoExpiry;
+                                    const isDemoExpired = demoExpiryDate ? new Date() > new Date(demoExpiryDate) : false;
                                     return (
                                         <tr key={t._id} className="hover:bg-slate-50/70 transition-colors">
-                                            <td className="px-4 py-3.5 font-mono font-semibold text-[#2980B9]">
+                                            <td className="px-4 py-3.5 font-mono font-semibold text-[#6d99cf]">
                                                 {t.tenantId || 'N/A'}
                                             </td>
                                             <td className="px-4 py-3.5">
                                                 <div className="flex items-center gap-2">
                                                     <div className="font-bold text-slate-800">{store.storeName || 'N/A'}</div>
                                                     {isDemoMode && (
-                                                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black border ${
-                                                            isDemoExpired ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200'
-                                                        }`}>
+                                                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black border ${isDemoExpired ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+                                                            }`}>
                                                             {isDemoExpired ? 'DEMO EXPIRED' : 'DEMO'}
                                                         </span>
                                                     )}
@@ -328,17 +325,16 @@ export default function TenantList() {
                                                 {store.expiryDate ? new Date(store.expiryDate).toLocaleDateString('en-IN') : 'N/A'}
                                             </td>
                                             <td className="px-4 py-3.5">
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${
-                                                    isSuspended ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                                                }`}>
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${isSuspended ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                                    }`}>
                                                     {t.status || 'ACTIVE'}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3.5 text-center">
                                                 <div className="flex items-center justify-center gap-2">
                                                     <button
-                                                        onClick={() => navigate(`/owner/wholesalers/${t._id}/settings`)}
-                                                        className="p-1.5 text-slate-400 hover:text-[#2980B9] rounded-lg transition-colors"
+                                                        onClick={() => navigate(`/owner/manufacturers/${t._id}/settings`)}
+                                                        className="p-1.5 text-slate-400 hover:text-[#6d99cf] rounded-lg transition-colors"
                                                         title="Feature Settings"
                                                     >
                                                         <Icon icon="lucide:settings-2" className="text-base" />
@@ -368,7 +364,7 @@ export default function TenantList() {
                                                     <button
                                                         onClick={() => handleDelete(t)}
                                                         className="p-1 text-slate-400 hover:text-rose-600 rounded-lg transition-colors"
-                                                        title="Delete Wholesaler"
+                                                        title="Delete Manufacturer"
                                                     >
                                                         <Icon icon="lucide:trash-2" className="text-base" />
                                                     </button>
@@ -386,7 +382,7 @@ export default function TenantList() {
                 {pagination && pagination.totalPages > 1 && (
                     <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50 text-xs">
                         <span className="text-slate-500 font-medium">
-                            Page <strong>{pagination.currentPage}</strong> of <strong>{pagination.totalPages}</strong> ({pagination.totalRecords} total wholesalers)
+                            Page <strong>{pagination.currentPage}</strong> of <strong>{pagination.totalPages}</strong> ({pagination.totalRecords} total manufacturers)
                         </span>
                         <div className="flex gap-2">
                             <button
@@ -415,14 +411,14 @@ export default function TenantList() {
                         <div className="flex items-center gap-3 text-slate-800">
                             <Icon icon="lucide:alert-triangle" className="text-2xl text-rose-500" />
                             <div>
-                                <h3 className="text-base font-bold">Suspend Wholesaler Account</h3>
+                                <h3 className="text-base font-bold">Suspend Manufacturer Account</h3>
                                 <p className="text-xs text-slate-500 font-medium">Block workspace access for all tenant users</p>
                             </div>
                         </div>
 
                         <p className="text-xs text-slate-600 leading-relaxed">
                             You are about to suspend <strong>"{suspendModal.tenant?.storeInformation?.storeName}"</strong>.
-                            Employees and customers of this wholesaler will be blocked from logging in immediately.
+                            Employees and customers of this manufacturer will be blocked from logging in immediately.
                         </p>
 
                         <div>
@@ -432,7 +428,7 @@ export default function TenantList() {
                                 placeholder="e.g. Payment overdue"
                                 value={suspendModal.reason}
                                 onChange={(e) => setSuspendModal(prev => ({ ...prev, reason: e.target.value }))}
-                                className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:border-[#2980B9]"
+                                className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:border-[#6d99cf]"
                             />
                         </div>
 

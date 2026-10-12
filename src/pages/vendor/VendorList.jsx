@@ -257,7 +257,7 @@ function ProductSearchInput({ value, onChange, onSelect }) {
                 onChange={handleChange}
                 onFocus={() => fetchSuggestions(value)}
                 placeholder="Enter Product Name..."
-                className="w-full bg-white border border-gray-300 rounded-md px-1.5 py-1.5 text-xs font-semibold text-gray-800 outline-none focus:border-[#2980B9] focus:ring-1 focus:ring-[#2980B9] transition-all placeholder:text-gray-400"
+                className="w-full bg-white border border-gray-300 rounded-md px-1.5 py-1.5 text-xs font-semibold text-gray-800 outline-none focus:border-[#6d99cf] focus:ring-1 focus:ring-[#6d99cf] transition-all placeholder:text-gray-400"
             />
             {searching && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 border-2 border-blue-300 border-t-transparent rounded-full animate-spin pointer-events-none" />
@@ -421,7 +421,7 @@ export default function VendorList() {
     const handleRefresh = () => {
         Swal.fire({
             title: "Are you sure?", text: "The page will be refreshed.", icon: "warning",
-            showCancelButton: true, confirmButtonColor: "#2980B9", cancelButtonColor: "#9ca3af",
+            showCancelButton: true, confirmButtonColor: "#6d99cf", cancelButtonColor: "#9ca3af",
             confirmButtonText: "Yes, refresh!",
         }).then(r => { if (r.isConfirmed) window.location.reload(); });
     };
@@ -553,7 +553,7 @@ export default function VendorList() {
                 const v = row.original;
                 return (
                     <div className="flex items-center justify-center gap-0.5">
-            
+
                         <button onClick={e => { e.stopPropagation(); setEditVendor(v); }}
                             className="p-1.5 rounded-lg hover:bg-blue-50 text-blue-500 transition" title="Edit">
                             <FiEdit2 size={14} />
@@ -654,11 +654,11 @@ export default function VendorList() {
                         <span className="text-xs font-bold text-gray-500 mb-1">Period</span>
                         <div className="flex items-center gap-2 w-full">
                             <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)}
-                                className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-xs font-semibold outline-none focus:border-[#2980B9] focus:ring-2 focus:ring-[#2980B9]/20 transition-all flex-1 md:w-36 text-gray-700 min-w-0"
+                                className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-xs font-semibold outline-none focus:border-[#6d99cf] focus:ring-2 focus:ring-[#6d99cf]/20 transition-all flex-1 md:w-36 text-gray-700 min-w-0"
                             />
                             <span className="text-xs font-bold text-gray-300">to</span>
                             <input type="date" value={toDate} onChange={e => setToDate(e.target.value)}
-                                className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-xs font-semibold outline-none focus:border-[#2980B9] focus:ring-2 focus:ring-[#2980B9]/20 transition-all flex-1 md:w-36 text-gray-700 min-w-0"
+                                className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-xs font-semibold outline-none focus:border-[#6d99cf] focus:ring-2 focus:ring-[#6d99cf]/20 transition-all flex-1 md:w-36 text-gray-700 min-w-0"
                             />
                         </div>
                     </div>
@@ -669,7 +669,7 @@ export default function VendorList() {
 
                     <div className="flex items-center gap-2.5 w-full md:w-auto flex-wrap sm:flex-nowrap">
                         <button onClick={handleRefresh}
-                            className="flex-1 md:flex-none flex items-center justify-center gap-1.5 bg-[#eaf4fb] hover:bg-[#d4eaf6] text-[#1F618D] px-4 py-2.5 text-xs font-bold rounded-lg transition-all"
+                            className="flex-1 md:flex-none flex items-center justify-center gap-1.5 bg-[#eaf4fb] hover:bg-[#d4eaf6] text-[#6d99cf] px-4 py-2.5 text-xs font-bold rounded-lg transition-all"
                         >
                             <Icon icon="mdi:refresh" className="text-base" /> Refresh
                         </button>
@@ -681,7 +681,7 @@ export default function VendorList() {
                             </button>
                         )}
                         <button onClick={searchVendors}
-                            className="flex-1 md:flex-none flex items-center justify-center gap-1.5 bg-[#1F618D] hover:bg-[#174e71] text-white px-5 py-2.5 text-xs font-bold rounded-lg transition-all shadow-sm"
+                            className="flex-1 md:flex-none flex items-center justify-center gap-1.5 bg-[#6d99cf] hover:bg-[#174e71] text-white px-5 py-2.5 text-xs font-bold rounded-lg transition-all shadow-sm"
                         >
                             <Icon icon="mdi:magnify" className="text-base" /> Search
                         </button>
@@ -719,7 +719,7 @@ export default function VendorList() {
                                     <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
                                         <div>
                                             <h3 className="text-sm font-bold text-gray-900">{v.name || 'N/A'}</h3>
-                                            <span className="text-xs font-semibold text-[#2980B9]">{v.firm || 'No Firm'}</span>
+                                            <span className="text-xs font-semibold text-[#6d99cf]">{v.firm || 'No Firm'}</span>
                                         </div>
                                         <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-lg border border-gray-100">
                                             <button onClick={e => { e.stopPropagation(); setEditVendor(v); }}
@@ -776,9 +776,9 @@ export default function VendorList() {
                     <table className="w-full border-collapse min-w-[1200px]">
                         <thead>
                             {table.getHeaderGroups().map(hg => (
-                                <tr key={hg.id} className="bg-[#eaf4fb]/50 border-b border-[#2980B9]/15">
+                                <tr key={hg.id} className="bg-[#eaf4fb]/50 border-b border-[#6d99cf]/15">
                                     {hg.headers.map(h => (
-                                        <th key={h.id} className="px-6 py-3.5 text-center text-xs font-bold text-[#1F618D] border-r border-gray-100 last:border-r-0 uppercase tracking-wider">
+                                        <th key={h.id} className="px-6 py-3.5 text-center text-xs font-bold text-[#6d99cf] border-r border-gray-100 last:border-r-0 uppercase tracking-wider">
                                             {flexRender(h.column.columnDef.header, h.getContext())}
                                         </th>
                                     ))}
@@ -909,7 +909,7 @@ export default function VendorList() {
                     <div className="bg-white w-full max-w-[min(1600px,calc(100vw-1rem))] sm:max-w-[min(1600px,calc(100vw-2rem))] h-[93vh] max-h-[93vh] rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-slate-200">
 
                         {/* Modal Header Bar */}
-                        <div className="flex items-center justify-between px-6 py-4 bg-[#2980B9] text-white flex-shrink-0 shadow-md">
+                        <div className="flex items-center justify-between px-6 py-4 bg-[#6d99cf] text-white flex-shrink-0 shadow-md">
                             <div className="flex items-center gap-3 sm:gap-4">
                                 <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner flex-shrink-0 border border-white/20">
                                     <Icon icon="mdi:cart-plus" className="text-2xl text-white" />
@@ -940,18 +940,18 @@ export default function VendorList() {
                         <div className="px-6 py-3 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs flex-shrink-0">
                             <div className="flex items-center gap-2">
                                 <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                                    <Icon icon="mdi:view-grid-outline" className="text-[#2980B9] text-base" /> Layout Mode:
+                                    <Icon icon="mdi:view-grid-outline" className="text-[#6d99cf] text-base" /> Layout Mode:
                                 </span>
                                 <div className="inline-flex rounded-xl p-1 bg-slate-200/80 border border-slate-300/60">
-                                    <button 
+                                    <button
                                         onClick={() => setOrderViewMode('smart')}
-                                        className={`px-3.5 py-1.5 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 ${orderViewMode === 'smart' ? 'bg-[#2980B9] text-white shadow-sm' : 'text-slate-700 hover:text-slate-900'}`}
+                                        className={`px-3.5 py-1.5 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 ${orderViewMode === 'smart' ? 'bg-[#6d99cf] text-white shadow-sm' : 'text-slate-700 hover:text-slate-900'}`}
                                     >
                                         <Icon icon="mdi:text-box-search-outline" /> Smart Spec Drawer (Clean & Fast)
                                     </button>
-                                    <button 
+                                    <button
                                         onClick={() => setOrderViewMode('spreadsheet')}
-                                        className={`px-3.5 py-1.5 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 ${orderViewMode === 'spreadsheet' ? 'bg-[#2980B9] text-white shadow-sm' : 'text-slate-700 hover:text-slate-900'}`}
+                                        className={`px-3.5 py-1.5 rounded-lg font-bold text-xs transition-all flex items-center gap-1.5 ${orderViewMode === 'spreadsheet' ? 'bg-[#6d99cf] text-white shadow-sm' : 'text-slate-700 hover:text-slate-900'}`}
                                     >
                                         <Icon icon="mdi:table-large" /> Full Spreadsheet Mode
                                     </button>
@@ -960,7 +960,7 @@ export default function VendorList() {
 
                             <div className="flex items-center gap-2">
                                 <span className="text-xs font-bold text-slate-500">Total Items:</span>
-                                <span className="px-2.5 py-0.5 rounded-md bg-[#2980B9]/10 text-[#2980B9] font-black text-xs border border-[#2980B9]/20">{activeRows.length} Rows</span>
+                                <span className="px-2.5 py-0.5 rounded-md bg-[#6d99cf]/10 text-[#6d99cf] font-black text-xs border border-[#6d99cf]/20">{activeRows.length} Rows</span>
                             </div>
                         </div>
 
@@ -972,7 +972,7 @@ export default function VendorList() {
                                         /* ── 1. SMART ROW DRAWER VIEW (WITH GST BREAKDOWN) ── */
                                         <table className="w-full border-collapse text-xs">
                                             <thead>
-                                                <tr className="bg-[#2980B9] text-white font-bold uppercase tracking-wider text-[11px]">
+                                                <tr className="bg-[#6d99cf] text-white font-bold uppercase tracking-wider text-[11px]">
                                                     <th className="px-3 py-3 text-center w-12 border-r border-sky-700">#</th>
                                                     <th className="px-3 py-3 text-left w-36 border-r border-sky-700">Category</th>
                                                     <th className="px-3 py-3 text-left border-r border-sky-700">Product Name & Summary</th>
@@ -1006,7 +1006,7 @@ export default function VendorList() {
                                                                 </td>
                                                                 <td className="px-2 py-2 border-r border-slate-200">
                                                                     <select value={row.category} onChange={e => handleChangeRow(index, "category", e.target.value)}
-                                                                        className="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#2980B9]/20 transition-all cursor-pointer">
+                                                                        className="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#6d99cf]/20 transition-all cursor-pointer">
                                                                         <option value="LENS">LENS</option>
                                                                         <option value="FRAME">FRAME</option>
                                                                         <option value="SUNGLASS">SUNGLASS</option>
@@ -1021,10 +1021,10 @@ export default function VendorList() {
                                                                         <ProductSearchInput value={row.productName} onChange={val => handleChangeRow(index, "productName", val)} onSelect={product => handleSelectProduct(index, product)} />
                                                                         {hasSpecs && (
                                                                             <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                                                                                {row.sph && <span className="px-1.5 py-0.5 rounded bg-blue-100 text-[#2980B9] font-bold text-[10px]">Sph: {row.sph}</span>}
-                                                                                {row.cyl && <span className="px-1.5 py-0.5 rounded bg-blue-100 text-[#2980B9] font-bold text-[10px]">Cyl: {row.cyl}</span>}
-                                                                                {row.axis && <span className="px-1.5 py-0.5 rounded bg-blue-100 text-[#2980B9] font-bold text-[10px]">Axis: {row.axis}</span>}
-                                                                                {row.add && <span className="px-1.5 py-0.5 rounded bg-blue-100 text-[#2980B9] font-bold text-[10px]">Add: {row.add}</span>}
+                                                                                {row.sph && <span className="px-1.5 py-0.5 rounded bg-blue-100 text-[#6d99cf] font-bold text-[10px]">Sph: {row.sph}</span>}
+                                                                                {row.cyl && <span className="px-1.5 py-0.5 rounded bg-blue-100 text-[#6d99cf] font-bold text-[10px]">Cyl: {row.cyl}</span>}
+                                                                                {row.axis && <span className="px-1.5 py-0.5 rounded bg-blue-100 text-[#6d99cf] font-bold text-[10px]">Axis: {row.axis}</span>}
+                                                                                {row.add && <span className="px-1.5 py-0.5 rounded bg-blue-100 text-[#6d99cf] font-bold text-[10px]">Add: {row.add}</span>}
                                                                                 {row.brand && <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-bold text-[10px]">Brand: {row.brand}</span>}
                                                                                 {row.expiry && <span className="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-[10px]">Exp: {row.expiry}</span>}
                                                                             </div>
@@ -1033,11 +1033,11 @@ export default function VendorList() {
                                                                 </td>
                                                                 <td className="px-2 py-2 border-r border-slate-200 bg-sky-50/20">
                                                                     <input type="number" min="1" value={row.quantity} onChange={e => handleChangeRow(index, "quantity", Math.max(1, parseInt(e.target.value) || 1))}
-                                                                        className="w-full bg-white border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-extrabold text-center text-[#2980B9] outline-none focus:ring-2 focus:ring-[#2980B9]/20 transition-all" />
+                                                                        className="w-full bg-white border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-extrabold text-center text-[#6d99cf] outline-none focus:ring-2 focus:ring-[#6d99cf]/20 transition-all" />
                                                                 </td>
                                                                 <td className="px-2 py-2 border-r border-slate-200">
                                                                     <select value={row.unit} onChange={e => handleChangeRow(index, "unit", e.target.value)}
-                                                                        className="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#2980B9] rounded-lg px-1.5 py-1.5 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#2980B9]/20 transition-all cursor-pointer">
+                                                                        className="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#6d99cf] rounded-lg px-1.5 py-1.5 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#6d99cf]/20 transition-all cursor-pointer">
                                                                         <option value="PIECE">PIECE</option>
                                                                         <option value="PAIR">PAIR</option>
                                                                         <option value="BOX">BOX</option>
@@ -1060,7 +1060,7 @@ export default function VendorList() {
                                                                 {/* GST Breakdown Column */}
                                                                 <td className="px-2 py-2 border-r border-slate-200 bg-sky-50/40 text-center">
                                                                     <div className="flex flex-col items-center justify-center">
-                                                                        <span className="px-1.5 py-0.5 rounded bg-[#2980B9]/15 text-[#2980B9] font-black text-[11px]">
+                                                                        <span className="px-1.5 py-0.5 rounded bg-[#6d99cf]/15 text-[#6d99cf] font-black text-[11px]">
                                                                             {gstPct}% GST
                                                                         </span>
                                                                         <span className="text-[10px] font-bold text-slate-600 mt-0.5">
@@ -1083,9 +1083,9 @@ export default function VendorList() {
 
                                                                 <td className="px-2 py-2 text-center">
                                                                     <div className="flex items-center justify-center gap-1.5">
-                                                                        <button 
+                                                                        <button
                                                                             onClick={() => setExpandedRowIndex(isExpanded ? null : index)}
-                                                                            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 border ${isExpanded ? 'bg-[#2980B9] text-white border-[#2980B9]' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200'}`}
+                                                                            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 border ${isExpanded ? 'bg-[#6d99cf] text-white border-[#6d99cf]' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border-slate-200'}`}
                                                                             title="Edit Specs, Expiry & Attributes"
                                                                         >
                                                                             <Icon icon="mdi:cog-outline" /> {isExpanded ? 'Hide Specs' : 'Specs'}
@@ -1099,11 +1099,11 @@ export default function VendorList() {
 
                                                             {/* EXPANDABLE SPECIFICATIONS DRAWER CARD */}
                                                             {isExpanded && (
-                                                                <tr className="bg-gradient-to-r from-sky-50/90 via-slate-50 to-sky-50/90 border-b-2 border-[#2980B9]/30">
+                                                                <tr className="bg-gradient-to-r from-sky-50/90 via-slate-50 to-sky-50/90 border-b-2 border-[#6d99cf]/30">
                                                                     <td colSpan={11} className="p-0">
                                                                         <div className="w-full bg-white border-t border-sky-200 shadow-sm space-y-4 px-5 py-4">
                                                                             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                                                                                <span className="text-xs font-extrabold uppercase tracking-wider text-[#2980B9] flex items-center gap-1.5">
+                                                                                <span className="text-xs font-extrabold uppercase tracking-wider text-[#6d99cf] flex items-center gap-1.5">
                                                                                     <Icon icon="mdi:tune-vertical" /> All Product Fields & Specs ({row.category})
                                                                                 </span>
                                                                                 <span className="text-[11px] font-bold text-slate-400">Row #{index + 1}</span>
@@ -1111,103 +1111,103 @@ export default function VendorList() {
 
                                                                             {/* 1. Optical Powers */}
                                                                             <div>
-                                                                                <span className="text-[11px] font-extrabold text-[#2980B9] uppercase tracking-wide">Optical Powers</span>
+                                                                                <span className="text-[11px] font-extrabold text-[#6d99cf] uppercase tracking-wide">Optical Powers</span>
                                                                                 <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mt-1.5">
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Sph (Spherical)</label>
                                                                                         <input type="number" step="0.25" placeholder="e.g. -2.25" value={row.sph} onChange={e => handleChangeRow(index, "sph", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Cyl (Cylinder)</label>
                                                                                         <input type="number" step="0.25" placeholder="e.g. -0.75" value={row.cyl} onChange={e => handleChangeRow(index, "cyl", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Axis</label>
                                                                                         <input type="number" step="1" min="0" max="180" placeholder="e.g. 90" value={row.axis} onChange={e => handleChangeRow(index, "axis", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Add (Addition)</label>
                                                                                         <input type="number" step="0.25" min="0" placeholder="e.g. 2.00" value={row.add} onChange={e => handleChangeRow(index, "add", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Index</label>
                                                                                         <input type="number" step="0.01" min="1" max="2" placeholder="e.g. 1.56" value={row.index} onChange={e => handleChangeRow(index, "index", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Tint</label>
                                                                                         <input type="text" placeholder="e.g. Brown" value={row.tint} onChange={e => handleChangeRow(index, "tint", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Coating{row.category?.toUpperCase() === 'CONTACT_LENS' && <span className="text-rose-500"> *</span>}</label>
                                                                                         <input type="text" placeholder="e.g. HMC/ARC" value={row.coating} onChange={e => handleChangeRow(index, "coating", e.target.value)}
-                                                                                            className={`w-full mt-1 bg-slate-50 border focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none ${row.category?.toUpperCase() === 'CONTACT_LENS' && !row.coating?.trim() ? 'border-rose-400' : 'border-slate-200'}`} />
+                                                                                            className={`w-full mt-1 bg-slate-50 border focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none ${row.category?.toUpperCase() === 'CONTACT_LENS' && !row.coating?.trim() ? 'border-rose-400' : 'border-slate-200'}`} />
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
 
                                                                             {/* 2. Physical & Frame Attributes */}
                                                                             <div className="pt-2 border-t border-slate-100">
-                                                                                <span className="text-[11px] font-extrabold text-[#2980B9] uppercase tracking-wide">Frame & Product Attributes</span>
+                                                                                <span className="text-[11px] font-extrabold text-[#6d99cf] uppercase tracking-wide">Frame & Product Attributes</span>
                                                                                 <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 mt-1.5">
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Color</label>
                                                                                         <input type="text" placeholder="e.g. Matte Black" value={row.color} onChange={e => handleChangeRow(index, "color", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Size</label>
                                                                                         <input type="text" placeholder="e.g. Medium / 52" value={row.size} onChange={e => handleChangeRow(index, "size", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Shape</label>
                                                                                         <input type="text" placeholder="e.g. Rectangle" value={row.shape} onChange={e => handleChangeRow(index, "shape", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Material</label>
                                                                                         <input type="text" placeholder="e.g. Titanium" value={row.material} onChange={e => handleChangeRow(index, "material", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Dimensions</label>
                                                                                         <input type="text" placeholder="e.g. 52-18-140" value={row.dimensions} onChange={e => handleChangeRow(index, "dimensions", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Disposability{row.category?.toUpperCase() === 'CONTACT_LENS' && <span className="text-rose-500"> *</span>}</label>
                                                                                         <input type="text" placeholder="Daily / Monthly" value={row.disposability} onChange={e => handleChangeRow(index, "disposability", e.target.value)}
-                                                                                            className={`w-full mt-1 bg-slate-50 border focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none ${row.category?.toUpperCase() === 'CONTACT_LENS' && !row.disposability?.trim() ? 'border-rose-400' : 'border-slate-200'}`} />
+                                                                                            className={`w-full mt-1 bg-slate-50 border focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none ${row.category?.toUpperCase() === 'CONTACT_LENS' && !row.disposability?.trim() ? 'border-rose-400' : 'border-slate-200'}`} />
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
 
                                                                             {/* 3. Dates & Expiry */}
                                                                             <div className="pt-2 border-t border-slate-100">
-                                                                                <span className="text-[11px] font-extrabold text-[#2980B9] uppercase tracking-wide">Dates & Expiry Tracking</span>
+                                                                                <span className="text-[11px] font-extrabold text-[#6d99cf] uppercase tracking-wide">Dates & Expiry Tracking</span>
                                                                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-1.5">
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Item Expiry Date{row.category?.toUpperCase() === 'CONTACT_LENS' && <span className="text-rose-500"> *</span>}</label>
                                                                                         <input type="date" value={row.expiry} onChange={e => handleChangeRow(index, "expiry", e.target.value)}
-                                                                                            className={`w-full mt-1 bg-slate-50 border focus:border-[#2980B9] rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 outline-none ${row.category?.toUpperCase() === 'CONTACT_LENS' && !row.expiry ? 'border-rose-400' : 'border-slate-200'}`} />
+                                                                                            className={`w-full mt-1 bg-slate-50 border focus:border-[#6d99cf] rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 outline-none ${row.category?.toUpperCase() === 'CONTACT_LENS' && !row.expiry ? 'border-rose-400' : 'border-slate-200'}`} />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Expected Delivery Date</label>
                                                                                         <input type="date" value={row.expectedDate} onChange={e => handleChangeRow(index, "expectedDate", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
 
                                                                             {/* 4. Pricing, GST Amount & Tax Breakdown */}
                                                                             <div className="pt-2 border-t border-slate-100 space-y-3">
-                                                                                <span className="text-[11px] font-extrabold text-[#2980B9] uppercase tracking-wide">Pricing & GST</span>
+                                                                                <span className="text-[11px] font-extrabold text-[#6d99cf] uppercase tracking-wide">Pricing & GST</span>
                                                                                 {/* Pricing row */}
                                                                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                                                                     <div>
@@ -1234,22 +1234,22 @@ export default function VendorList() {
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Brand Name</label>
                                                                                         <input type="text" placeholder="e.g. RayBan" value={row.brand} onChange={e => handleChangeRow(index, "brand", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Product Code</label>
                                                                                         <input type="text" placeholder="e.g. RB3025" value={row.productCode} onChange={e => handleChangeRow(index, "productCode", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">HSN/SAC Code</label>
                                                                                         <input type="text" placeholder="e.g. 9001" value={row.hsnSac} onChange={e => handleChangeRow(index, "hsnSac", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none" />
                                                                                     </div>
                                                                                     <div>
                                                                                         <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">GST % Rate</label>
                                                                                         <select value={row.gstPercent} onChange={e => handleChangeRow(index, "gstPercent", e.target.value)}
-                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-bold text-slate-800 outline-none">
+                                                                                            className="w-full mt-1 bg-slate-50 border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-bold text-slate-800 outline-none">
                                                                                             <option value="0">0% GST</option>
                                                                                             <option value="5">5% GST</option>
                                                                                             <option value="12">12% GST</option>
@@ -1261,8 +1261,8 @@ export default function VendorList() {
                                                                                 {/* Calculated GST row */}
                                                                                 <div className="grid grid-cols-2 gap-3">
                                                                                     <div>
-                                                                                        <label className="text-[10px] font-bold uppercase tracking-wider text-[#2980B9]">GST Amount (₹)</label>
-                                                                                        <div className="w-full mt-1 bg-sky-50 border border-sky-200 rounded-lg px-2 py-1.5 text-xs font-black text-[#2980B9]">
+                                                                                        <label className="text-[10px] font-bold uppercase tracking-wider text-[#6d99cf]">GST Amount (₹)</label>
+                                                                                        <div className="w-full mt-1 bg-sky-50 border border-sky-200 rounded-lg px-2 py-1.5 text-xs font-black text-[#6d99cf]">
                                                                                             + ₹ {rowGstAmt.toFixed(2)}
                                                                                         </div>
                                                                                     </div>
@@ -1287,19 +1287,19 @@ export default function VendorList() {
                                         /* ── 2. FULL SPREADSHEET VIEW (WITH CLEAR GST COLUMNS & TOTAL INCL. GST) ── */
                                         <table className="w-full min-w-[2200px] border-collapse text-xs">
                                             <thead>
-                                                <tr className="bg-[#2980B9] text-white font-bold uppercase tracking-wider text-[11px]">
-                                                    <th className="px-2 py-3 text-center w-10 border-r border-sky-700 bg-[#2980B9] sticky left-0 z-10">#</th>
+                                                <tr className="bg-[#6d99cf] text-white font-bold uppercase tracking-wider text-[11px]">
+                                                    <th className="px-2 py-3 text-center w-10 border-r border-sky-700 bg-[#6d99cf] sticky left-0 z-10">#</th>
                                                     <th className="px-2 py-3 text-left w-28 border-r border-sky-700">Category</th>
                                                     <th className="px-2.5 py-3 text-left min-w-[180px] border-r border-sky-700">Product Name</th>
                                                     <th className="px-2 py-3 text-center w-20 border-r border-sky-700 bg-sky-800">QTY</th>
                                                     <th className="px-2 py-3 text-center w-20 border-r border-sky-700">Unit</th>
-                                                     <th className="px-2 py-3 text-center w-28 border-r border-sky-700 bg-emerald-700">Buying Price (₹)</th>
-                                                     <th className="px-2 py-3 text-center w-28 border-r border-sky-700 bg-violet-700">Selling Price (₹)</th>
-                                                     <th className="px-2 py-3 text-center w-24 border-r border-sky-700 bg-amber-600">MRP (₹)</th>
-                                                     <th className="px-2 py-3 text-center w-24 border-r border-sky-700">Subtotal (₹)</th>
-                                                     <th className="px-2 py-3 text-center w-20 border-r border-sky-700 bg-sky-800">GST %</th>
-                                                     <th className="px-2 py-3 text-center w-28 border-r border-sky-700 bg-sky-800">GST Amt (₹)</th>
-                                                     <th className="px-2 py-3 text-center w-32 border-r border-sky-700 bg-sky-900">Total Incl. GST (₹)</th>
+                                                    <th className="px-2 py-3 text-center w-28 border-r border-sky-700 bg-emerald-700">Buying Price (₹)</th>
+                                                    <th className="px-2 py-3 text-center w-28 border-r border-sky-700 bg-violet-700">Selling Price (₹)</th>
+                                                    <th className="px-2 py-3 text-center w-24 border-r border-sky-700 bg-amber-600">MRP (₹)</th>
+                                                    <th className="px-2 py-3 text-center w-24 border-r border-sky-700">Subtotal (₹)</th>
+                                                    <th className="px-2 py-3 text-center w-20 border-r border-sky-700 bg-sky-800">GST %</th>
+                                                    <th className="px-2 py-3 text-center w-28 border-r border-sky-700 bg-sky-800">GST Amt (₹)</th>
+                                                    <th className="px-2 py-3 text-center w-32 border-r border-sky-700 bg-sky-900">Total Incl. GST (₹)</th>
                                                     <th className="px-2 py-3 text-center w-24 border-r border-sky-700">Prod Code</th>
                                                     <th className="px-2 py-3 text-center w-24 border-r border-sky-700">Brand</th>
                                                     <th className="px-2 py-3 text-center w-16 border-r border-sky-700">Sph</th>
@@ -1332,7 +1332,7 @@ export default function VendorList() {
                                                     const rowGstAmt = (rowSubtotal * gstPct) / 100;
                                                     const rowTotalWithGst = rowSubtotal + rowGstAmt;
 
-                                                    const stdInput = "w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#2980B9] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-[#2980B9]/20 transition-all shadow-2xs";
+                                                    const stdInput = "w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#6d99cf] rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-[#6d99cf]/20 transition-all shadow-2xs";
 
                                                     return (
                                                         <tr key={index} className="hover:bg-sky-50/30 transition-colors">
@@ -1351,7 +1351,7 @@ export default function VendorList() {
                                                                 </select>
                                                             </td>
                                                             <td className="px-1.5 py-1.5 border-r border-slate-200"><ProductSearchInput value={row.productName} onChange={val => handleChangeRow(index, "productName", val)} onSelect={product => handleSelectProduct(index, product)} /></td>
-                                                            <td className="px-1.5 py-1.5 border-r border-slate-200 bg-sky-50/20"><input type="number" min="1" value={row.quantity} onChange={e => handleChangeRow(index, "quantity", Math.max(1, parseInt(e.target.value) || 1))} className={`${stdInput} text-center font-bold text-[#2980B9]`} /></td>
+                                                            <td className="px-1.5 py-1.5 border-r border-slate-200 bg-sky-50/20"><input type="number" min="1" value={row.quantity} onChange={e => handleChangeRow(index, "quantity", Math.max(1, parseInt(e.target.value) || 1))} className={`${stdInput} text-center font-bold text-[#6d99cf]`} /></td>
                                                             <td className="px-1.5 py-1.5 border-r border-slate-200">
                                                                 <select value={row.unit} onChange={e => handleChangeRow(index, "unit", e.target.value)} className={stdInput}>
                                                                     <option value="PIECE">PIECE</option>
@@ -1363,13 +1363,13 @@ export default function VendorList() {
                                                             <td className="px-1.5 py-1.5 border-r border-slate-200 bg-emerald-50/30"><input type="number" min="0" placeholder="0.00" value={row.buyingPrice} onChange={e => { handleChangeRow(index, "buyingPrice", e.target.value); handleChangeRow(index, "price", e.target.value); }} className={`${stdInput} font-bold text-emerald-800 border-emerald-200`} /></td>
                                                             <td className="px-1.5 py-1.5 border-r border-slate-200 bg-violet-50/20"><input type="number" min="0" placeholder="0.00" value={row.sellingPrice} onChange={e => handleChangeRow(index, "sellingPrice", e.target.value)} className={`${stdInput} font-bold text-violet-800 border-violet-200`} /></td>
                                                             <td className="px-1.5 py-1.5 border-r border-slate-200 bg-amber-50/20"><input type="number" min="0" placeholder="0.00" value={row.mrp} onChange={e => handleChangeRow(index, "mrp", e.target.value)} className={`${stdInput} font-bold text-amber-800 border-amber-200`} /></td>
-                                                            
+
                                                             {/* Base Subtotal */}
                                                             <td className="px-2 py-1.5 border-r border-slate-200 text-right font-bold text-slate-700 bg-slate-50">₹ {rowSubtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
-                                                            
+
                                                             {/* GST % Rate */}
                                                             <td className="px-1.5 py-1.5 border-r border-slate-200 bg-sky-50/40">
-                                                                <select value={row.gstPercent} onChange={e => handleChangeRow(index, "gstPercent", e.target.value)} className={`${stdInput} font-bold text-[#2980B9] text-center`}>
+                                                                <select value={row.gstPercent} onChange={e => handleChangeRow(index, "gstPercent", e.target.value)} className={`${stdInput} font-bold text-[#6d99cf] text-center`}>
                                                                     <option value="0">0%</option>
                                                                     <option value="5">5%</option>
                                                                     <option value="12">12%</option>
@@ -1379,7 +1379,7 @@ export default function VendorList() {
                                                             </td>
 
                                                             {/* GST Amount */}
-                                                            <td className="px-2 py-1.5 border-r border-slate-200 text-right font-bold text-[#2980B9] bg-sky-50/40">
+                                                            <td className="px-2 py-1.5 border-r border-slate-200 text-right font-bold text-[#6d99cf] bg-sky-50/40">
                                                                 + ₹ {rowGstAmt.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                                             </td>
 
@@ -1425,11 +1425,11 @@ export default function VendorList() {
                                 <div className="px-4 py-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between flex-wrap gap-3">
                                     <div className="flex items-center gap-2 flex-wrap">
                                         <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 flex items-center gap-1">
-                                            <Icon icon="mdi:table-row-plus-after" className="text-[#2980B9] text-base" /> Quick Add Rows:
+                                            <Icon icon="mdi:table-row-plus-after" className="text-[#6d99cf] text-base" /> Quick Add Rows:
                                         </span>
                                         {[1, 5, 10, 20, 50].map(num => (
                                             <button key={num} onClick={() => setActiveRows(prev => [...prev, ...Array(num).fill(emptyRow)])}
-                                                className="px-3 py-1 bg-white border border-slate-200 text-[#2980B9] rounded-lg text-xs font-bold hover:bg-sky-50 hover:border-sky-200 transition-all shadow-2xs">
+                                                className="px-3 py-1 bg-white border border-slate-200 text-[#6d99cf] rounded-lg text-xs font-bold hover:bg-sky-50 hover:border-sky-200 transition-all shadow-2xs">
                                                 +{num}
                                             </button>
                                         ))}
@@ -1452,16 +1452,16 @@ export default function VendorList() {
                                 {/* Notes */}
                                 <div className="w-full lg:w-1/2 space-y-1.5">
                                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-1.5">
-                                        <Icon icon="mdi:notebook-edit-outline" className="text-[#2980B9] text-base" /> Administrative Notes (Optional)
+                                        <Icon icon="mdi:notebook-edit-outline" className="text-[#6d99cf] text-base" /> Administrative Notes (Optional)
                                     </label>
                                     <textarea rows={2} value={notes} onChange={e => setNotes(e.target.value)}
                                         placeholder="Specify shipping terms, quality benchmarks, or special vendor instructions..."
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-800 outline-none focus:border-[#2980B9] focus:ring-2 focus:ring-[#2980B9]/20 transition-all placeholder:text-slate-400 resize-none shadow-2xs"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-800 outline-none focus:border-[#6d99cf] focus:ring-2 focus:ring-[#6d99cf]/20 transition-all placeholder:text-slate-400 resize-none shadow-2xs"
                                     />
                                 </div>
 
-                                {/* Order Summary Box in #2980B9 Theme styling */}
-                                <div className="w-full lg:w-80 bg-gradient-to-br from-slate-900 via-slate-800 to-[#1F6391] text-white rounded-2xl p-4 space-y-2 shadow-md border border-[#2980B9]/30">
+                                {/* Order Summary Box in #6d99cf Theme styling */}
+                                <div className="w-full lg:w-80 bg-gradient-to-br from-slate-900 via-slate-800 to-[#1F6391] text-white rounded-2xl p-4 space-y-2 shadow-md border border-[#6d99cf]/30">
                                     <div className="flex justify-between items-center text-xs text-sky-100">
                                         <span className="font-bold uppercase tracking-wider">Net Subtotal (Excl. GST)</span>
                                         <span className="font-bold text-white">₹ {orderSummary.subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
@@ -1490,7 +1490,7 @@ export default function VendorList() {
                                         Cancel
                                     </button>
                                     <button onClick={handleSubmitOrder}
-                                        className="flex items-center justify-center gap-2.5 px-8 py-2.5 text-xs font-black uppercase tracking-widest text-white bg-[#2980B9] hover:bg-[#20638f] active:scale-95 rounded-xl transition-all shadow-lg shadow-[#2980B9]/25">
+                                        className="flex items-center justify-center gap-2.5 px-8 py-2.5 text-xs font-black uppercase tracking-widest text-white bg-[#6d99cf] hover:bg-[#20638f] active:scale-95 rounded-xl transition-all shadow-lg shadow-[#6d99cf]/25">
                                         <Icon icon="mdi:cart-check" className="text-lg" /> Create Order
                                     </button>
                                 </div>

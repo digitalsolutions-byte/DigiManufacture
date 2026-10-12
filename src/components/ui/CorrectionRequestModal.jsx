@@ -97,14 +97,14 @@ const CorrectionRequestModal = ({ isOpen, onClose, onSubmit, customerName, loadi
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="px-6 py-5 flex items-start justify-between border-b border-gray-100 bg-gradient-to-r from-[#1F618D]/5 to-transparent">
+                <div className="px-6 py-5 flex items-start justify-between border-b border-gray-100 bg-gradient-to-r from-[#6d99cf]/5 to-transparent">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#2980B9] flex items-center justify-center shadow-sm">
+                        <div className="w-10 h-10 rounded-xl bg-[#6d99cf] flex items-center justify-center shadow-sm">
                             <Icon icon="mdi:comment-alert-outline" className="text-white text-xl" />
                         </div>
                         <div>
                             <h2 className="text-base font-black text-gray-800 uppercase tracking-wider">Send for Correction</h2>
-                            <p className="text-gray-500 font-medium text-xs mt-0.5">Reviewing: <span className="text-[#2980B9] font-bold">{customerName}</span></p>
+                            <p className="text-gray-500 font-medium text-xs mt-0.5">Reviewing: <span className="text-[#6d99cf] font-bold">{customerName}</span></p>
                         </div>
                     </div>
                     <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors mt-0.5">
@@ -139,7 +139,7 @@ const CorrectionRequestModal = ({ isOpen, onClose, onSubmit, customerName, loadi
                             value={remark}
                             onChange={(e) => setRemark(e.target.value)}
                             placeholder="Explain what needs to be corrected and why..."
-                            className="w-full h-28 p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 outline-none focus:border-[#2980B9] focus:bg-white focus:ring-2 focus:ring-[#2980B9]/10 transition-all resize-none placeholder:text-gray-300"
+                            className="w-full h-28 p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 outline-none focus:border-[#6d99cf] focus:bg-white focus:ring-2 focus:ring-[#6d99cf]/10 transition-all resize-none placeholder:text-gray-300"
                         />
                     </div>
 
@@ -156,11 +156,10 @@ const CorrectionRequestModal = ({ isOpen, onClose, onSubmit, customerName, loadi
                                         key={role}
                                         type="button"
                                         onClick={() => setTargetRole(role)}
-                                        className={`flex-1 py-2 px-4 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all ${
-                                            targetRole === role
-                                                ? 'bg-[#2980B9] text-white border-[#2980B9] shadow-sm'
-                                                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
-                                        }`}
+                                        className={`flex-1 py-2 px-4 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all ${targetRole === role
+                                            ? 'bg-[#6d99cf] text-white border-[#6d99cf] shadow-sm'
+                                            : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
+                                            }`}
                                     >
                                         {role === 'Sales' ? 'Sales Executive' : 'Finance Team'}
                                     </button>
@@ -182,7 +181,7 @@ const CorrectionRequestModal = ({ isOpen, onClose, onSubmit, customerName, loadi
                     <button
                         onClick={handleSubmit}
                         disabled={loading || !remark.trim()}
-                        className="flex-1 py-2.5 px-6 rounded-xl text-white text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 bg-[#2980B9] hover:bg-[#1F618D] active:scale-[0.98] shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="flex-1 py-2.5 px-6 rounded-xl text-white text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 bg-[#6d99cf] hover:bg-[#6d99cf] active:scale-[0.98] shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         {loading && <Icon icon="mdi:loading" className="animate-spin text-base" />}
                         <Icon icon="mdi:send" className="text-sm" />

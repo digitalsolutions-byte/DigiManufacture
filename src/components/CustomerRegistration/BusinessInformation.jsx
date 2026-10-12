@@ -45,7 +45,7 @@ export const BusinessInformation = ({ formik, wrapInput, configs, isReadOnlyMode
                 })}
                 {wrapInput(Input, { label: 'Min. Sales Value (/Month sales)', name: 'minSalesValue', placeholder: 'Enter Min Sales Value', type: 'number' })}
                 {wrapInput(Input, { label: 'Currently Dealt Brands', name: 'currentlyDealtBrands', placeholder: 'E.g., Lenskart, Titan, etc.' })}
-                
+
                 {/* Brand Selection Multi-Select */}
                 <div className="col-span-1 md:col-span-2 bg-gray-50/60 p-5 rounded-xl border border-gray-200 space-y-3">
                     <span className="text-xs font-bold text-gray-700 uppercase tracking-wider block">Assigned Brands*</span>
@@ -76,7 +76,7 @@ export const BusinessInformation = ({ formik, wrapInput, configs, isReadOnlyMode
                     <div className="flex flex-wrap gap-2 pt-1">
                         {(formik.values.brands || []).length > 0 ? (
                             formik.values.brands.map((b, index) => (
-                                <div key={b.brandId || index} className="flex items-center gap-1.5 px-3 py-1 bg-[#2980B9] text-white rounded-md text-xs font-bold uppercase tracking-wider shadow-sm">
+                                <div key={b.brandId || index} className="flex items-center gap-1.5 px-3 py-1 bg-[#6d99cf] text-white rounded-md text-xs font-bold uppercase tracking-wider shadow-sm">
                                     <Icon icon="mdi:tag" className="text-sm" />
                                     <span>{b.brandName || b.name}</span>
                                     {!isReadOnlyMode && (
@@ -137,7 +137,7 @@ export const BusinessInformation = ({ formik, wrapInput, configs, isReadOnlyMode
                     {formik.values.chequeDetails.map((cheque, index) => (
                         <div key={index} className="p-4 bg-white rounded-xl border border-gray-200 space-y-3 shadow-sm">
                             <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-                                <div className="w-6 h-6 rounded-full bg-[#2980B9] text-white text-[11px] font-black flex items-center justify-center">{index + 1}</div>
+                                <div className="w-6 h-6 rounded-full bg-[#6d99cf] text-white text-[11px] font-black flex items-center justify-center">{index + 1}</div>
                                 <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Cheque {index + 1}</span>
                             </div>
                             {wrapInput(Input, {

@@ -7,14 +7,14 @@ import { toast } from 'react-toastify';
 import { getIncomingRetailerOrders, updateRetailerOrderStatus } from '../services/wholesaleService';
 
 const STATUS_CONFIG = {
-    Submitted:       { label: 'Submitted',         badge: 'bg-blue-100 text-blue-700 border-blue-200',      color: '#3b82f6' },
-    Processing:      { label: 'Processing',        badge: 'bg-amber-100 text-amber-700 border-amber-200',    color: '#f59e0b' },
-    QC:              { label: 'Quality Check',     badge: 'bg-purple-100 text-purple-700 border-purple-200', color: '#8b5cf6' },
-    ReadyToDispatch: { label: 'Ready to Dispatch', badge: 'bg-cyan-100 text-cyan-700 border-cyan-200',      color: '#06b6d4' },
-    Dispatched:      { label: 'Dispatched',        badge: 'bg-indigo-100 text-indigo-700 border-indigo-200', color: '#6366f1' },
-    Delivered:       { label: 'Delivered',         badge: 'bg-emerald-100 text-emerald-700 border-emerald-200', color: '#10b981' },
-    Completed:       { label: 'Completed',         badge: 'bg-green-100 text-green-700 border-green-200',    color: '#059669' },
-    Cancelled:       { label: 'Cancelled',         badge: 'bg-red-100 text-red-700 border-red-200',          color: '#ef4444' },
+    Submitted: { label: 'Submitted', badge: 'bg-blue-100 text-blue-700 border-blue-200', color: '#3b82f6' },
+    Processing: { label: 'Processing', badge: 'bg-amber-100 text-amber-700 border-amber-200', color: '#f59e0b' },
+    QC: { label: 'Quality Check', badge: 'bg-purple-100 text-purple-700 border-purple-200', color: '#8b5cf6' },
+    ReadyToDispatch: { label: 'Ready to Dispatch', badge: 'bg-cyan-100 text-cyan-700 border-cyan-200', color: '#06b6d4' },
+    Dispatched: { label: 'Dispatched', badge: 'bg-indigo-100 text-indigo-700 border-indigo-200', color: '#6366f1' },
+    Delivered: { label: 'Delivered', badge: 'bg-emerald-100 text-emerald-700 border-emerald-200', color: '#10b981' },
+    Completed: { label: 'Completed', badge: 'bg-green-100 text-green-700 border-green-200', color: '#059669' },
+    Cancelled: { label: 'Cancelled', badge: 'bg-red-100 text-red-700 border-red-200', color: '#ef4444' },
 };
 
 const ALL_STEPS = [
@@ -39,14 +39,14 @@ const ALL_STATUSES = [
 ];
 
 const ALLOWED_TRANSITIONS = {
-    Submitted:       ['Processing', 'Cancelled'],
-    Processing:      ['QC', 'Cancelled'],
-    QC:              ['ReadyToDispatch', 'Cancelled'],
+    Submitted: ['Processing', 'Cancelled'],
+    Processing: ['QC', 'Cancelled'],
+    QC: ['ReadyToDispatch', 'Cancelled'],
     ReadyToDispatch: ['Dispatched', 'Cancelled'],
-    Dispatched:      ['Delivered', 'Cancelled'],
-    Delivered:       ['Completed'],
-    Completed:       [],
-    Cancelled:       [],
+    Dispatched: ['Delivered', 'Cancelled'],
+    Delivered: ['Completed'],
+    Completed: [],
+    Cancelled: [],
 };
 
 const datePickerStyles = {
@@ -171,13 +171,12 @@ function RetailerOrderStatusModal({ order, onClose, onSuccess }) {
                                 return (
                                     <div key={step} className="flex flex-col items-center flex-1 min-w-[68px] relative">
                                         <div
-                                            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold border-2 transition-all ${
-                                                isDone
+                                            className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold border-2 transition-all ${isDone
                                                     ? 'bg-emerald-500 border-emerald-500 text-white'
                                                     : isCurrent
-                                                    ? 'bg-white border-blue-500 text-blue-600 ring-4 ring-blue-50'
-                                                    : 'bg-white border-slate-200 text-slate-400'
-                                            }`}
+                                                        ? 'bg-white border-blue-500 text-blue-600 ring-4 ring-blue-50'
+                                                        : 'bg-white border-slate-200 text-slate-400'
+                                                }`}
                                         >
                                             {isDone ? '✓' : idx + 1}
                                         </div>
@@ -206,23 +205,22 @@ function RetailerOrderStatusModal({ order, onClose, onSuccess }) {
                                         key={st}
                                         type="button"
                                         onClick={() => setSelectedStatus(st)}
-                                        className={`p-2.5 rounded-xl border text-[11px] font-black uppercase tracking-wider transition-all flex flex-col items-center justify-center gap-1 ${
-                                            isSelected
+                                        className={`p-2.5 rounded-xl border text-[11px] font-black uppercase tracking-wider transition-all flex flex-col items-center justify-center gap-1 ${isSelected
                                                 ? st === 'Cancelled'
                                                     ? 'bg-red-500 text-white border-red-500 shadow-md shadow-red-100'
                                                     : 'bg-erp-accent text-white border-erp-accent shadow-md shadow-blue-100'
                                                 : isCurrent
-                                                ? 'bg-blue-50 text-blue-700 border-blue-300 ring-1 ring-blue-200'
-                                                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                                        }`}
+                                                    ? 'bg-blue-50 text-blue-700 border-blue-300 ring-1 ring-blue-200'
+                                                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                                            }`}
                                     >
                                         <Icon
                                             icon={
                                                 st === 'Cancelled'
                                                     ? 'mdi:cancel'
                                                     : isSelected || isCurrent
-                                                    ? 'mdi:check-circle-outline'
-                                                    : 'mdi:checkbox-blank-circle-outline'
+                                                        ? 'mdi:check-circle-outline'
+                                                        : 'mdi:checkbox-blank-circle-outline'
                                             }
                                             className="text-base"
                                         />
@@ -537,9 +535,8 @@ export default function IncomingRetailerOrders() {
                                         return (
                                             <React.Fragment key={order._id}>
                                                 <tr
-                                                    className={`border-b border-gray-100 last:border-b-0 hover:bg-blue-50/40 transition-all h-16 cursor-pointer ${
-                                                        isExpanded ? 'bg-blue-50/20' : ''
-                                                    }`}
+                                                    className={`border-b border-gray-100 last:border-b-0 hover:bg-blue-50/40 transition-all h-16 cursor-pointer ${isExpanded ? 'bg-blue-50/20' : ''
+                                                        }`}
                                                     onClick={() => toggleRow(order._id)}
                                                 >
                                                     {/* ORDER CODE */}
@@ -584,7 +581,7 @@ export default function IncomingRetailerOrders() {
                                                     <td className="px-4 py-2 text-center border-r border-gray-50">
                                                         {order.estimatedDeliveryDate ? (
                                                             <div className="flex flex-col items-center">
-                                                                <span className="text-xs font-bold text-[#2980B9]">
+                                                                <span className="text-xs font-bold text-[#6d99cf]">
                                                                     {dayjs(order.estimatedDeliveryDate).format('DD MMM YYYY')}
                                                                 </span>
                                                                 <span className="text-[10px] font-black text-gray-400 uppercase">
@@ -651,11 +648,10 @@ export default function IncomingRetailerOrders() {
                                                                     setActiveActionMenu(order._id);
                                                                 }
                                                             }}
-                                                            className={`p-2 rounded-xl transition-all ${
-                                                                activeActionMenu === order._id
+                                                            className={`p-2 rounded-xl transition-all ${activeActionMenu === order._id
                                                                     ? 'bg-erp-accent text-white shadow-lg'
                                                                     : 'text-gray-400 hover:text-erp-accent hover:bg-erp-accent/5'
-                                                            }`}
+                                                                }`}
                                                             title="Actions"
                                                         >
                                                             <Icon icon="mdi:dots-vertical" className="w-6 h-6" />
@@ -933,11 +929,10 @@ export default function IncomingRetailerOrders() {
                                             <button
                                                 key={pageNum}
                                                 onClick={() => setPage(pageNum)}
-                                                className={`w-8 h-8 rounded-xl text-xs font-black transition-all ${
-                                                    page === pageNum
+                                                className={`w-8 h-8 rounded-xl text-xs font-black transition-all ${page === pageNum
                                                         ? 'bg-erp-accent text-white shadow-md shadow-blue-100'
                                                         : 'text-gray-600 hover:bg-gray-100'
-                                                }`}
+                                                    }`}
                                             >
                                                 {pageNum}
                                             </button>

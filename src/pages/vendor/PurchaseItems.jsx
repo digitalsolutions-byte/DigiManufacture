@@ -142,7 +142,7 @@ const PurchaseItems = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6">
                 <div>
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
-                        <Icon icon="lucide:shopping-bag" className="text-[#2980B9]" />
+                        <Icon icon="lucide:shopping-bag" className="text-[#6d99cf]" />
                         Purchase Items
                     </h1>
                     <p className="text-xs sm:text-sm text-gray-500 mt-0.5">View and manage all purchase orders</p>
@@ -156,7 +156,7 @@ const PurchaseItems = () => {
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && fetchPurchaseOrders()}
-                            className="pl-9 pr-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] text-xs sm:text-sm w-full"
+                            className="pl-9 pr-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] text-xs sm:text-sm w-full"
                         />
                     </div>
                     <button
@@ -174,7 +174,7 @@ const PurchaseItems = () => {
                 <div className="block md:hidden p-3 space-y-3 bg-gray-50/50 flex-1 overflow-y-auto">
                     {loading ? (
                         <div className="p-8 text-center text-gray-500 flex items-center justify-center gap-2">
-                            <Icon icon="lucide:loader-2" className="animate-spin text-xl text-[#2980B9]" />
+                            <Icon icon="lucide:loader-2" className="animate-spin text-xl text-[#6d99cf]" />
                             <span className="text-xs font-semibold">Loading purchase orders...</span>
                         </div>
                     ) : purchaseOrders.length === 0 ? (
@@ -193,17 +193,16 @@ const PurchaseItems = () => {
                                 >
                                     <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
                                         <div>
-                                            <span className="font-mono text-xs font-bold text-[#2980B9] bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                                            <span className="font-mono text-xs font-bold text-[#6d99cf] bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
                                                 #{purchaseId}
                                             </span>
                                             <h3 className="text-sm font-bold text-gray-800 mt-1">{vendorName}</h3>
                                         </div>
-                                        <span className={`inline-flex items-center justify-center px-2.5 py-0.5 text-[10px] font-bold rounded-full border ${
-                                            order.overallStatus === 'QC Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                        <span className={`inline-flex items-center justify-center px-2.5 py-0.5 text-[10px] font-bold rounded-full border ${order.overallStatus === 'QC Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
                                             order.overallStatus === 'Partially Received' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                                            order.overallStatus === 'Fully Received' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                                            'bg-gray-50 text-gray-700 border-gray-200'
-                                        }`}>
+                                                order.overallStatus === 'Fully Received' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                                                    'bg-gray-50 text-gray-700 border-gray-200'
+                                            }`}>
                                             {order.overallStatus || order.status || 'Pending'}
                                         </span>
                                     </div>
@@ -237,15 +236,15 @@ const PurchaseItems = () => {
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-[#eaf4fb]/50 border-b border-[#2980B9]/15">
-                                <th className="py-2.5 px-4 w-12 text-[#1F618D]"></th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Purchase ID</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Vendor Name</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Status</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Summary</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Total Amount</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Created At</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider text-right">Actions</th>
+                            <tr className="bg-[#eaf4fb]/50 border-b border-[#6d99cf]/15">
+                                <th className="py-2.5 px-4 w-12 text-[#6d99cf]"></th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Purchase ID</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Vendor Name</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Status</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Summary</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Total Amount</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Created At</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -272,8 +271,8 @@ const PurchaseItems = () => {
                                             onClick={() => navigate(`/vendor/purchase-items/${order._id}`)}
                                         >
                                             <td className="px-4 py-2">
-                                                <div className="w-6 h-6 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#eaf4fb] group-hover:text-[#1F618D] transition-colors">
-                                                    <Icon icon="lucide:arrow-right" className="text-gray-400 group-hover:text-[#1F618D] text-xs" />
+                                                <div className="w-6 h-6 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#eaf4fb] group-hover:text-[#6d99cf] transition-colors">
+                                                    <Icon icon="lucide:arrow-right" className="text-gray-400 group-hover:text-[#6d99cf] text-xs" />
                                                 </div>
                                             </td>
                                             <td className="px-4 py-3">
@@ -287,12 +286,11 @@ const PurchaseItems = () => {
                                                 </span>
                                             </td>
                                             <td className="px-4 py-2">
-                                                <span className={`inline-flex items-center justify-center px-2.5 py-0.5 text-xs font-medium rounded-full ${
-                                                    order.overallStatus === 'QC Completed' ? 'bg-emerald-50 text-emerald-700' :
+                                                <span className={`inline-flex items-center justify-center px-2.5 py-0.5 text-xs font-medium rounded-full ${order.overallStatus === 'QC Completed' ? 'bg-emerald-50 text-emerald-700' :
                                                     order.overallStatus === 'Partially Received' ? 'bg-amber-50 text-amber-700' :
-                                                    order.overallStatus === 'Fully Received' ? 'bg-blue-50 text-blue-700' :
-                                                    'bg-gray-50 text-gray-700'
-                                                }`}>
+                                                        order.overallStatus === 'Fully Received' ? 'bg-blue-50 text-blue-700' :
+                                                            'bg-gray-50 text-gray-700'
+                                                    }`}>
                                                     {order.overallStatus || order.status || 'Pending'}
                                                 </span>
                                             </td>

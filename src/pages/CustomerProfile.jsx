@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { getCustomerById } from '../services/customerService';
 import { PATHS } from '../routes/paths';
 
-const InfoCard = ({ icon, title, children, color = "bg-[#2980B9]" }) => (
+const InfoCard = ({ icon, title, children, color = "bg-[#6d99cf]" }) => (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2.5 bg-gray-50/80">
             <div className={`w-6 h-6 rounded-md ${color} flex items-center justify-center text-white`}>
@@ -26,7 +26,7 @@ const DetailField = ({ label, value, highlight, badge }) => (
                     {value || 'N/A'}
                 </span>
             ) : (
-                <span className={`text-xs font-semibold ${highlight ? 'text-[#2980B9] font-bold' : 'text-gray-800'}`}>
+                <span className={`text-xs font-semibold ${highlight ? 'text-[#6d99cf] font-bold' : 'text-gray-800'}`}>
                     {value !== undefined && value !== null && value !== '' ? value : '---'}
                 </span>
             )}
@@ -42,7 +42,7 @@ const DocCard = ({ label, url }) => (
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative h-40 rounded-xl overflow-hidden border border-gray-200 bg-gray-50 flex items-center justify-center hover:border-[#2980B9] transition-all shadow-sm"
+                className="group relative h-40 rounded-xl overflow-hidden border border-gray-200 bg-gray-50 flex items-center justify-center hover:border-[#6d99cf] transition-all shadow-sm"
             >
                 <img src={url} alt={label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white">
@@ -90,7 +90,7 @@ export default function CustomerProfile() {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-3">
-                    <Icon icon="mdi:loading" className="text-4xl text-[#2980B9] animate-spin" />
+                    <Icon icon="mdi:loading" className="text-4xl text-[#6d99cf] animate-spin" />
                     <span className="text-xs font-black uppercase tracking-widest text-gray-400">Loading Profile...</span>
                 </div>
             </div>
@@ -106,7 +106,7 @@ export default function CustomerProfile() {
                     <p className="text-xs text-gray-400 mb-4">The customer profile you are looking for does not exist or has been removed.</p>
                     <button
                         onClick={() => navigate(PATHS.CUSTOMER.LIST)}
-                        className="px-4 py-2 bg-[#2980B9] text-white text-xs font-bold uppercase rounded-lg hover:bg-[#2471a3] transition-all"
+                        className="px-4 py-2 bg-[#6d99cf] text-white text-xs font-bold uppercase rounded-lg hover:bg-[#2471a3] transition-all"
                     >
                         Back to Customer List
                     </button>
@@ -133,13 +133,13 @@ export default function CustomerProfile() {
                 </button>
                 <div className="h-5 w-px bg-gray-200" />
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#2980B9] flex items-center justify-center text-white font-black text-sm uppercase">
+                    <div className="w-10 h-10 rounded-xl bg-[#6d99cf] flex items-center justify-center text-white font-black text-sm uppercase">
                         {customer.shopName?.charAt(0) || 'C'}
                     </div>
                     <div>
                         <div className="flex items-center gap-2">
                             <h1 className="text-base font-bold text-gray-800 tracking-tight">{customer.shopName}</h1>
-                            <span className="px-2 py-0.5 bg-blue-50 text-[#2980B9] border border-blue-100 rounded text-[10px] font-black uppercase">
+                            <span className="px-2 py-0.5 bg-blue-50 text-[#6d99cf] border border-blue-100 rounded text-[10px] font-black uppercase">
                                 {customer.customerCode || 'NO-CODE'}
                             </span>
                         </div>
@@ -153,7 +153,7 @@ export default function CustomerProfile() {
                     </span>
                     <button
                         onClick={() => navigate(`${PATHS.CUSTOMER.SHIP_TO}?customerId=${customer._id}`)}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-[#2980B9] text-[#2980B9] text-xs font-bold hover:bg-blue-50 transition-all"
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-[#6d99cf] text-[#6d99cf] text-xs font-bold hover:bg-blue-50 transition-all"
                     >
                         <Icon icon="mdi:truck-delivery-outline" className="text-base" /> Manage Ship To
                     </button>
@@ -166,7 +166,7 @@ export default function CustomerProfile() {
                 {/* Key Metrics Header Card */}
                 <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-blue-50 text-[#2980B9] flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-lg bg-blue-50 text-[#6d99cf] flex items-center justify-center">
                             <Icon icon="mdi:credit-card-outline" className="text-xl" />
                         </div>
                         <div>
@@ -210,7 +210,7 @@ export default function CustomerProfile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                     {/* Basic & Account Information */}
-                    <InfoCard icon="mdi:domain" title="Business & Basic Information" color="bg-[#2980B9]">
+                    <InfoCard icon="mdi:domain" title="Business & Basic Information" color="bg-[#6d99cf]">
                         <div className="grid grid-cols-2 gap-x-6 gap-y-4">
                             <DetailField label="Shop Name" value={customer.shopName} highlight />
                             <DetailField label="Proprietor / Owner Name" value={customer.ownerName || customer.proprietorName} />
@@ -226,7 +226,7 @@ export default function CustomerProfile() {
                     </InfoCard>
 
                     {/* Contact & Sales Info */}
-                    <InfoCard icon="mdi:card-account-phone-outline" title="Contact & Sales Management" color="bg-[#2980B9]">
+                    <InfoCard icon="mdi:card-account-phone-outline" title="Contact & Sales Management" color="bg-[#6d99cf]">
                         <div className="grid grid-cols-2 gap-x-6 gap-y-4">
                             <DetailField label="Primary Mobile" value={customer.mobileNo1} highlight />
                             <DetailField label="Secondary Mobile" value={customer.mobileNo2} />
@@ -241,7 +241,7 @@ export default function CustomerProfile() {
                                 <div className="flex flex-wrap gap-1.5">
                                     {Array.isArray(customer.brands) && customer.brands.length > 0 ? (
                                         customer.brands.map((b, i) => (
-                                            <span key={i} className="px-2.5 py-1 bg-blue-50 text-[#2980B9] border border-blue-100 rounded-md text-[11px] font-black uppercase tracking-wider">
+                                            <span key={i} className="px-2.5 py-1 bg-blue-50 text-[#6d99cf] border border-blue-100 rounded-md text-[11px] font-black uppercase tracking-wider">
                                                 {b.brandName || b.name}
                                             </span>
                                         ))

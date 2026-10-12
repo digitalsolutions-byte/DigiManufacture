@@ -309,7 +309,7 @@ const VendorStatement = () => {
         <!-- Header -->
         <div class="header-bar">
           <div>
-            <div class="brand-title">Digi<span>Optics</span> Wholesale</div>
+            <div class="brand-title">Digi<span>Optics</span> Manufacture</div>
             <div class="company-details">
               WeWork Eldeco Centre, Block A, Shivalik Colony, Malviya Nagar, New Delhi 110017<br />
               <strong>GSTIN:</strong> GST9876543210 &nbsp;|&nbsp; <strong>Phone:</strong> +91 9650560526 &nbsp;|&nbsp; <strong>Email:</strong> accounts@digioptics.com
@@ -407,7 +407,7 @@ const VendorStatement = () => {
             </ul>
           </div>
           <div class="sign-box">
-            <div style="font-weight: 800; color: #0f172a;">For DigiOptics Wholesale</div>
+            <div style="font-weight: 800; color: #0f172a;">For DigiOptics Manufacture</div>
             <div class="sign-line">Authorized Signatory</div>
           </div>
         </div>

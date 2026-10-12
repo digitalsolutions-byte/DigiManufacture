@@ -55,9 +55,9 @@ body {
 
 /* Custom Utilities */
 @theme {
-  --color-erp-primary: var(--mui-erp-primary, #1F618D);
+  --color-erp-primary: var(--mui-erp-primary, #6d99cf);
   --color-erp-secondary: var(--mui-erp-secondary, #3498DB);
-  --color-erp-accent: var(--mui-erp-accent, #2980B9);
+  --color-erp-accent: var(--mui-erp-accent, #6d99cf);
   --color-erp-dark: var(--mui-erp-dark, #1A1A1A);
   --color-erp-danger: var(--mui-erp-danger, #E74C3C);
   --font-sans: 'Inter', system-ui, sans-serif;

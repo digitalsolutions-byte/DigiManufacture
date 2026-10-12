@@ -165,13 +165,13 @@ const QcPending = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                        <Icon icon="lucide:clipboard-list" className="text-[#2980B9]" />
+                        <Icon icon="lucide:clipboard-list" className="text-[#6d99cf]" />
                         QC Pending
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">
                         Inwarded items awaiting quality check
                         {pagination && (
-                            <span className="ml-2 font-semibold text-[#1F618D]">
+                            <span className="ml-2 font-semibold text-[#6d99cf]">
                                 ({pagination.totalRecords} pending)
                             </span>
                         )}
@@ -179,7 +179,7 @@ const QcPending = () => {
                 </div>
                 <button
                     onClick={fetchItems}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#2980B9] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#6d99cf] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
                 >
                     <Icon icon="lucide:refresh-cw" className={loading ? 'animate-spin' : ''} />
                     Refresh
@@ -196,7 +196,7 @@ const QcPending = () => {
                         return (
                             <div key={cat} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
                                 <div className="flex items-center gap-2 mb-1">
-                                    <Icon icon={categoryIcon[cat]} className="text-[#2980B9] text-lg" />
+                                    <Icon icon={categoryIcon[cat]} className="text-[#6d99cf] text-lg" />
                                     <span className="text-xs font-semibold text-gray-500 uppercase">{cat.replace('_', ' ')}</span>
                                 </div>
                                 <p className="text-2xl font-bold text-gray-800">{count}</p>
@@ -204,13 +204,13 @@ const QcPending = () => {
                             </div>
                         );
                     })}
-                    <div className="bg-[#eaf4fb] rounded-xl border border-[#2980B9]/20 p-4">
+                    <div className="bg-[#eaf4fb] rounded-xl border border-[#6d99cf]/20 p-4">
                         <div className="flex items-center gap-2 mb-1">
-                            <Icon icon="lucide:clipboard-list" className="text-[#1F618D] text-lg" />
-                            <span className="text-xs font-semibold text-[#1F618D] uppercase">Total Pending</span>
+                            <Icon icon="lucide:clipboard-list" className="text-[#6d99cf] text-lg" />
+                            <span className="text-xs font-semibold text-[#6d99cf] uppercase">Total Pending</span>
                         </div>
-                        <p className="text-2xl font-bold text-[#1F618D]">{items.length}</p>
-                        <p className="text-xs text-[#2980B9] mt-1">Across all categories</p>
+                        <p className="text-2xl font-bold text-[#6d99cf]">{items.length}</p>
+                        <p className="text-xs text-[#6d99cf] mt-1">Across all categories</p>
                     </div>
                 </div>
             )}
@@ -224,13 +224,13 @@ const QcPending = () => {
                         value={search}
                         onChange={e => { setSearch(e.target.value); setPage(1); }}
                         placeholder="Search by item, vendor, order..."
-                        className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                        className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                     />
                 </div>
                 <select
                     value={categoryFilter}
                     onChange={e => { setCategoryFilter(e.target.value); setPage(1); }}
-                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                 >
                     <option value="">All Categories</option>
                     <option value="LENS">Lens</option>
@@ -252,21 +252,21 @@ const QcPending = () => {
                 <div className="overflow-x-auto flex-1">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-[#eaf4fb]/50 border-b border-[#2980B9]/15">
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Item</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Vendor</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Order #</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Category</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Received Qty</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">QC Status</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider text-right">Actions</th>
+                            <tr className="bg-[#eaf4fb]/50 border-b border-[#6d99cf]/15">
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Item</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Vendor</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Order #</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Category</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Received Qty</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">QC Status</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {loading ? (
                                 <tr><td colSpan="7" className="p-8 text-center text-gray-500">
                                     <div className="flex justify-center items-center gap-2">
-                                        <Icon icon="lucide:loader-2" className="animate-spin text-xl text-[#2980B9]" />
+                                        <Icon icon="lucide:loader-2" className="animate-spin text-xl text-[#6d99cf]" />
                                         <span>Loading QC pending items...</span>
                                     </div>
                                 </td></tr>
@@ -285,7 +285,7 @@ const QcPending = () => {
                                             <td className="px-4 py-2">
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-6 h-6 rounded-full bg-[#eaf4fb] flex items-center justify-center shrink-0">
-                                                        <Icon icon={catIcon} className="text-[#2980B9] text-xs" />
+                                                        <Icon icon={catIcon} className="text-[#6d99cf] text-xs" />
                                                     </div>
                                                     <div>
                                                         <p className="text-xs font-semibold text-gray-800">{item.itemName}</p>
@@ -296,13 +296,13 @@ const QcPending = () => {
                                             <td className="px-4 py-2"><p className="text-xs font-medium text-gray-700">{item.vendorName || '—'}</p></td>
                                             <td className="px-4 py-2"><span className="font-mono text-[10px] text-gray-500">{item.orderNumber}</span></td>
                                             <td className="px-4 py-2">
-                                                <span className="text-[10px] px-2 py-0.5 bg-[#eaf4fb] text-[#1F618D] rounded-full font-medium">
+                                                <span className="text-[10px] px-2 py-0.5 bg-[#eaf4fb] text-[#6d99cf] rounded-full font-medium">
                                                     {item.category?.replace('_', ' ')}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-2">
                                                 <div className="flex items-center gap-1">
-                                                    <span className="text-xs font-bold text-[#1F618D]">{item.receivedQty ?? item.qty ?? 0}</span>
+                                                    <span className="text-xs font-bold text-[#6d99cf]">{item.receivedQty ?? item.qty ?? 0}</span>
                                                     <span className="text-[10px] text-gray-400">{item.unit}</span>
                                                 </div>
                                             </td>
@@ -314,7 +314,7 @@ const QcPending = () => {
                                             <td className="px-4 py-2 text-right">
                                                 <button
                                                     onClick={() => handleOpenQC(item)}
-                                                    className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold text-[#1F618D] bg-[#eaf4fb] hover:bg-[#1F618D] hover:text-white border border-[#2980B9]/20 rounded-lg transition-colors"
+                                                    className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold text-[#6d99cf] bg-[#eaf4fb] hover:bg-[#6d99cf] hover:text-white border border-[#6d99cf]/20 rounded-lg transition-colors"
                                                 >
                                                     <Icon icon="lucide:shield-check" className="text-xs" />
                                                     QC Check
@@ -360,12 +360,12 @@ const QcPending = () => {
                         {/* Header */}
                         <div className="p-5 border-b border-gray-100 bg-[#eaf4fb] flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-[#1F618D] flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-xl bg-[#6d99cf] flex items-center justify-center">
                                     <Icon icon="lucide:shield-check" className="text-white text-xl" />
                                 </div>
                                 <div>
-                                    <h2 className="text-base font-bold text-[#1F618D]">QC Check Details</h2>
-                                    <p className="text-xs text-[#2980B9] mt-0.5">Order #{selectedItem.orderNumber}</p>
+                                    <h2 className="text-base font-bold text-[#6d99cf]">QC Check Details</h2>
+                                    <p className="text-xs text-[#6d99cf] mt-0.5">Order #{selectedItem.orderNumber}</p>
                                 </div>
                             </div>
                             <button onClick={() => setSelectedItem(null)} className="p-2 hover:bg-white/50 rounded-lg transition-colors">
@@ -375,7 +375,7 @@ const QcPending = () => {
 
                         {/* Body */}
                         <div className="p-6 space-y-4">
-                            <div className="bg-[#eaf4fb]/30 border border-[#2980B9]/15 rounded-xl p-3">
+                            <div className="bg-[#eaf4fb]/30 border border-[#6d99cf]/15 rounded-xl p-3">
                                 <p className="text-xs font-bold text-gray-700">{selectedItem.itemName}</p>
                                 <p className="text-[11px] text-gray-500 mt-1">
                                     Received Quantity to inspect: <strong>{selectedItem.receivedQty ?? selectedItem.qty ?? 0} {selectedItem.unit}</strong>
@@ -391,7 +391,7 @@ const QcPending = () => {
                                         max={selectedItem.receivedQty ?? selectedItem.qty ?? 0}
                                         value={passedQty}
                                         onChange={e => handlePassedQtyChange(e.target.value, selectedItem.receivedQty ?? selectedItem.qty ?? 0)}
-                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                     />
                                 </div>
                                 <div>
@@ -402,7 +402,7 @@ const QcPending = () => {
                                         max={selectedItem.receivedQty ?? selectedItem.qty ?? 0}
                                         value={failedQty}
                                         onChange={e => handleFailedQtyChange(e.target.value, selectedItem.receivedQty ?? selectedItem.qty ?? 0)}
-                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                     />
                                 </div>
                             </div>
@@ -414,7 +414,7 @@ const QcPending = () => {
                                         <select
                                             value={condition}
                                             onChange={e => setCondition(e.target.value)}
-                                            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] bg-white font-medium text-gray-800"
+                                            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] bg-white font-medium text-gray-800"
                                         >
                                             <option value="DAMAGED">Damaged</option>
                                             <option value="SHRINKAGE">Shrinkage</option>
@@ -484,7 +484,7 @@ const QcPending = () => {
                                     value={remarks}
                                     onChange={e => setRemarks(e.target.value)}
                                     placeholder="Optional remarks..."
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] resize-none"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] resize-none"
                                 />
                             </div>
 
@@ -494,7 +494,7 @@ const QcPending = () => {
                                     id="notifyVendorCheckbox"
                                     checked={notifyVendor}
                                     onChange={e => setNotifyVendor(e.target.checked)}
-                                    className="w-4 h-4 text-[#1F618D] border-gray-300 rounded focus:ring-[#1F618D]"
+                                    className="w-4 h-4 text-[#6d99cf] border-gray-300 rounded focus:ring-[#6d99cf]"
                                 />
                                 <label htmlFor="notifyVendorCheckbox" className="text-xs font-semibold text-gray-700 cursor-pointer select-none">
                                     Notify Vendor of QC Failure
@@ -511,7 +511,7 @@ const QcPending = () => {
                             <button
                                 onClick={handleSubmitQC}
                                 disabled={submittingQC}
-                                className="px-6 py-2.5 text-xs font-bold text-white bg-[#1F618D] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+                                className="px-6 py-2.5 text-xs font-bold text-white bg-[#6d99cf] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
                             >
                                 {submittingQC ? <Icon icon="lucide:loader-2" className="animate-spin" /> : <Icon icon="lucide:check" />}
                                 Submit QC Report

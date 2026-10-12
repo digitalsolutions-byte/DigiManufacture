@@ -23,10 +23,10 @@ export default function PlatformOwnerDashboard() {
                 if (res.success && res.data?.tenants) {
                     const list = res.data.tenants;
                     setTenants(list);
-                    
+
                     const activeCount = list.filter(t => t.status === 'ACTIVE').length;
                     const suspendedCount = list.filter(t => t.status === 'SUSPENDED').length;
-                    
+
                     setStats({
                         total: res.data?.pagination?.totalRecords || list.length,
                         active: activeCount,
@@ -48,12 +48,12 @@ export default function PlatformOwnerDashboard() {
             if (tenant.status === 'SUSPENDED') {
                 const res = await activateTenant(tenant._id);
                 if (res.success) {
-                    toast.success(`Wholesaler "${tenant.storeInformation?.storeName}" activated.`);
+                    toast.success(`Manufacturer "${tenant.storeInformation?.storeName}" activated.`);
                 }
             } else {
                 const res = await suspendTenant(tenant._id, 'Platform Owner action');
                 if (res.success) {
-                    toast.success(`Wholesaler "${tenant.storeInformation?.storeName}" suspended.`);
+                    toast.success(`Manufacturer "${tenant.storeInformation?.storeName}" suspended.`);
                 }
             }
             // Refresh list
@@ -65,14 +65,14 @@ export default function PlatformOwnerDashboard() {
     };
 
     const handleDelete = async (tenant) => {
-        if (window.confirm(`Are you sure you want to delete wholesaler "${tenant.storeInformation?.storeName}"?`)) {
+        if (window.confirm(`Are you sure you want to delete manufacturer "${tenant.storeInformation?.storeName}"?`)) {
             try {
                 await deleteTenant(tenant._id);
-                toast.success('Wholesaler deleted');
+                toast.success('Manufacturer deleted');
                 const refreshRes = await getAllTenants({ page: 1, limit: 100 });
                 if (refreshRes.success) setTenants(refreshRes.data?.tenants || []);
             } catch (err) {
-                toast.error(err.message || 'Failed to delete wholesaler');
+                toast.error(err.message || 'Failed to delete manufacturer');
             }
         }
     };
@@ -83,19 +83,19 @@ export default function PlatformOwnerDashboard() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-100 shadow-xs">
                 <div>
                     <h1 className="text-xl font-bold text-slate-800 tracking-tight flex items-center gap-2.5">
-                        <Icon icon="lucide:building-2" className="text-[#2980B9] text-2xl" />
-                        Wholesaler Platform Overview
+                        <Icon icon="lucide:building-2" className="text-[#6d99cf] text-2xl" />
+                        Manufacturer Platform Overview
                     </h1>
                     <p className="text-xs text-slate-500 font-medium mt-1">
-                        Platform Owner Control Panel — Manage wholesaler accounts, plan subscriptions, and status.
+                        Platform Owner Control Panel — Manage manufacturer accounts, plan subscriptions, and status.
                     </p>
                 </div>
                 <button
                     onClick={() => navigate(PATHS.TENANTS.REGISTER)}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-[#2980B9] hover:bg-[#2471A3] text-white font-semibold text-xs rounded-xl shadow-xs transition-all active:scale-95"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white font-semibold text-xs rounded-xl shadow-xs transition-all active:scale-95"
                 >
                     <Icon icon="lucide:plus" className="text-base" />
-                    + Create Wholesaler
+                    + Create Manufacturer
                 </button>
             </div>
 
@@ -103,7 +103,7 @@ export default function PlatformOwnerDashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <div className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-100 shadow-xs space-y-1.5 sm:space-y-2 overflow-hidden">
                     <div className="flex items-center justify-between gap-1 text-slate-400">
-                        <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-slate-500 truncate">Total Wholesalers</span>
+                        <span className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-slate-500 truncate">Total Manufacturers</span>
                         <div className="p-1.5 sm:p-2 bg-slate-100 text-slate-600 rounded-xl flex-shrink-0">
                             <Icon icon="lucide:building-2" className="text-base sm:text-lg" />
                         </div>
@@ -135,20 +135,20 @@ export default function PlatformOwnerDashboard() {
                 </div>
             </div>
 
-            {/* Wholesaler List Section */}
+            {/* Manufacturer List Section */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
                 <div className="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <div>
                         <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                            Recent Wholesalers
+                            Recent Manufacturers
                         </h2>
-                        <p className="text-xs text-slate-400 font-medium mt-0.5">Overview of registered wholesaler accounts & plan subscriptions</p>
+                        <p className="text-xs text-slate-400 font-medium mt-0.5">Overview of registered manufacturer accounts & plan subscriptions</p>
                     </div>
                     <button
                         onClick={() => navigate(PATHS.TENANTS.LIST)}
-                        className="text-xs font-semibold text-[#2980B9] hover:underline flex items-center gap-1 self-end sm:self-auto"
+                        className="text-xs font-semibold text-[#6d99cf] hover:underline flex items-center gap-1 self-end sm:self-auto"
                     >
-                        <span>View All Wholesalers</span>
+                        <span>View All Manufacturers</span>
                         <Icon icon="lucide:arrow-right" />
                     </button>
                 </div>
@@ -161,7 +161,7 @@ export default function PlatformOwnerDashboard() {
                         </div>
                     ) : tenants.length === 0 ? (
                         <div className="p-6 text-center text-slate-400 text-xs font-medium">
-                            No wholesalers registered yet. Click "+ Create Wholesaler" to register your first tenant!
+                            No manufacturers registered yet. Click "+ Create Manufacturer" to register your first tenant!
                         </div>
                     ) : (
                         tenants.slice(0, 8).map((t) => {
@@ -174,11 +174,10 @@ export default function PlatformOwnerDashboard() {
                                     <div className="flex items-start justify-between gap-2">
                                         <div>
                                             <h3 className="font-bold text-slate-800 text-sm leading-snug">{store.storeName || 'N/A'}</h3>
-                                            <span className="font-mono text-[11px] text-[#2980B9] font-medium block mt-0.5">{t.tenantId}</span>
+                                            <span className="font-mono text-[11px] text-[#6d99cf] font-medium block mt-0.5">{t.tenantId}</span>
                                         </div>
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold flex-shrink-0 ${
-                                            isSuspended ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                                        }`}>
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold flex-shrink-0 ${isSuspended ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                                            }`}>
                                             {t.status || 'ACTIVE'}
                                         </span>
                                     </div>
@@ -206,8 +205,8 @@ export default function PlatformOwnerDashboard() {
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <button
-                                                onClick={() => navigate(`/owner/wholesalers/${t._id}/settings`)}
-                                                className="p-1.5 text-slate-400 hover:text-[#2980B9] rounded-xl transition-colors"
+                                                onClick={() => navigate(`/owner/manufacturers/${t._id}/settings`)}
+                                                className="p-1.5 text-slate-400 hover:text-[#6d99cf] rounded-xl transition-colors"
                                                 title="Feature Settings"
                                             >
                                                 <Icon icon="lucide:settings-2" className="text-base" />
@@ -220,18 +219,17 @@ export default function PlatformOwnerDashboard() {
                                             </button>
                                             <button
                                                 onClick={() => handleToggleStatus(t)}
-                                                className={`px-3 py-1.5 rounded-xl font-semibold text-xs transition-colors ${
-                                                    isSuspended
+                                                className={`px-3 py-1.5 rounded-xl font-semibold text-xs transition-colors ${isSuspended
                                                         ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-100'
                                                         : 'bg-slate-100 text-slate-600 hover:bg-rose-50 hover:text-rose-600'
-                                                }`}
+                                                    }`}
                                             >
                                                 {isSuspended ? 'Activate' : 'Suspend'}
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(t)}
                                                 className="p-1.5 text-slate-400 hover:text-rose-600 rounded-xl transition-colors"
-                                                title="Delete Wholesaler"
+                                                title="Delete Manufacturer"
                                             >
                                                 <Icon icon="lucide:trash-2" className="text-base" />
                                             </button>
@@ -248,7 +246,7 @@ export default function PlatformOwnerDashboard() {
                     <table className="w-full text-left border-collapse text-xs">
                         <thead>
                             <tr className="bg-slate-50 border-b border-slate-100 text-slate-500 font-semibold uppercase tracking-wider">
-                                <th className="py-3.5 px-4">Wholesaler Name</th>
+                                <th className="py-3.5 px-4">Manufacturer Name</th>
                                 <th className="py-3.5 px-4">Owner Info</th>
                                 <th className="py-3.5 px-4">Plan Type</th>
                                 <th className="py-3.5 px-4">Expiry Date</th>
@@ -266,7 +264,7 @@ export default function PlatformOwnerDashboard() {
                             ) : tenants.length === 0 ? (
                                 <tr>
                                     <td colSpan="6" className="p-10 text-center text-slate-400 font-medium">
-                                        No wholesalers registered yet. Click "+ Create Wholesaler" to register your first tenant!
+                                        No manufacturers registered yet. Click "+ Create Manufacturer" to register your first tenant!
                                     </td>
                                 </tr>
                             ) : (
@@ -279,7 +277,7 @@ export default function PlatformOwnerDashboard() {
                                         <tr key={t._id} className="hover:bg-slate-50/70 transition-colors">
                                             <td className="px-4 py-3.5">
                                                 <div className="font-bold text-slate-800">{store.storeName || 'N/A'}</div>
-                                                <span className="font-mono text-[10px] text-[#2980B9] font-medium">{t.tenantId}</span>
+                                                <span className="font-mono text-[10px] text-[#6d99cf] font-medium">{t.tenantId}</span>
                                             </td>
                                             <td className="px-4 py-3.5">
                                                 <div className="font-semibold text-slate-700">{owner.ownerName || 'N/A'}</div>
@@ -294,17 +292,16 @@ export default function PlatformOwnerDashboard() {
                                                 {store.expiryDate ? new Date(store.expiryDate).toLocaleDateString('en-IN') : 'N/A'}
                                             </td>
                                             <td className="px-4 py-3.5">
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${
-                                                    isSuspended ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
-                                                }`}>
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${isSuspended ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                                                    }`}>
                                                     {t.status || 'ACTIVE'}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3.5 text-center">
                                                 <div className="flex items-center justify-center gap-2">
                                                     <button
-                                                        onClick={() => navigate(`/owner/wholesalers/${t._id}/settings`)}
-                                                        className="p-1.5 text-slate-400 hover:text-[#2980B9] rounded-lg transition-colors"
+                                                        onClick={() => navigate(`/owner/manufacturers/${t._id}/settings`)}
+                                                        className="p-1.5 text-slate-400 hover:text-[#6d99cf] rounded-lg transition-colors"
                                                         title="Feature Settings"
                                                     >
                                                         <Icon icon="lucide:settings-2" className="text-base" />
@@ -317,18 +314,17 @@ export default function PlatformOwnerDashboard() {
                                                     </button>
                                                     <button
                                                         onClick={() => handleToggleStatus(t)}
-                                                        className={`px-3 py-1 rounded-lg font-semibold text-[11px] transition-colors ${
-                                                            isSuspended
+                                                        className={`px-3 py-1 rounded-lg font-semibold text-[11px] transition-colors ${isSuspended
                                                                 ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
                                                                 : 'bg-slate-100 text-slate-600 hover:bg-rose-50 hover:text-rose-600'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {isSuspended ? 'Activate' : 'Suspend'}
                                                     </button>
                                                     <button
                                                         onClick={() => handleDelete(t)}
                                                         className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition-colors"
-                                                        title="Delete Wholesaler"
+                                                        title="Delete Manufacturer"
                                                     >
                                                         <Icon icon="lucide:trash-2" className="text-base" />
                                                     </button>

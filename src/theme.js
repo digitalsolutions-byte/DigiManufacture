@@ -4,13 +4,13 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#2980B9',
+      main: '#6d99cf',
       light: '#5DADE2',
-      dark: '#1F618D',
+      dark: '#6d99cf',
       contrastText: '#FFFFFF',
     },
     secondary: {
-      main: '#2980B9',
+      main: '#6d99cf',
       light: '#5DADE2',
       dark: '#2E86C1',
       contrastText: '#FFFFFF',
@@ -18,13 +18,13 @@ const theme = createTheme({
     accent: {
       main: '#5DADE2',
       light: '#3498DB',
-      dark: '#2980B9',
+      dark: '#6d99cf',
       contrastText: '#FFFFFF',
     },
     erp: {
-      primary: '#1F618D',
+      primary: '#6d99cf',
       secondary: '#3498DB',
-      accent: '#2980B9', // Replaces the orange #FF6300
+      accent: '#6d99cf', // Replaces the orange #FF6300
       dark: '#1A1A1A',
       danger: '#E74C3C',
     },
@@ -78,7 +78,7 @@ const theme = createTheme({
           },
         },
         containedPrimary: {
-          background: 'linear-gradient(135deg, #2980B9 0%, #3498DB 100%)',
+          background: 'linear-gradient(135deg, #6d99cf 0%, #3498DB 100%)',
           '&:hover': {
             background: 'linear-gradient(135deg, #3498DB 0%, #5DADE2 100%)',
           },
@@ -106,7 +106,7 @@ const theme = createTheme({
             borderColor: 'rgba(41, 128, 185, 0.15)',
           },
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#2980B9',
+            borderColor: '#6d99cf',
             borderWidth: '2px',
           },
           '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -130,7 +130,7 @@ const theme = createTheme({
         head: {
           fontWeight: 600,
           backgroundColor: '#F8FBFE',
-          color: '#2980B9',
+          color: '#6d99cf',
         },
       },
     },

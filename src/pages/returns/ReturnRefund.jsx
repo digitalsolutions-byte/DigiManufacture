@@ -527,7 +527,7 @@ export default function ReturnRefund() {
           <button
             onClick={() => setActiveTab("form")}
             className={`px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${activeTab === "form"
-              ? "bg-[#2980B9] text-white shadow-sm"
+              ? "bg-[#6d99cf] text-white shadow-sm"
               : "text-gray-600 hover:text-gray-900"
               }`}
           >
@@ -536,7 +536,7 @@ export default function ReturnRefund() {
           <button
             onClick={() => setActiveTab("list")}
             className={`px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${activeTab === "list"
-              ? "bg-[#2980B9] text-white shadow-sm"
+              ? "bg-[#6d99cf] text-white shadow-sm"
               : "text-gray-600 hover:text-gray-900"
               }`}
           >
@@ -849,7 +849,7 @@ export default function ReturnRefund() {
                                 <td colSpan={9} className="px-4 py-3">
                                   <div className="flex flex-col gap-2.5 bg-white p-3 rounded-xl border border-blue-100/80 text-xs shadow-2xs">
                                     <div className="flex flex-wrap items-center gap-3">
-                                      <span className="font-bold text-[#1F618D] text-[10px] uppercase tracking-wider flex items-center gap-1">
+                                      <span className="font-bold text-[#6d99cf] text-[10px] uppercase tracking-wider flex items-center gap-1">
                                         <Icon icon="mdi:pencil-box-outline" className="text-sm" /> Return Specs:
                                       </span>
 
@@ -1120,12 +1120,12 @@ export default function ReturnRefund() {
                           <td className="p-4">
                             <span
                               className={`px-3 py-1 rounded-full text-[10px] font-bold ${row.status === "Return_Approved" || row.status === "Refund_Approved" || row.status === "Approved"
-                                  ? "bg-emerald-50 text-emerald-600"
-                                  : row.status === "Completed"
-                                    ? "bg-blue-50 text-blue-600"
-                                    : row.status === "Rejected"
-                                      ? "bg-rose-50 text-rose-600"
-                                      : "bg-amber-50 text-amber-600"
+                                ? "bg-emerald-50 text-emerald-600"
+                                : row.status === "Completed"
+                                  ? "bg-blue-50 text-blue-600"
+                                  : row.status === "Rejected"
+                                    ? "bg-rose-50 text-rose-600"
+                                    : "bg-amber-50 text-amber-600"
                                 }`}
                             >
                               {row.status}

@@ -95,7 +95,7 @@ export const Overview = ({ formik, configs = {}, isSalesUser }) => {
                     <div className="flex flex-wrap gap-2">
                         {Array.isArray(values.brands) && values.brands.length > 0 ? (
                             values.brands.map((b, i) => (
-                                <span key={i} className="px-2.5 py-1 bg-blue-50 text-[#2980B9] border border-blue-100 rounded text-xs font-bold uppercase">
+                                <span key={i} className="px-2.5 py-1 bg-blue-50 text-[#6d99cf] border border-blue-100 rounded text-xs font-bold uppercase">
                                     {b.brandName || b.name}
                                 </span>
                             ))

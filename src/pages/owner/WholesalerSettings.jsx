@@ -104,18 +104,18 @@ export default function WholesalerSettings() {
             try {
                 const res = await getTenantSettings(id);
                 if (res?.success && res?.data) {
-                    setStoreName(res.data.storeName || 'Wholesaler');
+                    setStoreName(res.data.storeName || 'Manufacturer');
                     setTenantId(res.data.tenantId || '');
                     const isDemoOn = Boolean(res.data.featureFlags?.demoMode || res.data.demoMode);
                     const demoExpVal = res.data.featureFlags?.demoExpiry || res.data.demoExpiry || null;
-                    const fetchedFlags = { 
-                        ecomFramesSunglasses: false, 
-                        ...(res.data.featureFlags || {}), 
-                        demoMode: isDemoOn, 
-                        demoExpiry: demoExpVal 
+                    const fetchedFlags = {
+                        ecomFramesSunglasses: false,
+                        ...(res.data.featureFlags || {}),
+                        demoMode: isDemoOn,
+                        demoExpiry: demoExpVal
                     };
                     setFlags(fetchedFlags);
-                    
+
                     if (fetchedFlags.demoExpiry) {
                         const dateObj = new Date(fetchedFlags.demoExpiry);
                         if (!isNaN(dateObj.getTime())) {
@@ -129,7 +129,7 @@ export default function WholesalerSettings() {
                     toast.error('Failed to load settings.');
                 }
             } catch (err) {
-                toast.error(err?.message || 'Failed to load wholesaler settings.');
+                toast.error(err?.message || 'Failed to load manufacturer settings.');
             } finally {
                 setPageLoading(false);
             }
@@ -208,18 +208,18 @@ export default function WholesalerSettings() {
                     className="hover:text-slate-600 transition-colors flex items-center gap-1.5"
                 >
                     <Icon icon="lucide:building-2" className="text-sm" />
-                    Wholesalers
+                    Manufacturers
                 </button>
                 <Icon icon="lucide:chevron-right" className="text-slate-300" />
                 <span className="text-slate-600 font-semibold">{storeName}</span>
                 <Icon icon="lucide:chevron-right" className="text-slate-300" />
-                <span className="text-[#2980B9] font-semibold">Settings</span>
+                <span className="text-[#6d99cf] font-semibold">Settings</span>
             </nav>
 
             <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-xs">
                 <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-                        <Icon icon="lucide:settings-2" className="text-[#2980B9] text-2xl" />
+                        <Icon icon="lucide:settings-2" className="text-[#6d99cf] text-2xl" />
                     </div>
                     <div>
                         <h1 className="text-xl font-bold text-slate-800 tracking-tight">
@@ -234,7 +234,7 @@ export default function WholesalerSettings() {
 
             <div className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
                 <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2.5">
-                    <Icon icon="lucide:toggle-right" className="text-[#2980B9] text-lg" />
+                    <Icon icon="lucide:toggle-right" className="text-[#6d99cf] text-lg" />
                     <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wider">
                         Feature Toggles
                     </h2>
@@ -243,7 +243,7 @@ export default function WholesalerSettings() {
                 <div className="px-6 divide-y divide-slate-50">
                     <FeatureRow
                         label="E-com Frames-Sunglasses Page"
-                        description="When enabled, this wholesaler can access the Frames & Sunglasses e-commerce catalogue page."
+                        description="When enabled, this manufacturer can access the Frames & Sunglasses e-commerce catalogue page."
                         enabled={flags.ecomFramesSunglasses ?? false}
                         onToggle={() => handleToggle('ecomFramesSunglasses')}
                         toggling={toggling['ecomFramesSunglasses'] ?? false}
@@ -251,7 +251,7 @@ export default function WholesalerSettings() {
 
                     <FeatureRow
                         label="Demo Mode & Watermark Access"
-                        description="When enabled, users of this wholesaler see the confidential demo watermark & popup. Login is allowed until demo expiry date."
+                        description="When enabled, users of this manufacturer see the confidential demo watermark & popup. Login is allowed until demo expiry date."
                         enabled={flags.demoMode ?? false}
                         onToggle={() => handleToggle('demoMode')}
                         toggling={toggling['demoMode'] ?? false}
@@ -276,20 +276,20 @@ export default function WholesalerSettings() {
                             )}
                         </div>
                         <p className="text-xs text-slate-500">
-                            Set the deadline until which demo access remains valid. Once expired, users will be blocked from logging into this wholesaler account.
+                            Set the deadline until which demo access remains valid. Once expired, users will be blocked from logging into this manufacturer account.
                         </p>
                         <div className="flex flex-wrap items-center gap-3 pt-1">
                             <input
                                 type="datetime-local"
                                 value={expiryInput}
                                 onChange={e => setExpiryInput(e.target.value)}
-                                className="px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-xl outline-none focus:border-[#2980B9] focus:ring-2 focus:ring-blue-100 shadow-xs"
+                                className="px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-xl outline-none focus:border-[#6d99cf] focus:ring-2 focus:ring-blue-100 shadow-xs"
                             />
                             <button
                                 type="button"
                                 onClick={() => handleSaveExpiry()}
                                 disabled={savingExpiry}
-                                className="px-4 py-2 bg-[#2980B9] hover:bg-[#1F618D] text-white text-xs font-bold rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                                className="px-4 py-2 bg-[#6d99cf] hover:bg-[#6d99cf] text-white text-xs font-bold rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                             >
                                 {savingExpiry ? <Icon icon="lucide:loader-2" className="animate-spin text-sm" /> : <Icon icon="lucide:save" className="text-sm" />}
                                 Save Expiry
@@ -322,7 +322,7 @@ export default function WholesalerSettings() {
                 className="flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors"
             >
                 <Icon icon="lucide:arrow-left" className="text-sm" />
-                Back to Wholesalers List
+                Back to Manufacturers List
             </button>
         </div>
     );

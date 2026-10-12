@@ -188,7 +188,7 @@ const ProposalDetails = () => {
         return (
             <div className="flex min-h-[60vh] items-center justify-center">
                 <div className="flex flex-col items-center gap-3">
-                    <Icon icon="lucide:loader-2" className="animate-spin text-3xl text-[#2980B9]" />
+                    <Icon icon="lucide:loader-2" className="animate-spin text-3xl text-[#6d99cf]" />
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Loading Proposal Details</p>
                 </div>
             </div>
@@ -200,7 +200,7 @@ const ProposalDetails = () => {
             <div className="text-center py-20 bg-white rounded-2xl border border-gray-100 p-8 space-y-4">
                 <Icon icon="lucide:alert-triangle" className="text-4xl text-amber-500 mx-auto" />
                 <h2 className="text-lg font-bold text-gray-800">Proposal Not Found</h2>
-                <button onClick={() => navigate('/vendor/proposal/list')} className="px-5 py-2 bg-[#2980B9] text-white text-xs font-bold rounded-xl">
+                <button onClick={() => navigate('/vendor/proposal/list')} className="px-5 py-2 bg-[#6d99cf] text-white text-xs font-bold rounded-xl">
                     Back to Proposals List
                 </button>
             </div>
@@ -216,7 +216,7 @@ const ProposalDetails = () => {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => navigate('/vendor/proposal/list')}
-                        className="p-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 hover:text-[#2980B9] hover:bg-blue-50 transition-all"
+                        className="p-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 hover:text-[#6d99cf] hover:bg-blue-50 transition-all"
                     >
                         <Icon icon="mdi:arrow-left" className="text-xl" />
                     </button>
@@ -282,7 +282,7 @@ const ProposalDetails = () => {
                     return (
                         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-6 space-y-4">
                             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                                <h2 className="text-xs font-bold uppercase tracking-wider text-[#2980B9] flex items-center gap-2">
+                                <h2 className="text-xs font-bold uppercase tracking-wider text-[#6d99cf] flex items-center gap-2">
                                     <Icon icon="lucide:box" className="text-base" />
                                     Required Product Overview
                                 </h2>
@@ -330,7 +330,7 @@ const ProposalDetails = () => {
             {/* Vendor Quotations Table */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col space-y-2 p-5 sm:p-6">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                    <h2 className="text-xs font-bold uppercase tracking-wider text-[#2980B9] flex items-center gap-2">
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-[#6d99cf] flex items-center gap-2">
                         <Icon icon="lucide:users" className="text-base" />
                         Vendor Bids & Quotations ({proposal.vendorQuotations?.length || 0})
                     </h2>
@@ -339,14 +339,14 @@ const ProposalDetails = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full border-collapse text-left text-xs min-w-[800px]">
                         <thead>
-                            <tr className="bg-[#eaf4fb]/60 border-b border-[#2980B9]/15">
-                                <th className="px-4 py-3 font-bold text-[#1F618D] uppercase tracking-wider">Vendor</th>
-                                <th className="px-4 py-3 font-bold text-[#1F618D] uppercase tracking-wider text-right">Price</th>
-                                <th className="px-4 py-3 font-bold text-[#1F618D] uppercase tracking-wider text-center">Avail Qty</th>
-                                <th className="px-4 py-3 font-bold text-[#1F618D] uppercase tracking-wider text-center">Delivery</th>
-                                <th className="px-4 py-3 font-bold text-[#1F618D] uppercase tracking-wider text-center">GST %</th>
-                                <th className="px-4 py-3 font-bold text-[#1F618D] uppercase tracking-wider text-center">Status</th>
-                                <th className="px-4 py-3 font-bold text-[#1F618D] uppercase tracking-wider text-right">Action</th>
+                            <tr className="bg-[#eaf4fb]/60 border-b border-[#6d99cf]/15">
+                                <th className="px-4 py-3 font-bold text-[#6d99cf] uppercase tracking-wider">Vendor</th>
+                                <th className="px-4 py-3 font-bold text-[#6d99cf] uppercase tracking-wider text-right">Price</th>
+                                <th className="px-4 py-3 font-bold text-[#6d99cf] uppercase tracking-wider text-center">Avail Qty</th>
+                                <th className="px-4 py-3 font-bold text-[#6d99cf] uppercase tracking-wider text-center">Delivery</th>
+                                <th className="px-4 py-3 font-bold text-[#6d99cf] uppercase tracking-wider text-center">GST %</th>
+                                <th className="px-4 py-3 font-bold text-[#6d99cf] uppercase tracking-wider text-center">Status</th>
+                                <th className="px-4 py-3 font-bold text-[#6d99cf] uppercase tracking-wider text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -390,7 +390,7 @@ const ProposalDetails = () => {
                                                     <>
                                                         <button
                                                             onClick={() => handleOpenQuoteModal(quote)}
-                                                            className="px-3 py-1 bg-[#eaf4fb] hover:bg-[#2980B9] hover:text-white text-[#1F618D] text-xs font-bold rounded-lg transition-colors"
+                                                            className="px-3 py-1 bg-[#eaf4fb] hover:bg-[#6d99cf] hover:text-white text-[#6d99cf] text-xs font-bold rounded-lg transition-colors"
                                                         >
                                                             {quote.status === 'QUOTED' ? 'Edit Quote' : 'Enter Quote'}
                                                         </button>
@@ -427,7 +427,7 @@ const ProposalDetails = () => {
             {activeQuotation && (
                 <div className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-fadeIn">
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-[#2980B9] text-white">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-[#6d99cf] text-white">
                             <h3 className="text-sm font-bold">
                                 Enter Vendor Quotation ({activeQuotation.vendorName || 'Vendor'})
                             </h3>
@@ -446,7 +446,7 @@ const ProposalDetails = () => {
                                         placeholder="e.g. 850"
                                         value={quoteForm.price}
                                         onChange={e => setQuoteForm(p => ({ ...p, price: e.target.value }))}
-                                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold outline-none focus:border-[#2980B9]"
+                                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold outline-none focus:border-[#6d99cf]"
                                         required
                                     />
                                 </div>
@@ -458,7 +458,7 @@ const ProposalDetails = () => {
                                         placeholder="e.g. 100"
                                         value={quoteForm.availableQty}
                                         onChange={e => setQuoteForm(p => ({ ...p, availableQty: e.target.value }))}
-                                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold outline-none focus:border-[#2980B9]"
+                                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold outline-none focus:border-[#6d99cf]"
                                     />
                                 </div>
 
@@ -469,7 +469,7 @@ const ProposalDetails = () => {
                                         placeholder="e.g. 7"
                                         value={quoteForm.deliveryDays}
                                         onChange={e => setQuoteForm(p => ({ ...p, deliveryDays: e.target.value }))}
-                                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold outline-none focus:border-[#2980B9]"
+                                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold outline-none focus:border-[#6d99cf]"
                                     />
                                 </div>
 
@@ -480,7 +480,7 @@ const ProposalDetails = () => {
                                         placeholder="12"
                                         value={quoteForm.gst}
                                         onChange={e => setQuoteForm(p => ({ ...p, gst: e.target.value }))}
-                                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold outline-none focus:border-[#2980B9]"
+                                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-bold outline-none focus:border-[#6d99cf]"
                                     />
                                 </div>
                             </div>
@@ -492,7 +492,7 @@ const ProposalDetails = () => {
                                     placeholder="e.g. Ex-Delhi warehouse"
                                     value={quoteForm.deliveryDetails}
                                     onChange={e => setQuoteForm(p => ({ ...p, deliveryDetails: e.target.value }))}
-                                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-medium outline-none focus:border-[#2980B9]"
+                                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-medium outline-none focus:border-[#6d99cf]"
                                 />
                             </div>
 
@@ -503,7 +503,7 @@ const ProposalDetails = () => {
                                     placeholder="e.g. Minimum order 10 pieces"
                                     value={quoteForm.remarks}
                                     onChange={e => setQuoteForm(p => ({ ...p, remarks: e.target.value }))}
-                                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-medium outline-none focus:border-[#2980B9] resize-none"
+                                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl font-medium outline-none focus:border-[#6d99cf] resize-none"
                                 />
                             </div>
 
@@ -514,7 +514,7 @@ const ProposalDetails = () => {
                                 <button
                                     type="submit"
                                     disabled={submittingQuote}
-                                    className="px-6 py-2 bg-[#2980B9] text-white font-bold rounded-xl shadow-xs disabled:opacity-50"
+                                    className="px-6 py-2 bg-[#6d99cf] text-white font-bold rounded-xl shadow-xs disabled:opacity-50"
                                 >
                                     {submittingQuote ? 'Saving...' : 'Save Quote'}
                                 </button>

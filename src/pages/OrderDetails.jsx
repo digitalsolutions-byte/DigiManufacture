@@ -78,7 +78,7 @@ const OrderDetails = () => {
     if (loading) {
         return (
             <div className="min-h-[60vh] bg-gray-50 flex flex-col items-center justify-center gap-4 p-4">
-                <div className="w-10 h-10 border-4 border-[#2980B9]/20 border-t-[#2980B9] rounded-full animate-spin"></div>
+                <div className="w-10 h-10 border-4 border-[#6d99cf]/20 border-t-[#6d99cf] rounded-full animate-spin"></div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest animate-pulse">Loading Order Details...</p>
             </div>
         );
@@ -93,7 +93,7 @@ const OrderDetails = () => {
         switch (s) {
             case 'SUBMITTED':
             case 'PROCESSING':
-                return 'bg-blue-50 text-[#2980B9] border-blue-200';
+                return 'bg-blue-50 text-[#6d99cf] border-blue-200';
             case 'COMPLETED':
                 return 'bg-emerald-50 text-emerald-700 border-emerald-200';
             case 'CANCELLED':
@@ -108,7 +108,7 @@ const OrderDetails = () => {
     const InfoCard = ({ title, icon, children, className = "" }) => (
         <div className={`bg-white rounded-2xl p-4 sm:p-5 border border-gray-200/80 shadow-xs ${className}`}>
             <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-100">
-                <div className="p-1.5 rounded-lg bg-[#2980B9]/10 text-[#2980B9]">
+                <div className="p-1.5 rounded-lg bg-[#6d99cf]/10 text-[#6d99cf]">
                     <Icon icon={icon} className="text-base sm:text-lg" />
                 </div>
                 <h3 className="text-xs font-bold text-gray-700 uppercase tracking-wider">{title}</h3>
@@ -122,7 +122,7 @@ const OrderDetails = () => {
         return (
             <div className="space-y-0.5">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">{label}</span>
-                <span className={`text-xs font-semibold break-words block ${highlight ? 'text-[#2980B9] font-bold' : 'text-gray-800'}`}>
+                <span className={`text-xs font-semibold break-words block ${highlight ? 'text-[#6d99cf] font-bold' : 'text-gray-800'}`}>
                     {value}{unit ? ` ${unit}` : ''}
                 </span>
             </div>
@@ -133,7 +133,7 @@ const OrderDetails = () => {
         <div className="bg-white rounded-xl border border-gray-200 p-3.5 space-y-3">
             <div className="flex items-center justify-between border-b border-gray-100 pb-2">
                 <div className="flex items-center gap-2">
-                    <span className={`w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs text-white ${side === 'R' ? 'bg-amber-500' : 'bg-[#2980B9]'}`}>
+                    <span className={`w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs text-white ${side === 'R' ? 'bg-amber-500' : 'bg-[#6d99cf]'}`}>
                         {side}
                     </span>
                     <span className="font-bold text-gray-800 text-xs uppercase">{side === 'R' ? 'Right Eye' : 'Left Eye'}</span>
@@ -214,7 +214,7 @@ const OrderDetails = () => {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => navigate(PATHS.CUSTOMER_CARE.ALL_ORDERS)}
-                        className="p-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 hover:text-[#2980B9] hover:bg-blue-50 transition-all active:scale-95"
+                        className="p-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 hover:text-[#6d99cf] hover:bg-blue-50 transition-all active:scale-95"
                         title="Back to List"
                     >
                         <Icon icon="mdi:arrow-left" className="text-xl" />
@@ -252,7 +252,7 @@ const OrderDetails = () => {
                     </button>
                     <button
                         onClick={() => navigate(`/accounting/customer-statement/${order?.customer?.customerId || order?.customerId || order?.customer?._id}`)}
-                        className="px-3 py-2 rounded-xl bg-blue-50 text-[#2980B9] border border-blue-200 text-xs font-bold hover:bg-[#2980B9] hover:text-white transition-all flex items-center gap-1.5 shadow-xs"
+                        className="px-3 py-2 rounded-xl bg-blue-50 text-[#6d99cf] border border-blue-200 text-xs font-bold hover:bg-[#6d99cf] hover:text-white transition-all flex items-center gap-1.5 shadow-xs"
                     >
                         <Icon icon="mdi:book-open-page-variant" className="text-base" />
                         <span>Ledger</span>
@@ -273,9 +273,9 @@ const OrderDetails = () => {
                             href={order.challanUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="px-3 py-2 rounded-xl bg-blue-50 text-[#2980B9] border border-blue-200 text-xs font-bold hover:bg-[#2980B9] hover:text-white transition-all flex items-center gap-1.5 shadow-xs"
+                            className="px-3 py-2 rounded-xl bg-blue-50 text-[#6d99cf] border border-blue-200 text-xs font-bold hover:bg-[#6d99cf] hover:text-white transition-all flex items-center gap-1.5 shadow-xs"
                         >
-                            <Icon icon="mdi:truck-delivery-outline" className="text-base text-[#2980B9]" />
+                            <Icon icon="mdi:truck-delivery-outline" className="text-base text-[#6d99cf]" />
                             <span>Challan</span>
                         </a>
                     )}
@@ -324,7 +324,7 @@ const OrderDetails = () => {
                                             href={order.trackingLink || firstSubOrder.trackingLink}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-xs font-semibold text-[#2980B9] hover:underline flex items-center gap-1 truncate"
+                                            className="text-xs font-semibold text-[#6d99cf] hover:underline flex items-center gap-1 truncate"
                                         >
                                             <Icon icon="mdi:open-in-new" className="text-sm shrink-0" />
                                             <span className="truncate">{order.trackingLink || firstSubOrder.trackingLink}</span>
@@ -337,7 +337,7 @@ const OrderDetails = () => {
 
                             <button
                                 onClick={() => setTrackingModalOpen(true)}
-                                className="px-3.5 py-2 bg-gray-100 hover:bg-[#2980B9] hover:text-white text-gray-700 text-xs font-bold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
+                                className="px-3.5 py-2 bg-gray-100 hover:bg-[#6d99cf] hover:text-white text-gray-700 text-xs font-bold rounded-xl transition-all shrink-0 flex items-center gap-1.5"
                             >
                                 <Icon icon="mdi:pencil" className="text-sm" />
                                 <span>{(order.trackingId || firstSubOrder.trackingId || order.trackingLink || firstSubOrder.trackingLink) ? 'Update Details' : 'Add Tracking'}</span>
@@ -349,7 +349,7 @@ const OrderDetails = () => {
                 {/* Financial Summary */}
                 <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200/80 shadow-xs flex flex-col justify-between space-y-4">
                     <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-                        <div className="p-1.5 rounded-lg bg-[#2980B9]/10 text-[#2980B9]">
+                        <div className="p-1.5 rounded-lg bg-[#6d99cf]/10 text-[#6d99cf]">
                             <Icon icon="mdi:calculator" className="text-base" />
                         </div>
                         <h3 className="text-xs font-bold text-gray-700 uppercase tracking-wider">Financial Summary</h3>
@@ -391,7 +391,7 @@ const OrderDetails = () => {
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-xs font-bold uppercase text-gray-700">Now Payable</span>
-                            <span className="text-xl font-bold text-[#2980B9]">₹{nowPayableVal.toFixed(2)}</span>
+                            <span className="text-xl font-bold text-[#6d99cf]">₹{nowPayableVal.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
@@ -404,7 +404,7 @@ const OrderDetails = () => {
                         {/* Sub Order Header */}
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-3">
                             <div className="flex items-center gap-2">
-                                <div className="p-1.5 bg-blue-50 text-[#2980B9] rounded-lg">
+                                <div className="p-1.5 bg-blue-50 text-[#6d99cf] rounded-lg">
                                     <Icon icon="mdi:package-variant-closed" className="text-base" />
                                 </div>
                                 <div>
@@ -430,7 +430,7 @@ const OrderDetails = () => {
                                         {/* Top Item Summary Strip */}
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-white p-3 rounded-lg border border-slate-100">
                                             <div className="flex items-start sm:items-center gap-2.5">
-                                                <span className="w-5 h-5 rounded-full bg-[#2980B9]/10 text-[#2980B9] font-bold text-[11px] flex items-center justify-center flex-shrink-0 mt-0.5 sm:mt-0">
+                                                <span className="w-5 h-5 rounded-full bg-[#6d99cf]/10 text-[#6d99cf] font-bold text-[11px] flex items-center justify-center flex-shrink-0 mt-0.5 sm:mt-0">
                                                     {itemIndex + 1}
                                                 </span>
                                                 <div>
@@ -449,7 +449,7 @@ const OrderDetails = () => {
                                                             </span>
                                                         )}
                                                         {vendorObj?.name && (
-                                                            <span className="px-1.5 py-0.5 bg-blue-50 text-[#2980B9] rounded border border-blue-100">
+                                                            <span className="px-1.5 py-0.5 bg-blue-50 text-[#6d99cf] rounded border border-blue-100">
                                                                 Vendor: {vendorObj.name}
                                                             </span>
                                                         )}
@@ -464,7 +464,7 @@ const OrderDetails = () => {
                                                 </div>
                                                 <div className="text-right">
                                                     <span className="text-[9px] font-bold text-gray-400 uppercase block">Price</span>
-                                                    <span className="font-bold text-[#2980B9]">₹{item.price}</span>
+                                                    <span className="font-bold text-[#6d99cf]">₹{item.price}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -488,7 +488,7 @@ const OrderDetails = () => {
                                         {/* RX Prescription Matrix */}
                                         {isOrderTypeRx && item.rx && (
                                             <div className="space-y-3 pt-1">
-                                                <h5 className="text-xs font-bold uppercase text-[#2980B9] tracking-wider flex items-center gap-1.5">
+                                                <h5 className="text-xs font-bold uppercase text-[#6d99cf] tracking-wider flex items-center gap-1.5">
                                                     <Icon icon="mdi:eye-outline" className="text-base" />
                                                     Prescription Details
                                                 </h5>
@@ -525,7 +525,7 @@ const OrderDetails = () => {
             {trackingModalOpen && (
                 <div className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-fadeIn">
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-[#2980B9] text-white">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-[#6d99cf] text-white">
                             <h3 className="text-sm font-bold flex items-center gap-2">
                                 <Icon icon="mdi:truck-fast-outline" className="text-lg" />
                                 Order Tracking Details
@@ -543,7 +543,7 @@ const OrderDetails = () => {
                                     placeholder="e.g. AWB1234567890"
                                     value={trackingForm.trackingId}
                                     onChange={e => setTrackingForm(p => ({ ...p, trackingId: e.target.value }))}
-                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold text-gray-800 outline-none focus:border-[#2980B9] focus:bg-white"
+                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl font-mono font-bold text-gray-800 outline-none focus:border-[#6d99cf] focus:bg-white"
                                 />
                             </div>
 
@@ -554,7 +554,7 @@ const OrderDetails = () => {
                                     placeholder="e.g. https://courier.com/track/AWB1234567890"
                                     value={trackingForm.trackingLink}
                                     onChange={e => setTrackingForm(p => ({ ...p, trackingLink: e.target.value }))}
-                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl font-medium text-gray-800 outline-none focus:border-[#2980B9] focus:bg-white"
+                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl font-medium text-gray-800 outline-none focus:border-[#6d99cf] focus:bg-white"
                                 />
                             </div>
 
@@ -573,7 +573,7 @@ const OrderDetails = () => {
                                 <button
                                     type="submit"
                                     disabled={updatingTracking}
-                                    className="px-6 py-2.5 bg-[#2980B9] hover:bg-[#2471A3] text-white font-bold rounded-xl shadow-xs disabled:opacity-50 flex items-center gap-1.5"
+                                    className="px-6 py-2.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white font-bold rounded-xl shadow-xs disabled:opacity-50 flex items-center gap-1.5"
                                 >
                                     {updatingTracking ? (
                                         <>

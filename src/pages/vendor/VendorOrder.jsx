@@ -275,7 +275,7 @@ export default function VendorOrder() {
     const handleRefresh = () => {
         Swal.fire({
             title: "Reload Database?", text: "Live orders will be synchronized.", icon: "question",
-            showCancelButton: true, confirmButtonColor: "#2980B9", cancelButtonColor: "#9ca3af",
+            showCancelButton: true, confirmButtonColor: "#6d99cf", cancelButtonColor: "#9ca3af",
             confirmButtonText: "Reload",
         }).then(r => { if (r.isConfirmed) fetchVendorOrders(1, false); });
     };

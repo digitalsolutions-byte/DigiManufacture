@@ -95,7 +95,7 @@ export default function PublicOrderStatus() {
                 {/* Header Card */}
                 <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-[#2980B9] text-white flex items-center justify-center shadow-md">
+                        <div className="w-12 h-12 rounded-xl bg-[#6d99cf] text-white flex items-center justify-center shadow-md">
                             <Icon icon="mdi:truck-fast-outline" className="text-2xl" />
                         </div>
                         <div>
@@ -107,7 +107,7 @@ export default function PublicOrderStatus() {
                     {orderData && (
                         <button
                             onClick={copyShareLink}
-                            className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-[#2980B9] border border-blue-100 hover:bg-blue-100 rounded-xl text-xs font-bold transition-all shadow-sm self-start md:self-auto"
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-[#6d99cf] border border-blue-100 hover:bg-blue-100 rounded-xl text-xs font-bold transition-all shadow-sm self-start md:self-auto"
                         >
                             <Icon icon={copied ? "mdi:check-all" : "mdi:share-variant"} className="text-base" />
                             <span>{copied ? 'Link Copied!' : 'Share Status Link'}</span>
@@ -125,13 +125,13 @@ export default function PublicOrderStatus() {
                                 value={searchId}
                                 onChange={(e) => setSearchId(e.target.value)}
                                 placeholder="Enter Order Number or ID..."
-                                className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold text-gray-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all"
+                                className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-semibold text-gray-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all"
                             />
                         </div>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="px-6 py-3 bg-[#2980B9] hover:bg-[#2471a3] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+                            className="px-6 py-3 bg-[#6d99cf] hover:bg-[#2471a3] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
                         >
                             {loading ? <Icon icon="mdi:loading" className="animate-spin text-base" /> : <Icon icon="mdi:search-web" className="text-base" />}
                             <span>Track Order</span>
@@ -180,7 +180,7 @@ export default function PublicOrderStatus() {
                                                 href={trackingLink}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-xs font-bold text-[#2980B9] hover:underline flex items-center gap-1 mt-1"
+                                                className="text-xs font-bold text-[#6d99cf] hover:underline flex items-center gap-1 mt-1"
                                             >
                                                 <Icon icon="mdi:truck-fast-outline" className="text-sm" />
                                                 <span>Track Package Online</span>
@@ -196,7 +196,7 @@ export default function PublicOrderStatus() {
                             <div>
                                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Estimated Delivery Time</span>
                                 {estDate ? (
-                                    <div className="flex items-center gap-2 text-[#2980B9]">
+                                    <div className="flex items-center gap-2 text-[#6d99cf]">
                                         <Icon icon="mdi:clock-outline" className="text-lg" />
                                         <div>
                                             <p className="text-sm font-black">{dayjs(estDate).format('DD MMM YYYY')}</p>
@@ -213,7 +213,7 @@ export default function PublicOrderStatus() {
                         {normalizedStatus !== 'Cancelled' ? (
                             <div className="space-y-4">
                                 <h3 className="text-xs font-black text-gray-700 uppercase tracking-widest flex items-center gap-2">
-                                    <Icon icon="mdi:timeline-text-outline" className="text-base text-[#2980B9]" /> Order Fulfillment Progress
+                                    <Icon icon="mdi:timeline-text-outline" className="text-base text-[#6d99cf]" /> Order Fulfillment Progress
                                 </h3>
 
                                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 pt-2">
@@ -228,7 +228,7 @@ export default function PublicOrderStatus() {
                                                 className={`p-3 rounded-xl border flex flex-col justify-between min-h-[90px] transition-all ${isDone
                                                     ? 'bg-emerald-50/50 border-emerald-200 text-emerald-800'
                                                     : isCurrent
-                                                        ? 'bg-blue-50 border-[#2980B9] text-[#2980B9] shadow-sm ring-2 ring-blue-100'
+                                                        ? 'bg-blue-50 border-[#6d99cf] text-[#6d99cf] shadow-sm ring-2 ring-blue-100'
                                                         : 'bg-gray-50/50 border-gray-200 text-gray-400'
                                                     }`}
                                             >
@@ -237,7 +237,7 @@ export default function PublicOrderStatus() {
                                                     {isDone ? (
                                                         <Icon icon="mdi:check-circle" className="text-emerald-500 text-base" />
                                                     ) : isCurrent ? (
-                                                        <Icon icon="mdi:clock-fast" className="text-[#2980B9] text-base animate-pulse" />
+                                                        <Icon icon="mdi:clock-fast" className="text-[#6d99cf] text-base animate-pulse" />
                                                     ) : (
                                                         <Icon icon="mdi:circle-outline" className="text-gray-300 text-base" />
                                                     )}
@@ -260,7 +260,7 @@ export default function PublicOrderStatus() {
                         {orderData.orders?.[0]?.items?.length > 0 && (
                             <div className="pt-4 border-t border-gray-100 space-y-3">
                                 <h4 className="text-xs font-black text-gray-700 uppercase tracking-widest flex items-center gap-2">
-                                    <Icon icon="mdi:package-variant-closed" className="text-base text-[#2980B9]" /> Order Items ({orderData.orders[0].items.length})
+                                    <Icon icon="mdi:package-variant-closed" className="text-base text-[#6d99cf]" /> Order Items ({orderData.orders[0].items.length})
                                 </h4>
                                 <div className="divide-y divide-gray-100 border border-gray-100 rounded-xl overflow-hidden bg-gray-50/50">
                                     {orderData.orders[0].items.map((item, iIdx) => (
@@ -270,7 +270,7 @@ export default function PublicOrderStatus() {
                                                 <p className="text-[10px] text-gray-400 font-medium uppercase mt-0.5">{item.category || 'N/A'} &bull; {item.orderType || 'STOCK'}</p>
                                             </div>
                                             <div className="text-right">
-                                                <span className="font-mono font-bold text-[#2980B9] bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
+                                                <span className="font-mono font-bold text-[#6d99cf] bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
                                                     Qty: {item.qty} {item.unit || ''}
                                                 </span>
                                             </div>
@@ -284,7 +284,7 @@ export default function PublicOrderStatus() {
                         {(orderData.statusHistory || orderData.orders?.[0]?.statusHistory)?.length > 0 && (
                             <div className="pt-4 border-t border-gray-100 space-y-3">
                                 <h4 className="text-xs font-black text-gray-700 uppercase tracking-widest flex items-center gap-2">
-                                    <Icon icon="mdi:history" className="text-base text-[#2980B9]" /> Status Log History
+                                    <Icon icon="mdi:history" className="text-base text-[#6d99cf]" /> Status Log History
                                 </h4>
                                 <div className="space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
                                     {(orderData.statusHistory || orderData.orders?.[0]?.statusHistory).map((log, lIdx) => (
@@ -306,7 +306,7 @@ export default function PublicOrderStatus() {
             </div>
 
             <footer className="text-center py-6 text-xs text-gray-400 font-medium">
-                &copy; {new Date().getFullYear()} DigiOptics Wholesale &bull; Order Tracking System
+                &copy; {new Date().getFullYear()} DigiOptics Manufacture &bull; Order Tracking System
             </footer>
         </div>
     );

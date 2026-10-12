@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import { PATHS } from '../routes/paths';
 
 const STATUS_CONFIG = {
-    Active: { color: '#2980B9', bg: 'bg-blue-50', text: 'text-blue-700' },
+    Active: { color: '#6d99cf', bg: 'bg-blue-50', text: 'text-blue-700' },
     Submitted: { color: '#7C3AED', bg: 'bg-violet-50', text: 'text-violet-700' },
     Processing: { color: '#F59E0B', bg: 'bg-amber-50', text: 'text-amber-700' },
     QC: { color: '#0891B2', bg: 'bg-cyan-50', text: 'text-cyan-700' },
@@ -89,7 +89,7 @@ const Dashboard = () => {
         return (
             <div className="flex min-h-[60vh] items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-[#2980B9]/20 border-t-[#2980B9] rounded-full animate-spin" />
+                    <div className="w-12 h-12 border-4 border-[#6d99cf]/20 border-t-[#6d99cf] rounded-full animate-spin" />
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest animate-pulse">Loading Analytics</p>
                 </div>
             </div>
@@ -127,7 +127,7 @@ const Dashboard = () => {
             <header className="flex justify-between items-end shrink-0">
                 <div>
                     <h1 className="text-2xl font-extrabold text-gray-800 tracking-tight flex items-center gap-2">
-                        <Icon icon="lucide:layout-dashboard" className="text-[#2980B9]" />
+                        <Icon icon="lucide:layout-dashboard" className="text-[#6d99cf]" />
                         Executive Overview
                     </h1>
                     <p className="text-xs text-gray-500 mt-1">
@@ -152,25 +152,25 @@ const Dashboard = () => {
                     label="Active Customers"
                     value={analytics?.customers?.activeUsers}
                     icon="lucide:users"
-                    gradient="bg-gradient-to-br from-[#2980B9] to-[#1A5E8A]"
+                    gradient="bg-gradient-to-br from-[#6d99cf] to-[#1A5E8A]"
                 />
                 <MetricCard
                     label="Total Orders"
                     value={ord.totalOrders}
                     icon="lucide:shopping-bag"
-                    gradient="bg-gradient-to-br from-[#2980B9] to-[#1A5E8A]"
+                    gradient="bg-gradient-to-br from-[#6d99cf] to-[#1A5E8A]"
                 />
                 <MetricCard
                     label="Active Orders"
                     value={ord.active}
                     icon="lucide:activity"
-                    gradient="bg-gradient-to-br from-[#2980B9] to-[#1A5E8A]"
+                    gradient="bg-gradient-to-br from-[#6d99cf] to-[#1A5E8A]"
                 />
                 <MetricCard
                     label="Total Staff"
                     value={analytics?.staff?.total}
                     icon="lucide:user-check"
-                    gradient="bg-gradient-to-br from-[#2980B9] to-[#1A5E8A]"
+                    gradient="bg-gradient-to-br from-[#6d99cf] to-[#1A5E8A]"
                 />
             </div>
 
@@ -180,12 +180,12 @@ const Dashboard = () => {
             {/* Order Summary */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                 <h2 className="text-sm font-bold text-gray-800 mb-5 flex items-center gap-2">
-                    <Icon icon="lucide:clipboard-list" className="text-[#2980B9]" />
+                    <Icon icon="lucide:clipboard-list" className="text-[#6d99cf]" />
                     Order Summary
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
                     {[
-                        { label: 'Total Orders', value: ord.totalOrders, icon: 'lucide:shopping-bag', bg: 'bg-[#2980B9]', text: 'text-white' },
+                        { label: 'Total Orders', value: ord.totalOrders, icon: 'lucide:shopping-bag', bg: 'bg-[#6d99cf]', text: 'text-white' },
                         { label: 'Active', value: ord.active, icon: 'lucide:activity', bg: 'bg-blue-50', text: 'text-blue-700' },
                         { label: 'Processing', value: ord.inProgress ?? ord.processing ?? 0, icon: 'lucide:loader-2', bg: 'bg-amber-50', text: 'text-amber-700' },
                         { label: 'Ready to Dispatch', value: ord.readyToDispatch, icon: 'lucide:package-check', bg: 'bg-cyan-50', text: 'text-cyan-700' },
@@ -210,10 +210,10 @@ const Dashboard = () => {
                 <div className="lg:col-span-3 bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                            <Icon icon="lucide:trending-up" className="text-[#2980B9] text-base" />
+                            <Icon icon="lucide:trending-up" className="text-[#6d99cf] text-base" />
                             Order Volume Trend & Status Breakdown
                         </h2>
-                        <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-[#2980B9] px-2.5 py-1 rounded-full border border-blue-100">
+                        <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-[#6d99cf] px-2.5 py-1 rounded-full border border-blue-100">
                             Live Trend
                         </span>
                     </div>
@@ -223,8 +223,8 @@ const Dashboard = () => {
                             <AreaChart data={barData} margin={{ top: 15, right: 20, left: -20, bottom: 10 }}>
                                 <defs>
                                     <linearGradient id="dashboardAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#2980B9" stopOpacity={0.4} />
-                                        <stop offset="95%" stopColor="#2980B9" stopOpacity={0.0} />
+                                        <stop offset="5%" stopColor="#6d99cf" stopOpacity={0.4} />
+                                        <stop offset="95%" stopColor="#6d99cf" stopOpacity={0.0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -241,7 +241,7 @@ const Dashboard = () => {
                                     tick={{ fill: '#94A3B8', fontSize: 11, fontWeight: 600 }}
                                 />
                                 <Tooltip
-                                    cursor={{ stroke: '#2980B9', strokeWidth: 1.5, strokeDasharray: '4 4' }}
+                                    cursor={{ stroke: '#6d99cf', strokeWidth: 1.5, strokeDasharray: '4 4' }}
                                     content={({ active, payload, label }) => {
                                         if (active && payload && payload.length) {
                                             const item = payload[0].payload;
@@ -261,11 +261,11 @@ const Dashboard = () => {
                                 <Area
                                     type="monotone"
                                     dataKey="value"
-                                    stroke="#2980B9"
+                                    stroke="#6d99cf"
                                     strokeWidth={3}
                                     fillOpacity={1}
                                     fill="url(#dashboardAreaGrad)"
-                                    activeDot={{ r: 7, stroke: '#FFFFFF', strokeWidth: 2.5, fill: '#2980B9' }}
+                                    activeDot={{ r: 7, stroke: '#FFFFFF', strokeWidth: 2.5, fill: '#6d99cf' }}
                                 />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -276,7 +276,7 @@ const Dashboard = () => {
                 <div className="lg:col-span-2 bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
                     <div>
                         <h2 className="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <Icon icon="lucide:list-checks" className="text-[#2980B9] text-base" />
+                            <Icon icon="lucide:list-checks" className="text-[#6d99cf] text-base" />
                             Status Breakdown
                         </h2>
                         <div className="divide-y divide-gray-50">
@@ -287,8 +287,8 @@ const Dashboard = () => {
                     </div>
                     {/* Total pill */}
                     <div className="mt-4 bg-[#eaf4fb] rounded-xl px-4 py-3 flex justify-between items-center border border-blue-100/60">
-                        <span className="text-xs font-bold text-[#1F618D]">Total Orders</span>
-                        <span className="text-xl font-black text-[#1F618D]">{ord.totalOrders ?? 0}</span>
+                        <span className="text-xs font-bold text-[#6d99cf]">Total Orders</span>
+                        <span className="text-xl font-black text-[#6d99cf]">{ord.totalOrders ?? 0}</span>
                     </div>
                 </div>
             </div>
@@ -297,7 +297,7 @@ const Dashboard = () => {
             <section className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
                 <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-[#eaf4fb]/60 to-transparent">
                     <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
-                        <Icon icon="lucide:clock-3" className="text-[#2980B9]" />
+                        <Icon icon="lucide:clock-3" className="text-[#6d99cf]" />
                         Recent Orders
                     </h2>
                     <span className="text-xs text-gray-400 font-semibold">{flattenedOrders.length} orders</span>

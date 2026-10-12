@@ -368,13 +368,13 @@ export default function Exchange() {
         <div className="flex bg-gray-100 p-1 rounded-lg self-start md:self-auto border border-gray-200">
           <button
             onClick={() => setActiveTab("form")}
-            className={`px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${activeTab === "form" ? "bg-[#2980B9] text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
+            className={`px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${activeTab === "form" ? "bg-[#6d99cf] text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
           >
             Create Request
           </button>
           <button
             onClick={() => setActiveTab("list")}
-            className={`px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${activeTab === "list" ? "bg-[#2980B9] text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
+            className={`px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${activeTab === "list" ? "bg-[#6d99cf] text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
           >
             Request List
           </button>

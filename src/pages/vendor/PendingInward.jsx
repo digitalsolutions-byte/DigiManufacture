@@ -7,8 +7,8 @@ import { uploadMultipleDocuments } from '../../services/bucketService';
 import { toast } from 'react-toastify';
 
 const categoryIcon = {
-    LENS:         'lucide:eye',
-    FRAME:        'lucide:glasses',
+    LENS: 'lucide:eye',
+    FRAME: 'lucide:glasses',
     CONTACT_LENS: 'lucide:circle-dot',
 };
 
@@ -28,14 +28,14 @@ const PendingInward = () => {
     const [submittingInward, setSubmittingInward] = useState(false);
     const [invoiceFiles, setInvoiceFiles] = useState([]);
 
-    const [receivedBy, setReceivedBy]       = useState('');
-    const [receivedOn, setReceivedOn]       = useState('');
-    const [receivedFrom, setReceivedFrom]   = useState('');
+    const [receivedBy, setReceivedBy] = useState('');
+    const [receivedOn, setReceivedOn] = useState('');
+    const [receivedFrom, setReceivedFrom] = useState('');
 
     // Contact Lens required fields
-    const [coating, setCoating]             = useState('');
+    const [coating, setCoating] = useState('');
     const [disposability, setDisposability] = useState('');
-    const [expiry, setExpiry]               = useState('');
+    const [expiry, setExpiry] = useState('');
 
     const isContactLens = (cat) => {
         if (!cat) return false;
@@ -92,9 +92,9 @@ const PendingInward = () => {
         // Validate Contact Lens required fields
         if (isContactLens(selectedItem.category)) {
             const missing = [];
-            if (!coating.trim())       missing.push('Coating');
+            if (!coating.trim()) missing.push('Coating');
             if (!disposability.trim()) missing.push('Disposability');
-            if (!expiry)               missing.push('Expiry Date');
+            if (!expiry) missing.push('Expiry Date');
             if (missing.length > 0) {
                 toast.error(`${missing.join(', ')} ${missing.length > 1 ? 'are' : 'is'} required for Contact Lens`);
                 return;
@@ -111,16 +111,16 @@ const PendingInward = () => {
             const payload = {
                 purchaseOrderId: selectedItem.purchaseOrderId,
                 remarks: remarks || `Direct inward receipt for item ${selectedItem.itemName}`,
-                receivedBy:   receivedBy.trim()   || null,
-                receivedOn:   receivedOn          || new Date().toISOString().split('T')[0],
+                receivedBy: receivedBy.trim() || null,
+                receivedOn: receivedOn || new Date().toISOString().split('T')[0],
                 receivedFrom: receivedFrom.trim() || null,
-                invoices:     uploadedInvoices,
+                invoices: uploadedInvoices,
                 items: [{
-                    itemId:       selectedItem.itemId || selectedItem._id,
-                    receivedQty:  Number(receivedQty),
-                    condition:    condition,
-                    vendorRefId:  vendorRefId,
-                    remarks:      remarks,
+                    itemId: selectedItem.itemId || selectedItem._id,
+                    receivedQty: Number(receivedQty),
+                    condition: condition,
+                    vendorRefId: vendorRefId,
+                    remarks: remarks,
                     ...(isContactLens(selectedItem.category) && {
                         coating,
                         disposability,
@@ -163,13 +163,13 @@ const PendingInward = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                        <Icon icon="lucide:package-open" className="text-[#2980B9]" />
+                        <Icon icon="lucide:package-open" className="text-[#6d99cf]" />
                         Pending Inward
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">
                         Purchase items awaiting inward receipt
                         {pagination && (
-                            <span className="ml-2 font-semibold text-[#1F618D]">
+                            <span className="ml-2 font-semibold text-[#6d99cf]">
                                 ({pagination.totalRecords} pending)
                             </span>
                         )}
@@ -177,7 +177,7 @@ const PendingInward = () => {
                 </div>
                 <button
                     onClick={fetchItems}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#2980B9] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#6d99cf] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
                 >
                     <Icon icon="lucide:refresh-cw" className={loading ? 'animate-spin' : ''} />
                     Refresh
@@ -194,7 +194,7 @@ const PendingInward = () => {
                         return (
                             <div key={cat} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
                                 <div className="flex items-center gap-2 mb-1">
-                                    <Icon icon={categoryIcon[cat]} className="text-[#2980B9] text-lg" />
+                                    <Icon icon={categoryIcon[cat]} className="text-[#6d99cf] text-lg" />
                                     <span className="text-xs font-semibold text-gray-500 uppercase">{cat.replace('_', ' ')}</span>
                                 </div>
                                 <p className="text-2xl font-bold text-gray-800">{count}</p>
@@ -202,13 +202,13 @@ const PendingInward = () => {
                             </div>
                         );
                     })}
-                    <div className="bg-[#eaf4fb] rounded-xl border border-[#2980B9]/20 p-4">
+                    <div className="bg-[#eaf4fb] rounded-xl border border-[#6d99cf]/20 p-4">
                         <div className="flex items-center gap-2 mb-1">
-                            <Icon icon="lucide:alert-circle" className="text-[#1F618D] text-lg" />
-                            <span className="text-xs font-semibold text-[#1F618D] uppercase">Total Pending</span>
+                            <Icon icon="lucide:alert-circle" className="text-[#6d99cf] text-lg" />
+                            <span className="text-xs font-semibold text-[#6d99cf] uppercase">Total Pending</span>
                         </div>
-                        <p className="text-2xl font-bold text-[#1F618D]">{items.length}</p>
-                        <p className="text-xs text-[#2980B9] mt-1">Across all categories</p>
+                        <p className="text-2xl font-bold text-[#6d99cf]">{items.length}</p>
+                        <p className="text-xs text-[#6d99cf] mt-1">Across all categories</p>
                     </div>
                 </div>
             )}
@@ -222,13 +222,13 @@ const PendingInward = () => {
                         value={search}
                         onChange={e => { setSearch(e.target.value); setPage(1); }}
                         placeholder="Search by item, vendor, order..."
-                        className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                        className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                     />
                 </div>
                 <select
                     value={categoryFilter}
                     onChange={e => { setCategoryFilter(e.target.value); setPage(1); }}
-                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                 >
                     <option value="">All Categories</option>
                     <option value="LENS">Lens</option>
@@ -250,15 +250,15 @@ const PendingInward = () => {
                 <div className="overflow-x-auto flex-1">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-[#eaf4fb]/50 border-b border-[#2980B9]/15">
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Item</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Vendor</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Order #</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Category</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Qty Pending</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Price</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Type</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider text-right">Actions</th>
+                            <tr className="bg-[#eaf4fb]/50 border-b border-[#6d99cf]/15">
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Item</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Vendor</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Order #</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Category</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Qty Pending</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Price</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Type</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -266,7 +266,7 @@ const PendingInward = () => {
                                 <tr>
                                     <td colSpan="8" className="p-8 text-center text-gray-500">
                                         <div className="flex justify-center items-center gap-2">
-                                            <Icon icon="lucide:loader-2" className="animate-spin text-xl text-[#2980B9]" />
+                                            <Icon icon="lucide:loader-2" className="animate-spin text-xl text-[#6d99cf]" />
                                             <span>Loading pending items...</span>
                                         </div>
                                     </td>
@@ -290,7 +290,7 @@ const PendingInward = () => {
                                             <td className="px-4 py-2">
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-6 h-6 rounded-full bg-[#eaf4fb] flex items-center justify-center shrink-0">
-                                                        <Icon icon={catIcon} className="text-[#2980B9] text-xs" />
+                                                        <Icon icon={catIcon} className="text-[#6d99cf] text-xs" />
                                                     </div>
                                                     <div>
                                                         <p className="text-xs font-semibold text-gray-800">{item.itemName}</p>
@@ -305,13 +305,13 @@ const PendingInward = () => {
                                                 <span className="font-mono text-[10px] text-gray-500">{item.orderNumber}</span>
                                             </td>
                                             <td className="px-4 py-2">
-                                                <span className="text-[10px] px-2 py-0.5 bg-[#eaf4fb] text-[#1F618D] rounded-full font-medium">
+                                                <span className="text-[10px] px-2 py-0.5 bg-[#eaf4fb] text-[#6d99cf] rounded-full font-medium">
                                                     {item.category?.replace('_', ' ')}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-2">
                                                 <div className="flex items-center gap-1.5">
-                                                    <span className="text-xs font-bold text-[#1F618D]">{remaining}</span>
+                                                    <span className="text-xs font-bold text-[#6d99cf]">{remaining}</span>
                                                     <span className="text-[10px] text-gray-400">/ {item.qty ?? 0} {item.unit}</span>
                                                 </div>
                                                 {item.receivedQty > 0 && (
@@ -323,16 +323,15 @@ const PendingInward = () => {
                                                 <p className="text-[10px] text-gray-400">MRP ₹{item.mrp?.toLocaleString('en-IN') ?? '—'}</p>
                                             </td>
                                             <td className="px-4 py-2">
-                                                <span className={`inline-flex px-2 py-0.5 text-[10px] font-semibold rounded-full ${
-                                                    item.orderType === 'RX' ? 'bg-[#eaf4fb] text-[#1F618D]' : 'bg-gray-100 text-gray-600'
-                                                }`}>
+                                                <span className={`inline-flex px-2 py-0.5 text-[10px] font-semibold rounded-full ${item.orderType === 'RX' ? 'bg-[#eaf4fb] text-[#6d99cf]' : 'bg-gray-100 text-gray-600'
+                                                    }`}>
                                                     {item.orderType}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-2 text-right">
                                                 <button
                                                     onClick={() => handleOpenInward(item)}
-                                                    className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold text-[#1F618D] bg-[#eaf4fb] hover:bg-[#1F618D] hover:text-white border border-[#2980B9]/20 rounded-lg transition-colors"
+                                                    className="inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold text-[#6d99cf] bg-[#eaf4fb] hover:bg-[#6d99cf] hover:text-white border border-[#6d99cf]/20 rounded-lg transition-colors"
                                                 >
                                                     <Icon icon="lucide:package-check" className="text-xs" />
                                                     Inward
@@ -376,7 +375,7 @@ const PendingInward = () => {
                     <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-auto flex flex-col max-h-[92vh] overflow-hidden">
 
                         {/* Header */}
-                        <div className="flex-shrink-0 px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-[#1F618D] to-[#2980B9] flex items-center justify-between">
+                        <div className="flex-shrink-0 px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-[#6d99cf] to-[#6d99cf] flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
                                     <Icon icon="lucide:package-check" className="text-white text-lg" />
@@ -395,16 +394,16 @@ const PendingInward = () => {
                         <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-4">
 
                             {/* Item summary banner */}
-                            <div className="bg-[#eaf4fb] border border-[#2980B9]/20 rounded-xl p-3 flex items-start gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-[#1F618D] flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <div className="bg-[#eaf4fb] border border-[#6d99cf]/20 rounded-xl p-3 flex items-start gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-[#6d99cf] flex items-center justify-center flex-shrink-0 mt-0.5">
                                     <Icon icon={categoryIcon[selectedItem.category] || 'lucide:box'} className="text-white text-sm" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-bold text-[#1F618D] truncate">{selectedItem.itemName}</p>
+                                    <p className="text-xs font-bold text-[#6d99cf] truncate">{selectedItem.itemName}</p>
                                     <p className="text-[11px] text-gray-500 mt-0.5">
                                         Ordered: <strong className="text-gray-700">{selectedItem.qty} {selectedItem.unit}</strong>
                                         <span className="mx-1.5 text-gray-300">·</span>
-                                        Remaining: <strong className="text-[#1F618D]">{selectedItem.qty - (selectedItem.receivedQty || 0)}</strong>
+                                        Remaining: <strong className="text-[#6d99cf]">{selectedItem.qty - (selectedItem.receivedQty || 0)}</strong>
                                     </p>
                                     <p className="text-[11px] text-gray-400 mt-0.5">{selectedItem.category?.replace('_', ' ')} · {selectedItem.brand || '—'}</p>
                                 </div>
@@ -420,7 +419,7 @@ const PendingInward = () => {
                                         max={selectedItem.qty - (selectedItem.receivedQty || 0)}
                                         value={receivedQty}
                                         onChange={e => setReceivedQty(e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm font-bold text-[#1F618D] focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm font-bold text-[#6d99cf] focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                     />
                                 </div>
                                 <div>
@@ -428,7 +427,7 @@ const PendingInward = () => {
                                     <select
                                         value={condition}
                                         onChange={e => setCondition(e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] bg-white"
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] bg-white"
                                     >
                                         <option value="GOOD">Good</option>
                                         <option value="PARTIAL">Partial</option>
@@ -445,13 +444,13 @@ const PendingInward = () => {
                                     value={vendorRefId}
                                     onChange={e => setVendorRefId(e.target.value)}
                                     placeholder="Enter reference ID"
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                 />
                             </div>
 
                             {/* Receipt Details */}
-                            <div className="bg-[#eaf4fb]/40 border border-[#2980B9]/15 rounded-xl p-4 space-y-3">
-                                <p className="text-[11px] font-bold text-[#1F618D] uppercase tracking-wider flex items-center gap-1.5">
+                            <div className="bg-[#eaf4fb]/40 border border-[#6d99cf]/15 rounded-xl p-4 space-y-3">
+                                <p className="text-[11px] font-bold text-[#6d99cf] uppercase tracking-wider flex items-center gap-1.5">
                                     <Icon icon="lucide:clipboard-list" className="text-sm" />
                                     Receipt Details
                                 </p>
@@ -462,7 +461,7 @@ const PendingInward = () => {
                                         value={receivedBy}
                                         onChange={e => setReceivedBy(e.target.value)}
                                         placeholder="Name of person who received the goods"
-                                        className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                        className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
@@ -473,7 +472,7 @@ const PendingInward = () => {
                                             value={receivedOn}
                                             max={new Date().toISOString().split('T')[0]}
                                             onChange={e => setReceivedOn(e.target.value)}
-                                            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                         />
                                     </div>
                                     <div>
@@ -483,20 +482,20 @@ const PendingInward = () => {
                                             value={receivedFrom}
                                             onChange={e => setReceivedFrom(e.target.value)}
                                             placeholder="Courier / delivery rep"
-                                            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                                         />
                                     </div>
                                 </div>
                             </div>
 
                             {/* Invoice Upload */}
-                            <div className="bg-[#eaf4fb]/40 border border-[#2980B9]/20 rounded-xl p-4 space-y-2">
+                            <div className="bg-[#eaf4fb]/40 border border-[#6d99cf]/20 rounded-xl p-4 space-y-2">
                                 <div className="flex items-center justify-between">
                                     <label className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
-                                        <Icon icon="lucide:paperclip" className="text-[#1F618D]" />
+                                        <Icon icon="lucide:paperclip" className="text-[#6d99cf]" />
                                         Invoices / Challans / Bills <span className="text-gray-400 font-normal">(Optional, max 5)</span>
                                     </label>
-                                    <label className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white hover:bg-gray-50 border border-[#2980B9]/30 text-[#1F618D] text-[11px] font-semibold rounded-lg cursor-pointer transition shadow-sm">
+                                    <label className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white hover:bg-gray-50 border border-[#6d99cf]/30 text-[#6d99cf] text-[11px] font-semibold rounded-lg cursor-pointer transition shadow-sm">
                                         <Icon icon="lucide:upload" className="text-xs" />
                                         Attach Files
                                         <input
@@ -516,7 +515,7 @@ const PendingInward = () => {
                                     <div className="flex flex-wrap gap-1.5 pt-1">
                                         {invoiceFiles.map((f, fi) => (
                                             <span key={fi} className="inline-flex items-center gap-1 px-2 py-0.5 bg-white border border-blue-200 text-blue-800 text-[11px] font-medium rounded-lg">
-                                                <Icon icon="lucide:file-text" className="text-[#1F618D] text-xs" />
+                                                <Icon icon="lucide:file-text" className="text-[#6d99cf] text-xs" />
                                                 <span className="truncate max-w-[120px]">{f.name}</span>
                                                 <button type="button" onClick={() => setInvoiceFiles(prev => prev.filter((_, idx) => idx !== fi))}
                                                     className="text-blue-400 hover:text-red-500 ml-0.5 font-bold leading-none">×</button>
@@ -534,7 +533,7 @@ const PendingInward = () => {
                                     value={remarks}
                                     onChange={e => setRemarks(e.target.value)}
                                     placeholder="Any notes about condition or delivery..."
-                                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] resize-none"
+                                    className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] resize-none"
                                 />
                             </div>
                         </div>
@@ -548,7 +547,7 @@ const PendingInward = () => {
                             <button
                                 onClick={handleSubmitInward}
                                 disabled={submittingInward}
-                                className="px-5 py-2 text-xs font-bold text-white bg-[#1F618D] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 shadow-sm"
+                                className="px-5 py-2 text-xs font-bold text-white bg-[#6d99cf] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 shadow-sm"
                             >
                                 {submittingInward ? <Icon icon="lucide:loader-2" className="animate-spin text-sm" /> : <Icon icon="lucide:check" className="text-sm" />}
                                 Submit Inward

@@ -91,7 +91,7 @@ const FileUploadBox = ({ label, required, value, onChange, section, fieldName })
                                 href={value}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-[11px] text-[#2980B9] font-medium hover:underline inline-flex items-center gap-1 mt-0.5"
+                                className="text-[11px] text-[#6d99cf] font-medium hover:underline inline-flex items-center gap-1 mt-0.5"
                             >
                                 <span>View File</span>
                                 <Icon icon="lucide:external-link" className="text-[10px]" />
@@ -108,7 +108,7 @@ const FileUploadBox = ({ label, required, value, onChange, section, fieldName })
                     </button>
                 </div>
             ) : (
-                <label className="relative flex flex-col items-center justify-center p-3.5 border border-dashed border-gray-300 hover:border-[#2980B9] rounded-xl cursor-pointer bg-gray-50/50 hover:bg-gray-50 transition-all text-center group">
+                <label className="relative flex flex-col items-center justify-center p-3.5 border border-dashed border-gray-300 hover:border-[#6d99cf] rounded-xl cursor-pointer bg-gray-50/50 hover:bg-gray-50 transition-all text-center group">
                     <input
                         type="file"
                         accept="image/*,.pdf"
@@ -117,17 +117,17 @@ const FileUploadBox = ({ label, required, value, onChange, section, fieldName })
                         className="hidden"
                     />
                     {uploading ? (
-                        <div className="flex items-center gap-2 text-xs font-semibold text-[#2980B9]">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-[#6d99cf]">
                             <Icon icon="lucide:loader-2" className="animate-spin text-base" />
                             <span>Uploading file...</span>
                         </div>
                     ) : (
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-[#2980B9]/10 flex items-center justify-center text-gray-400 group-hover:text-[#2980B9] transition-colors">
+                            <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-[#6d99cf]/10 flex items-center justify-center text-gray-400 group-hover:text-[#6d99cf] transition-colors">
                                 <Icon icon="lucide:upload-cloud" className="text-base" />
                             </div>
                             <div className="text-left">
-                                <div className="text-xs font-semibold text-gray-700 group-hover:text-[#2980B9]">Click to upload</div>
+                                <div className="text-xs font-semibold text-gray-700 group-hover:text-[#6d99cf]">Click to upload</div>
                                 <div className="text-[10px] text-gray-400 font-medium">PNG, JPG, PDF up to 5MB</div>
                             </div>
                         </div>
@@ -352,7 +352,7 @@ export default function TenantDetails() {
             };
             const res = await updateTenant(id, payload);
             if (res.success) {
-                toast.success('Wholesaler tenant details updated successfully!');
+                toast.success('Manufacturer tenant details updated successfully!');
                 navigate(PATHS.TENANTS.LIST);
             }
         } catch (error) {
@@ -367,8 +367,8 @@ export default function TenantDetails() {
         return (
             <div className="flex justify-center items-center h-[500px]">
                 <div className="flex flex-col items-center gap-3">
-                    <Icon icon="lucide:loader-2" className="animate-spin text-4xl text-[#2980B9]" />
-                    <p className="text-sm font-semibold text-gray-500">Loading wholesaler profile...</p>
+                    <Icon icon="lucide:loader-2" className="animate-spin text-4xl text-[#6d99cf]" />
+                    <p className="text-sm font-semibold text-gray-500">Loading manufacturer profile...</p>
                 </div>
             </div>
         );
@@ -378,8 +378,8 @@ export default function TenantDetails() {
         return (
             <div className="p-12 text-center text-gray-500">
                 <Icon icon="lucide:alert-circle" className="text-4xl text-gray-400 mx-auto mb-3" />
-                <p>Wholesaler tenant record not found.</p>
-                <button onClick={() => navigate(-1)} className="mt-4 text-[#2980B9] font-bold hover:underline">Go Back</button>
+                <p>Manufacturer tenant record not found.</p>
+                <button onClick={() => navigate(-1)} className="mt-4 text-[#6d99cf] font-bold hover:underline">Go Back</button>
             </div>
         );
     }
@@ -389,7 +389,7 @@ export default function TenantDetails() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-[#2980B9] shadow-inner">
+                    <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-[#6d99cf] shadow-inner">
                         <Icon icon="lucide:building" className="text-2xl" />
                     </div>
                     <div>
@@ -399,7 +399,7 @@ export default function TenantDetails() {
                                 {tenant.tenantId}
                             </span>
                         </div>
-                        <p className="text-xs text-gray-500 font-medium mt-0.5">Wholesaler Tenant Settings & Plan Configuration</p>
+                        <p className="text-xs text-gray-500 font-medium mt-0.5">Manufacturer Tenant Settings & Plan Configuration</p>
                     </div>
                 </div>
                 <button
@@ -414,7 +414,7 @@ export default function TenantDetails() {
                 {/* Store Information */}
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
                     <h2 className="text-sm font-black uppercase tracking-wider text-gray-700 flex items-center gap-2 border-b pb-3 border-gray-100">
-                        <Icon icon="lucide:store" className="text-[#2980B9] text-lg" />
+                        <Icon icon="lucide:store" className="text-[#6d99cf] text-lg" />
                         Store Information
                     </h2>
 
@@ -426,7 +426,7 @@ export default function TenantDetails() {
                                 required
                                 value={formData.storeInformation.storeName}
                                 onChange={(e) => handleNestedChange('storeInformation', 'storeName', e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                             />
                         </div>
                         <div className="md:col-span-2">
@@ -436,7 +436,7 @@ export default function TenantDetails() {
                                 required
                                 value={formData.storeInformation.address}
                                 onChange={(e) => handleNestedChange('storeInformation', 'address', e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                             />
                         </div>
                         <div>
@@ -445,7 +445,7 @@ export default function TenantDetails() {
                                 type="text"
                                 value={formData.storeInformation.storeTiming}
                                 onChange={(e) => handleNestedChange('storeInformation', 'storeTiming', e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                             />
                         </div>
 
@@ -455,7 +455,7 @@ export default function TenantDetails() {
                                 type="date"
                                 value={formData.storeInformation.expiryDate}
                                 onChange={(e) => handleNestedChange('storeInformation', 'expiryDate', e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                             />
                         </div>
                         <div>
@@ -465,7 +465,7 @@ export default function TenantDetails() {
                                 placeholder="resend_api_key_xxx"
                                 value={formData.storeInformation.emailApi}
                                 onChange={(e) => handleNestedChange('storeInformation', 'emailApi', e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                             />
                         </div>
                         <div className="md:col-span-2">
@@ -481,7 +481,7 @@ export default function TenantDetails() {
 
                     <div className="pt-3 border-t border-gray-100 space-y-3">
                         <div className="flex flex-wrap items-center gap-6">
-                            {/* TODO: Show Ads, Has GST, Has AI — hidden to match Register Wholesaler page */}
+                            {/* TODO: Show Ads, Has GST, Has AI — hidden to match Register Manufacturer page */}
                             {false && (
                                 <>
                                     <label className="flex items-center gap-2 cursor-pointer">
@@ -489,7 +489,7 @@ export default function TenantDetails() {
                                             type="checkbox"
                                             checked={formData.storeInformation.hasGST}
                                             onChange={(e) => handleNestedChange('storeInformation', 'hasGST', e.target.checked)}
-                                            className="w-4 h-4 rounded text-[#2980B9] focus:ring-[#2980B9]"
+                                            className="w-4 h-4 rounded text-[#6d99cf] focus:ring-[#6d99cf]"
                                         />
                                         <span className="text-xs font-bold text-gray-700">GST Invoice Enabled</span>
                                     </label>
@@ -498,7 +498,7 @@ export default function TenantDetails() {
                                             type="checkbox"
                                             checked={formData.storeInformation.showAds}
                                             onChange={(e) => handleNestedChange('storeInformation', 'showAds', e.target.checked)}
-                                            className="w-4 h-4 rounded text-[#2980B9] focus:ring-[#2980B9]"
+                                            className="w-4 h-4 rounded text-[#6d99cf] focus:ring-[#6d99cf]"
                                         />
                                         <span className="text-xs font-bold text-gray-700">Show Ads / Banner</span>
                                     </label>
@@ -507,7 +507,7 @@ export default function TenantDetails() {
                                             type="checkbox"
                                             checked={formData.storeInformation.hasAI}
                                             onChange={(e) => handleNestedChange('storeInformation', 'hasAI', e.target.checked)}
-                                            className="w-4 h-4 rounded text-[#2980B9] focus:ring-[#2980B9]"
+                                            className="w-4 h-4 rounded text-[#6d99cf] focus:ring-[#6d99cf]"
                                         />
                                         <span className="text-xs font-bold text-gray-700">AI Features Enabled</span>
                                     </label>
@@ -542,10 +542,10 @@ export default function TenantDetails() {
                                     type="datetime-local"
                                     value={formData.featureFlags?.demoExpiry ? new Date(new Date(formData.featureFlags.demoExpiry).getTime() - new Date(formData.featureFlags.demoExpiry).getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
                                     onChange={(e) => handleDemoExpiryChange(e.target.value ? new Date(e.target.value).toISOString() : '')}
-                                    className="w-full sm:w-auto px-3.5 py-2 bg-white border border-amber-300 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#2980B9]"
+                                    className="w-full sm:w-auto px-3.5 py-2 bg-white border border-amber-300 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#6d99cf]"
                                 />
                                 <p className="text-[10px] text-amber-700 font-medium">
-                                    * Once this expiry timestamp passes, users logging into this wholesaler account will be automatically blocked.
+                                    * Once this expiry timestamp passes, users logging into this manufacturer account will be automatically blocked.
                                 </p>
                             </div>
                         ) : null}
@@ -555,7 +555,7 @@ export default function TenantDetails() {
                 {/* Owner Information */}
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
                     <h2 className="text-sm font-black uppercase tracking-wider text-gray-700 flex items-center gap-2 border-b pb-3 border-gray-100">
-                        <Icon icon="lucide:user" className="text-[#2980B9] text-lg" />
+                        <Icon icon="lucide:user" className="text-[#6d99cf] text-lg" />
                         Owner Contact Info
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -566,7 +566,7 @@ export default function TenantDetails() {
                                 required
                                 value={formData.owner.ownerName}
                                 onChange={(e) => handleNestedChange('owner', 'ownerName', e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                             />
                         </div>
                         <div>
@@ -576,7 +576,7 @@ export default function TenantDetails() {
                                 required
                                 value={formData.owner.email}
                                 onChange={(e) => handleNestedChange('owner', 'email', e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                             />
                         </div>
                         <div>
@@ -586,17 +586,17 @@ export default function TenantDetails() {
                                 required
                                 value={formData.owner.mobile}
                                 onChange={(e) => handleNestedChange('owner', 'mobile', e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                             />
                         </div>
                     </div>
                 </div>
 
-                {/* TODO: Loyalty & Referral Program Rules — hidden to match Register Wholesaler page */}
+                {/* TODO: Loyalty & Referral Program Rules — hidden to match Register Manufacturer page */}
                 {false && (
                     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
                         <h2 className="text-sm font-black uppercase tracking-wider text-gray-700 flex items-center gap-2 border-b pb-3 border-gray-100">
-                            <Icon icon="lucide:gift" className="text-[#2980B9] text-lg" />
+                            <Icon icon="lucide:gift" className="text-[#6d99cf] text-lg" />
                             Loyalty &amp; Referral Rules
                         </h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -606,7 +606,7 @@ export default function TenantDetails() {
                                     type="number"
                                     value={formData.loyalty.rsPerPoint}
                                     onChange={(e) => handleNestedChange('loyalty', 'rsPerPoint', Number(e.target.value))}
-                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                                 />
                             </div>
                             <div>
@@ -615,7 +615,7 @@ export default function TenantDetails() {
                                     type="number"
                                     value={formData.loyalty.pointValue}
                                     onChange={(e) => handleNestedChange('loyalty', 'pointValue', Number(e.target.value))}
-                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                                 />
                             </div>
                             <div>
@@ -624,7 +624,7 @@ export default function TenantDetails() {
                                     type="number"
                                     value={formData.loyalty.referPoints}
                                     onChange={(e) => handleNestedChange('loyalty', 'referPoints', Number(e.target.value))}
-                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                                 />
                             </div>
                         </div>
@@ -634,7 +634,7 @@ export default function TenantDetails() {
                 {/* KYC & Documents */}
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
                     <h2 className="text-sm font-black uppercase tracking-wider text-gray-700 flex items-center gap-2 border-b pb-3 border-gray-100">
-                        <Icon icon="lucide:file-check" className="text-[#2980B9] text-lg" />
+                        <Icon icon="lucide:file-check" className="text-[#6d99cf] text-lg" />
                         KYC &amp; Registration Documents
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -665,7 +665,7 @@ export default function TenantDetails() {
                 {/* Subscription & Plan Configuration */}
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
                     <h2 className="text-sm font-black uppercase tracking-wider text-gray-700 flex items-center gap-2 border-b pb-3 border-gray-100">
-                        <Icon icon="lucide:layers" className="text-[#2980B9] text-lg" />
+                        <Icon icon="lucide:layers" className="text-[#6d99cf] text-lg" />
                         Subscription Plan &amp; Page Permissions
                     </h2>
 
@@ -677,11 +677,10 @@ export default function TenantDetails() {
                                     key={plan}
                                     type="button"
                                     onClick={() => handlePlanSelect(plan)}
-                                    className={`px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all border ${
-                                        isSelected
-                                            ? 'bg-[#2980B9] text-white border-[#2980B9] shadow-md'
+                                    className={`px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all border ${isSelected
+                                            ? 'bg-[#6d99cf] text-white border-[#6d99cf] shadow-md'
                                             : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
-                                    }`}
+                                        }`}
                                 >
                                     {plan === 'PRO' && 'PRO Plan (All Standard Pages)'}
                                     {plan === 'PREMIUM' && 'PREMIUM Plan (Core Pages)'}
@@ -707,7 +706,7 @@ export default function TenantDetails() {
                                             }
                                         }));
                                     }}
-                                    className="text-xs font-bold text-[#2980B9] hover:underline"
+                                    className="text-xs font-bold text-[#6d99cf] hover:underline"
                                 >
                                     {formData.subscription.selectedPages?.length === ALL_PAGES_LIST.length ? 'Deselect All' : 'Select All'}
                                 </button>
@@ -722,7 +721,7 @@ export default function TenantDetails() {
                                                 type="checkbox"
                                                 checked={checked}
                                                 onChange={() => togglePageCustom(page.key)}
-                                                className="w-4 h-4 rounded text-[#2980B9] focus:ring-[#2980B9]"
+                                                className="w-4 h-4 rounded text-[#6d99cf] focus:ring-[#6d99cf]"
                                             />
                                             <span className="text-xs font-semibold text-gray-700">{page.key}</span>
                                         </label>
@@ -736,7 +735,7 @@ export default function TenantDetails() {
                 {/* WhatsApp Integration Setup */}
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
                     <h2 className="text-sm font-black uppercase tracking-wider text-gray-700 flex items-center gap-2 border-b pb-3 border-gray-100">
-                        <Icon icon="lucide:message-square" className="text-[#2980B9] text-lg" />
+                        <Icon icon="lucide:message-square" className="text-[#6d99cf] text-lg" />
                         WhatsApp Integration Setup
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -745,7 +744,7 @@ export default function TenantDetails() {
                             <select
                                 value={formData.whatsappConfig.utilityProvider}
                                 onChange={(e) => handleNestedChange('whatsappConfig', 'utilityProvider', e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                             >
                                 <option value="META">Meta Official API</option>
                                 <option value="TWILIO">Twilio API</option>
@@ -757,7 +756,7 @@ export default function TenantDetails() {
                             <select
                                 value={formData.whatsappConfig.promotionProvider}
                                 onChange={(e) => handleNestedChange('whatsappConfig', 'promotionProvider', e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                             >
                                 <option value="META">Meta Official API</option>
                                 <option value="TWILIO">Twilio API</option>
@@ -767,19 +766,18 @@ export default function TenantDetails() {
                     </div>
                 </div>
 
-                                {/* Demo Mode & Watermark Access */}
+                {/* Demo Mode & Watermark Access */}
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
                     <div className="flex items-center justify-between border-b pb-3 border-gray-100">
                         <h2 className="text-sm font-black uppercase tracking-wider text-gray-700 flex items-center gap-2">
-                            <Icon icon="lucide:shield-lock" className="text-[#2980B9] text-lg" />
+                            <Icon icon="lucide:shield-lock" className="text-[#6d99cf] text-lg" />
                             Demo Mode & Watermark Access
                         </h2>
                         {Boolean(formData.demoMode || formData.featureFlags?.demoMode) && (
-                            <span className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border ${
-                                formData.featureFlags?.demoExpiry && new Date() > new Date(formData.featureFlags.demoExpiry)
+                            <span className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border ${formData.featureFlags?.demoExpiry && new Date() > new Date(formData.featureFlags.demoExpiry)
                                     ? 'bg-red-50 text-red-700 border-red-200'
                                     : 'bg-amber-50 text-amber-700 border-amber-200'
-                            }`}>
+                                }`}>
                                 {formData.featureFlags?.demoExpiry && new Date() > new Date(formData.featureFlags.demoExpiry) ? 'DEMO EXPIRED' : 'DEMO ACTIVE'}
                             </span>
                         )}
@@ -791,11 +789,11 @@ export default function TenantDetails() {
                                 type="checkbox"
                                 checked={Boolean(formData.demoMode || formData.featureFlags?.demoMode)}
                                 onChange={(e) => handleDemoModeToggle(e.target.checked)}
-                                className="mt-0.5 w-4 h-4 rounded text-[#2980B9] focus:ring-[#2980B9]"
+                                className="mt-0.5 w-4 h-4 rounded text-[#6d99cf] focus:ring-[#6d99cf]"
                             />
                             <div>
                                 <span className="text-xs font-bold text-gray-800 uppercase tracking-wider block">Enable Demo Mode & Security Watermark</span>
-                                <span className="text-xs text-gray-500 font-medium">When checked, users of this wholesaler will see the confidential demo watermark & popup upon login.</span>
+                                <span className="text-xs text-gray-500 font-medium">When checked, users of this manufacturer will see the confidential demo watermark & popup upon login.</span>
                             </div>
                         </label>
 
@@ -808,9 +806,9 @@ export default function TenantDetails() {
                                     type="datetime-local"
                                     value={formData.featureFlags?.demoExpiry ? new Date(new Date(formData.featureFlags.demoExpiry).getTime() - new Date(formData.featureFlags.demoExpiry).getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ''}
                                     onChange={(e) => handleDemoExpiryChange(e.target.value ? new Date(e.target.value).toISOString() : '')}
-                                    className="px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                    className="px-3 py-2 bg-white border border-gray-300 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                                 />
-                                <p className="text-[10px] text-gray-500 font-medium">Logins for this wholesaler will be blocked automatically after this timestamp.</p>
+                                <p className="text-[10px] text-gray-500 font-medium">Logins for this manufacturer will be blocked automatically after this timestamp.</p>
                             </div>
                         )}
                     </div>
@@ -828,10 +826,10 @@ export default function TenantDetails() {
                     <button
                         type="submit"
                         disabled={submitting}
-                        className="flex items-center gap-2 px-8 py-3 text-xs font-black uppercase tracking-wider text-white bg-[#2980B9] hover:bg-[#2471A3] active:scale-95 disabled:opacity-50 rounded-xl shadow-md transition-all"
+                        className="flex items-center gap-2 px-8 py-3 text-xs font-black uppercase tracking-wider text-white bg-[#6d99cf] hover:bg-[#2471A3] active:scale-95 disabled:opacity-50 rounded-xl shadow-md transition-all"
                     >
                         {submitting ? <Icon icon="lucide:loader-2" className="animate-spin text-base" /> : <Icon icon="lucide:save" className="text-base" />}
-                        <span>{submitting ? 'Saving...' : 'Save Wholesaler Changes'}</span>
+                        <span>{submitting ? 'Saving...' : 'Save Manufacturer Changes'}</span>
                     </button>
                 </div>
             </form>

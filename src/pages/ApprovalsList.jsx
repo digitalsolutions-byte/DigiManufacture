@@ -71,7 +71,7 @@ const ApprovalsList = () => {
                     <h1 className="text-lg sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
                         <Icon
                             icon={isSalesStage ? "mdi:account-tie" : "mdi:finance"}
-                            className={isSalesStage ? "text-[#2980B9]" : "text-emerald-600"}
+                            className={isSalesStage ? "text-[#6d99cf]" : "text-emerald-600"}
                         />
                         {isSalesStage ? 'Sales Head Pending Approvals' : 'Finance Pending Approvals'}
                     </h1>
@@ -79,7 +79,7 @@ const ApprovalsList = () => {
                         {isSalesStage
                             ? 'Review and verify sales registration requests'
                             : 'Review and set credit limits & approvals'}
-                        <span className={`ml-2 font-bold ${isSalesStage ? 'text-[#1F618D]' : 'text-emerald-700'}`}>
+                        <span className={`ml-2 font-bold ${isSalesStage ? 'text-[#6d99cf]' : 'text-emerald-700'}`}>
                             ({pagination.totalRecords || approvals.length} pending)
                         </span>
                     </p>
@@ -87,7 +87,7 @@ const ApprovalsList = () => {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => fetchApprovals(activeStage, pagination.currentPage)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-bold text-[#2980B9] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 text-xs font-bold text-[#6d99cf] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
                     >
                         <Icon icon="mdi:refresh" className={loading ? 'animate-spin' : ''} />
                         Refresh
@@ -100,22 +100,20 @@ const ApprovalsList = () => {
                 <div className="flex items-center gap-1.5 p-1 bg-gray-100/80 rounded-2xl w-full sm:w-fit border border-gray-200/60 overflow-x-auto">
                     <button
                         onClick={() => handleStageTabChange('salesHead')}
-                        className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${
-                            activeStage === 'salesHead'
-                                ? 'bg-white text-[#1F618D] shadow-sm border border-gray-200/60'
-                                : 'text-gray-500 hover:text-gray-800'
-                        }`}
+                        className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${activeStage === 'salesHead'
+                            ? 'bg-white text-[#6d99cf] shadow-sm border border-gray-200/60'
+                            : 'text-gray-500 hover:text-gray-800'
+                            }`}
                     >
                         <Icon icon="mdi:account-tie" className="text-sm sm:text-base" />
                         Sales Head Stage
                     </button>
                     <button
                         onClick={() => handleStageTabChange('finance')}
-                        className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${
-                            activeStage === 'finance'
-                                ? 'bg-white text-emerald-700 shadow-sm border border-gray-200/60'
-                                : 'text-gray-500 hover:text-gray-800'
-                        }`}
+                        className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${activeStage === 'finance'
+                            ? 'bg-white text-emerald-700 shadow-sm border border-gray-200/60'
+                            : 'text-gray-500 hover:text-gray-800'
+                            }`}
                     >
                         <Icon icon="mdi:finance" className="text-sm sm:text-base" />
                         Finance Stage
@@ -147,7 +145,7 @@ const ApprovalsList = () => {
                             >
                                 <div className="flex items-center justify-between gap-2">
                                     <div className="flex items-center gap-2.5 min-w-0">
-                                        <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${isSalesStage ? 'from-amber-400 to-[#1F618D]' : 'from-emerald-400 to-teal-700'} flex items-center justify-center text-white font-bold text-xs flex-shrink-0`}>
+                                        <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${isSalesStage ? 'from-amber-400 to-[#6d99cf]' : 'from-emerald-400 to-teal-700'} flex items-center justify-center text-white font-bold text-xs flex-shrink-0`}>
                                             {approval.shopName?.charAt(0).toUpperCase()}
                                         </div>
                                         <div className="min-w-0">
@@ -155,11 +153,10 @@ const ApprovalsList = () => {
                                             <p className="text-gray-400 text-[10px] uppercase truncate">{approval.ownerName || approval.proprietorName}</p>
                                         </div>
                                     </div>
-                                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase flex-shrink-0 ${
-                                        isSalesStage
-                                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                                            : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                                    }`}>
+                                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase flex-shrink-0 ${isSalesStage
+                                        ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                                        : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                        }`}>
                                         {isSalesStage ? 'Sales Review' : 'Finance Review'}
                                     </span>
                                 </div>
@@ -188,13 +185,13 @@ const ApprovalsList = () => {
                 <div className="hidden md:block overflow-x-auto flex-1">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className={`${isSalesStage ? 'bg-[#eaf4fb]/50 border-[#2980B9]/15' : 'bg-emerald-50/40 border-emerald-200/40'} border-b`}>
-                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#1F618D]' : 'text-emerald-800'} uppercase tracking-wider`}>Shop Info</th>
-                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#1F618D]' : 'text-emerald-800'} uppercase tracking-wider`}>Customer Type</th>
-                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#1F618D]' : 'text-emerald-800'} uppercase tracking-wider`}>Approval Stage</th>
-                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#1F618D]' : 'text-emerald-800'} uppercase tracking-wider`}>Created By</th>
-                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#1F618D]' : 'text-emerald-800'} uppercase tracking-wider`}>Submission Date</th>
-                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#1F618D]' : 'text-emerald-800'} uppercase tracking-wider text-right`}>Action</th>
+                            <tr className={`${isSalesStage ? 'bg-[#eaf4fb]/50 border-[#6d99cf]/15' : 'bg-emerald-50/40 border-emerald-200/40'} border-b`}>
+                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#6d99cf]' : 'text-emerald-800'} uppercase tracking-wider`}>Shop Info</th>
+                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#6d99cf]' : 'text-emerald-800'} uppercase tracking-wider`}>Customer Type</th>
+                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#6d99cf]' : 'text-emerald-800'} uppercase tracking-wider`}>Approval Stage</th>
+                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#6d99cf]' : 'text-emerald-800'} uppercase tracking-wider`}>Created By</th>
+                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#6d99cf]' : 'text-emerald-800'} uppercase tracking-wider`}>Submission Date</th>
+                                <th className={`py-3 px-4 text-xs font-bold ${isSalesStage ? 'text-[#6d99cf]' : 'text-emerald-800'} uppercase tracking-wider text-right`}>Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -228,7 +225,7 @@ const ApprovalsList = () => {
                                     >
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-2">
-                                                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${isSalesStage ? 'from-amber-400 to-[#1F618D]' : 'from-emerald-400 to-teal-700'} flex items-center justify-center text-white font-bold text-xs shadow-sm`}>
+                                                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${isSalesStage ? 'from-amber-400 to-[#6d99cf]' : 'from-emerald-400 to-teal-700'} flex items-center justify-center text-white font-bold text-xs shadow-sm`}>
                                                     {approval.shopName?.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>
@@ -248,11 +245,10 @@ const ApprovalsList = () => {
                                             </span>
                                         </td>
                                         <td className="px-4 py-3">
-                                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                                                isSalesStage
-                                                    ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                                                    : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                                            }`}>
+                                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${isSalesStage
+                                                ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                                                : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                                }`}>
                                                 {isSalesStage ? 'Sales Head Review' : 'Finance Review'}
                                             </span>
                                         </td>
@@ -269,11 +265,10 @@ const ApprovalsList = () => {
                                             </span>
                                         </td>
                                         <td className="px-4 py-3 text-right">
-                                            <button className={`px-3 py-1.5 text-xs font-bold text-white rounded-lg transition-all flex items-center gap-1.5 ml-auto ${
-                                                isSalesStage
-                                                    ? 'bg-[#1F618D] hover:bg-[#174e71]'
-                                                    : 'bg-emerald-600 hover:bg-emerald-700'
-                                            }`}>
+                                            <button className={`px-3 py-1.5 text-xs font-bold text-white rounded-lg transition-all flex items-center gap-1.5 ml-auto ${isSalesStage
+                                                ? 'bg-[#6d99cf] hover:bg-[#174e71]'
+                                                : 'bg-emerald-600 hover:bg-emerald-700'
+                                                }`}>
                                                 <Icon icon="mdi:shield-check" className="text-sm" />
                                                 {isSalesStage ? 'Review (Sales Head)' : 'Review (Finance)'}
                                             </button>
@@ -302,9 +297,8 @@ const ApprovalsList = () => {
                             <button
                                 onClick={(e) => { e.stopPropagation(); fetchApprovals(activeStage, pagination.currentPage + 1); }}
                                 disabled={pagination.currentPage >= pagination.totalPages}
-                                className={`p-2 rounded-xl text-white disabled:opacity-50 transition-all font-bold text-[10px] uppercase tracking-wider px-4 ${
-                                    isSalesStage ? 'bg-[#1F618D] hover:bg-[#2980B9]' : 'bg-emerald-600 hover:bg-emerald-700'
-                                }`}
+                                className={`p-2 rounded-xl text-white disabled:opacity-50 transition-all font-bold text-[10px] uppercase tracking-wider px-4 ${isSalesStage ? 'bg-[#6d99cf] hover:bg-[#6d99cf]' : 'bg-emerald-600 hover:bg-emerald-700'
+                                    }`}
                             >
                                 Next
                             </button>

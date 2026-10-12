@@ -49,14 +49,14 @@ const QCList = () => {
             <div className="flex justify-between items-center mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                        <Icon icon="lucide:shield-check" className="text-[#2980B9]" />
+                        <Icon icon="lucide:shield-check" className="text-[#6d99cf]" />
                         Purchase QC Completed
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">Quality check records for received goods</p>
                 </div>
                 <button
                     onClick={fetchQCRecords}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#1F618D] bg-blue-50 hover:bg-[#eaf4fb] rounded-xl transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#6d99cf] bg-blue-50 hover:bg-[#eaf4fb] rounded-xl transition-colors"
                 >
                     <Icon icon="lucide:refresh-cw" className={loading ? 'animate-spin' : ''} />
                     Refresh
@@ -67,15 +67,15 @@ const QCList = () => {
                 <div className="overflow-x-auto flex-1">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-[#eaf4fb]/50 border-b border-[#2980B9]/15">
-                                <th className="py-2.5 px-4 w-12 text-[#1F618D]"></th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">QC ID</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Vendor</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Items</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Passed</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Failed</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Status</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">QC Date</th>
+                            <tr className="bg-[#eaf4fb]/50 border-b border-[#6d99cf]/15">
+                                <th className="py-2.5 px-4 w-12 text-[#6d99cf]"></th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">QC ID</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Vendor</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Items</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Passed</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Failed</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Status</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">QC Date</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -111,7 +111,7 @@ const QCList = () => {
                                         >
                                             <td className="px-4 py-2">
                                                 <div className="w-6 h-6 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-[#eaf4fb] transition-colors">
-                                                    <Icon icon="lucide:arrow-right" className="text-gray-400 group-hover:text-[#1F618D] text-xs" />
+                                                    <Icon icon="lucide:arrow-right" className="text-gray-400 group-hover:text-[#6d99cf] text-xs" />
                                                 </div>
                                             </td>
                                             <td className="px-4 py-2">

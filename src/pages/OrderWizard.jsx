@@ -1553,17 +1553,17 @@ const OrderWizard = () => {
                         formik.setFieldValue(`${prefix}batchId`, defaultBatch._id);
                         formik.setFieldValue(`${prefix}batchNumber`, defaultBatch.batchNumber);
 
-                        const sPrice = Number(defaultBatch.sellingPrice) > 0 
-                            ? Number(defaultBatch.sellingPrice) 
-                            : (Number(defaultBatch.costPrice) > 0 
-                                ? Number(defaultBatch.costPrice) 
-                                : (Number(defaultBatch.buyingPrice) > 0 
-                                    ? Number(defaultBatch.buyingPrice) 
+                        const sPrice = Number(defaultBatch.sellingPrice) > 0
+                            ? Number(defaultBatch.sellingPrice)
+                            : (Number(defaultBatch.costPrice) > 0
+                                ? Number(defaultBatch.costPrice)
+                                : (Number(defaultBatch.buyingPrice) > 0
+                                    ? Number(defaultBatch.buyingPrice)
                                     : 0));
-                        const bPrice = Number(defaultBatch.buyingPrice) > 0 
-                            ? Number(defaultBatch.buyingPrice) 
-                            : (Number(defaultBatch.costPrice) > 0 
-                                ? Number(defaultBatch.costPrice) 
+                        const bPrice = Number(defaultBatch.buyingPrice) > 0
+                            ? Number(defaultBatch.buyingPrice)
+                            : (Number(defaultBatch.costPrice) > 0
+                                ? Number(defaultBatch.costPrice)
                                 : sPrice);
 
                         if (sPrice > 0) {
@@ -1579,7 +1579,7 @@ const OrderWizard = () => {
                     }
                 }).catch(err => console.error('Failed to fetch product batches:', err));
             }
-            }
+        }
     };
 
     // Initial search and filter changes for active product
@@ -1901,7 +1901,7 @@ const OrderWizard = () => {
         };
 
         // ── Derive a variant for credit used vs limit ────────────────────────────
-                const renderEstimatedDeliveryDateField = () => {
+        const renderEstimatedDeliveryDateField = () => {
             const rawDeliveryVal = formik.values.estimatedDeliveryDate || '';
             let currentDatePart = '';
             let currentTimePart = '';
@@ -1965,11 +1965,10 @@ const OrderWizard = () => {
                             <button
                                 type="button"
                                 onClick={handleToggleDeliveryTime}
-                                className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all border ${
-                                    includeDeliveryTime
+                                className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all border ${includeDeliveryTime
                                         ? 'bg-blue-50 text-blue-700 border-blue-300 ring-2 ring-blue-100'
                                         : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100 hover:text-gray-700'
-                                }`}
+                                    }`}
                                 title={includeDeliveryTime ? "Click to remove time (Date only)" : "Click to add specific delivery time"}
                             >
                                 <Icon icon="mdi:clock-outline" className="w-3.5 h-3.5" />
@@ -2626,7 +2625,7 @@ const OrderWizard = () => {
         <FieldArray name="products">
             {({ push, remove }) => (
                 <div className="w-full bg-white rounded-b-2xl">
-                    ﻿                    ﻿                    <div className="hidden md:block w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                    <div className="hidden md:block w-full border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                         {/* Quick View Controls Bar */}
                         <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 bg-gradient-to-r from-slate-50 via-blue-50/30 to-slate-50 border-b border-gray-200">
                             <div className="flex items-center gap-2">
@@ -2637,11 +2636,10 @@ const OrderWizard = () => {
                                 <button
                                     type="button"
                                     onClick={() => setExpandedGroups({ specs: false, powers: false, tax: false })}
-                                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm ${
-                                        !expandedGroups.specs && !expandedGroups.powers && !expandedGroups.tax
+                                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm ${!expandedGroups.specs && !expandedGroups.powers && !expandedGroups.tax
                                             ? 'bg-erp-accent text-white shadow-erp-accent/20 ring-2 ring-erp-accent/30'
                                             : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
-                                    }`}
+                                        }`}
                                 >
                                     <Icon icon="mdi:view-compact-outline" className="text-sm" />
                                     Compact Mode (Zero Scroll)
@@ -2649,11 +2647,10 @@ const OrderWizard = () => {
                                 <button
                                     type="button"
                                     onClick={() => setExpandedGroups({ specs: true, powers: true, tax: true })}
-                                    className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                                        expandedGroups.specs && expandedGroups.powers && expandedGroups.tax
+                                    className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${expandedGroups.specs && expandedGroups.powers && expandedGroups.tax
                                             ? 'bg-erp-accent text-white shadow-erp-accent/20 ring-2 ring-erp-accent/30'
                                             : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
-                                    }`}
+                                        }`}
                                 >
                                     <Icon icon="mdi:table-eye" className="text-sm" />
                                     Full Table (All Columns)
@@ -2665,11 +2662,10 @@ const OrderWizard = () => {
                                 <button
                                     type="button"
                                     onClick={() => toggleGroup('specs')}
-                                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 ${
-                                        expandedGroups.specs
+                                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 ${expandedGroups.specs
                                             ? 'bg-blue-100 text-erp-accent border-erp-accent/40 font-semibold'
                                             : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
-                                    }`}
+                                        }`}
                                     title="Expand / Collapse Specs (Category, Availability, Vendor, Type)"
                                 >
                                     Specs {expandedGroups.specs ? '▴ (Expanded)' : '▸ (Collapsed)'}
@@ -2677,11 +2673,10 @@ const OrderWizard = () => {
                                 <button
                                     type="button"
                                     onClick={() => toggleGroup('powers')}
-                                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 ${
-                                        expandedGroups.powers
+                                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 ${expandedGroups.powers
                                             ? 'bg-blue-100 text-erp-accent border-erp-accent/40 font-semibold'
                                             : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
-                                    }`}
+                                        }`}
                                     title="Expand / Collapse Rx Power Columns (Sph, Cyl, Axis, Add)"
                                 >
                                     Powers {expandedGroups.powers ? '▴ (Expanded)' : '▸ (Collapsed)'}
@@ -2689,11 +2684,10 @@ const OrderWizard = () => {
                                 <button
                                     type="button"
                                     onClick={() => toggleGroup('tax')}
-                                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 ${
-                                        expandedGroups.tax
+                                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1 ${expandedGroups.tax
                                             ? 'bg-blue-100 text-erp-accent border-erp-accent/40 font-semibold'
                                             : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
-                                    }`}
+                                        }`}
                                     title="Expand / Collapse Tax & Discount Columns"
                                 >
                                     Tax & Disc {expandedGroups.tax ? '▴ (Expanded)' : '▸ (Collapsed)'}
@@ -2843,7 +2837,7 @@ const OrderWizard = () => {
                                     </tr>
                                 </thead>
 
-﻿                                <tbody className="divide-y divide-gray-100">
+                                <tbody className="divide-y divide-gray-100">
                                     {formik.values.products.map((product, index) => {
                                         const isActive = activeProductIndex === index;
                                         const isStock = product.orderType === 'stock';
@@ -2958,7 +2952,7 @@ const OrderWizard = () => {
                                                         />
                                                     </td>
 
-﻿                                                    {/* Specs Group (Category, Availability, Vendor, Order Type) */}
+                                                    {/* Specs Group (Category, Availability, Vendor, Order Type) */}
                                                     {expandedGroups.specs ? (
                                                         <>
                                                             {/* Category Select */}
@@ -3015,11 +3009,10 @@ const OrderWizard = () => {
                                                             {/* Vendor Select */}
                                                             <td className="px-2 py-2 border-r border-gray-100 min-w-[140px]">
                                                                 <select
-                                                                    className={`w-full text-xs bg-white border rounded-lg px-2 py-1.5 outline-none focus:border-erp-accent focus:ring-2 focus:ring-erp-accent/20 transition-all font-medium text-gray-700 cursor-pointer disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed ${
-                                                                        (product.availability === 'order' || product.availability === 'order-to-whom' || product.orderType === 'rx') && !product.vendorId
+                                                                    className={`w-full text-xs bg-white border rounded-lg px-2 py-1.5 outline-none focus:border-erp-accent focus:ring-2 focus:ring-erp-accent/20 transition-all font-medium text-gray-700 cursor-pointer disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed ${(product.availability === 'order' || product.availability === 'order-to-whom' || product.orderType === 'rx') && !product.vendorId
                                                                             ? 'border-amber-400 bg-amber-50/30'
                                                                             : 'border-gray-200'
-                                                                    }`}
+                                                                        }`}
                                                                     name={`products.${index}.vendorId`}
                                                                     value={product.vendorId || ''}
                                                                     onChange={(e) => {
@@ -3073,9 +3066,8 @@ const OrderWizard = () => {
                                                                     <span className="font-semibold text-slate-800 text-[11px] truncate max-w-[110px]" title={categoryName}>
                                                                         {categoryName && categoryName !== '-' ? categoryName : <span className="text-amber-500 font-medium">Select Cat*</span>}
                                                                     </span>
-                                                                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                                                                        product.orderType === 'rx' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'
-                                                                    }`}>
+                                                                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${product.orderType === 'rx' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'
+                                                                        }`}>
                                                                         {product.orderType || 'stock'}
                                                                     </span>
                                                                 </div>
@@ -3142,10 +3134,10 @@ const OrderWizard = () => {
                                                         >
                                                             <option value="">{product.availableBatches?.length ? "Auto (Oldest)" : "No Batch"}</option>
                                                             {(product.availableBatches || []).map(b => {
-                                                                const dispPrice = Number(b.sellingPrice) > 0 
-                                                                    ? b.sellingPrice 
-                                                                    : (Number(b.costPrice) > 0 
-                                                                        ? b.costPrice 
+                                                                const dispPrice = Number(b.sellingPrice) > 0
+                                                                    ? b.sellingPrice
+                                                                    : (Number(b.costPrice) > 0
+                                                                        ? b.costPrice
                                                                         : (Number(b.buyingPrice) > 0 ? b.buyingPrice : ''));
                                                                 return (
                                                                     <option key={b._id} value={b._id}>
@@ -3399,19 +3391,17 @@ const OrderWizard = () => {
                             const totalAmount = taxableAmount > 0 ? taxableAmount + gstAmt : 0;
 
                             return (
-                                <div 
+                                <div
                                     key={index}
                                     onClick={() => setActiveProductIndex(index)}
-                                    className={`bg-white rounded-2xl border transition-all p-4 space-y-3.5 shadow-sm ${
-                                        isActive ? 'border-[#2980B9] ring-2 ring-[#2980B9]/15' : 'border-gray-200'
-                                    }`}
+                                    className={`bg-white rounded-2xl border transition-all p-4 space-y-3.5 shadow-sm ${isActive ? 'border-[#6d99cf] ring-2 ring-[#6d99cf]/15' : 'border-gray-200'
+                                        }`}
                                 >
                                     {/* Card Header: Item Number & Action Buttons */}
                                     <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                                         <div className="flex items-center gap-2">
-                                            <span className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${
-                                                product.orderType === 'rx' ? 'bg-amber-500 text-white' : 'bg-[#2980B9] text-white'
-                                            }`}>
+                                            <span className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${product.orderType === 'rx' ? 'bg-amber-500 text-white' : 'bg-[#6d99cf] text-white'
+                                                }`}>
                                                 {index + 1}
                                             </span>
                                             <span className="text-xs font-bold text-slate-800 uppercase tracking-tight">
@@ -3431,7 +3421,7 @@ const OrderWizard = () => {
                                                     setItemModalIndex(index);
                                                 }}
                                                 title="Configure Prescription Details"
-                                                className="px-2.5 py-1 rounded-lg bg-[#2980B9]/10 text-[#2980B9] hover:bg-[#2980B9] hover:text-white transition-all text-xs font-semibold flex items-center gap-1"
+                                                className="px-2.5 py-1 rounded-lg bg-[#6d99cf]/10 text-[#6d99cf] hover:bg-[#6d99cf] hover:text-white transition-all text-xs font-semibold flex items-center gap-1"
                                             >
                                                 <Icon icon="mdi:square-edit-outline" className="text-sm" /> Specs
                                             </button>
@@ -3479,7 +3469,7 @@ const OrderWizard = () => {
                                                     Category
                                                 </label>
                                                 <select
-                                                    className="w-full text-xs bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#2980B9] font-medium text-slate-700"
+                                                    className="w-full text-xs bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#6d99cf] font-medium text-slate-700"
                                                     name={`products.${index}.categoryId`}
                                                     value={product.categoryId || (configs.category?.find(c => c.name?.toUpperCase() === (product.category || '').toUpperCase())?._id) || product.category || ''}
                                                     onChange={(e) => {
@@ -3502,7 +3492,7 @@ const OrderWizard = () => {
                                                     Availability
                                                 </label>
                                                 <select
-                                                    className="w-full text-xs bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#2980B9] font-semibold text-slate-700 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                                                    className="w-full text-xs bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#6d99cf] font-semibold text-slate-700 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                                                     name={`products.${index}.availability`}
                                                     value={product.orderType === 'rx' ? 'order' : ((product.availability === 'order-to-whom' || product.availability === 'order') ? 'order' : (product.availability || 'in-house'))}
                                                     onChange={(e) => {
@@ -3528,7 +3518,7 @@ const OrderWizard = () => {
                                                         Vendor *
                                                     </label>
                                                     <select
-                                                        className="w-full text-xs bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#2980B9] font-medium text-slate-700"
+                                                        className="w-full text-xs bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#6d99cf] font-medium text-slate-700"
                                                         name={`products.${index}.vendorId`}
                                                         value={product.vendorId || ''}
                                                         onChange={(e) => formik.setFieldValue(`products.${index}.vendorId`, e.target.value)}
@@ -3546,7 +3536,7 @@ const OrderWizard = () => {
                                                     Order Type
                                                 </label>
                                                 <select
-                                                    className="w-full text-xs bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#2980B9] font-semibold text-slate-700"
+                                                    className="w-full text-xs bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#6d99cf] font-semibold text-slate-700"
                                                     name={`products.${index}.orderType`}
                                                     value={product.orderType || 'stock'}
                                                     onChange={(e) => {
@@ -3570,7 +3560,7 @@ const OrderWizard = () => {
                                                         Batch Allocation
                                                     </label>
                                                     <select
-                                                        className="w-full text-xs bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#2980B9] font-semibold text-slate-700 disabled:bg-gray-100 disabled:text-gray-400"
+                                                        className="w-full text-xs bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#6d99cf] font-semibold text-slate-700 disabled:bg-gray-100 disabled:text-gray-400"
                                                         name={`products.${index}.batchId`}
                                                         value={product.batchId || ''}
                                                         onChange={(e) => {
@@ -3610,10 +3600,10 @@ const OrderWizard = () => {
                                                     >
                                                         <option value="">{product.availableBatches?.length ? "Auto (Oldest)" : "No Batch"}</option>
                                                         {(product.availableBatches || []).map(b => {
-                                                            const dispPrice = Number(b.sellingPrice) > 0 
-                                                                ? b.sellingPrice 
-                                                                : (Number(b.costPrice) > 0 
-                                                                    ? b.costPrice 
+                                                            const dispPrice = Number(b.sellingPrice) > 0
+                                                                ? b.sellingPrice
+                                                                : (Number(b.costPrice) > 0
+                                                                    ? b.costPrice
                                                                     : (Number(b.buyingPrice) > 0 ? b.buyingPrice : ''));
                                                             return (
                                                                 <option key={b._id} value={b._id}>
@@ -3625,45 +3615,45 @@ const OrderWizard = () => {
                                                 </div>
                                             )}
 
-                                         {/* Frame / Sunglass Size & Dimensions inputs for Mobile */}
-                                         {(product.category === 'FRAME' || product.category === 'SUNGLASS' || (configs.category?.find(c => c._id === product.categoryId)?.name?.toUpperCase() === 'FRAME') || (configs.category?.find(c => c._id === product.categoryId)?.name?.toUpperCase() === 'SUNGLASS')) && (
-                                             <div className="grid grid-cols-2 gap-3">
-                                                 <div>
-                                                     <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                                                         Frame Size *
-                                                     </label>
-                                                     <input
-                                                         type="text"
-                                                         className="w-full text-xs font-semibold bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#2980B9]"
-                                                         name={`products.${index}.size`}
-                                                         value={product.size || ''}
-                                                         onChange={(e) => {
-                                                             const val = e.target.value;
-                                                             formik.setFieldValue(`products.${index}.size`, val);
-                                                             if (!product.dimensions) {
-                                                                 formik.setFieldValue(`products.${index}.dimensions`, val);
-                                                             }
-                                                         }}
-                                                         placeholder="e.g. 52-18-140"
-                                                         disabled={isReadOnly}
-                                                     />
-                                                 </div>
-                                                 <div>
-                                                     <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                                                         Dimensions *
-                                                     </label>
-                                                     <input
-                                                         type="text"
-                                                         className="w-full text-xs font-semibold bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#2980B9]"
-                                                         name={`products.${index}.dimensions`}
-                                                         value={product.dimensions || product.size || ''}
-                                                         onChange={formik.handleChange}
-                                                         placeholder="e.g. 52-18-140"
-                                                         disabled={isReadOnly}
-                                                     />
-                                                 </div>
-                                             </div>
-                                         )}
+                                            {/* Frame / Sunglass Size & Dimensions inputs for Mobile */}
+                                            {(product.category === 'FRAME' || product.category === 'SUNGLASS' || (configs.category?.find(c => c._id === product.categoryId)?.name?.toUpperCase() === 'FRAME') || (configs.category?.find(c => c._id === product.categoryId)?.name?.toUpperCase() === 'SUNGLASS')) && (
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                                                            Frame Size *
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            className="w-full text-xs font-semibold bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#6d99cf]"
+                                                            name={`products.${index}.size`}
+                                                            value={product.size || ''}
+                                                            onChange={(e) => {
+                                                                const val = e.target.value;
+                                                                formik.setFieldValue(`products.${index}.size`, val);
+                                                                if (!product.dimensions) {
+                                                                    formik.setFieldValue(`products.${index}.dimensions`, val);
+                                                                }
+                                                            }}
+                                                            placeholder="e.g. 52-18-140"
+                                                            disabled={isReadOnly}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                                                            Dimensions *
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            className="w-full text-xs font-semibold bg-white border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#6d99cf]"
+                                                            name={`products.${index}.dimensions`}
+                                                            value={product.dimensions || product.size || ''}
+                                                            onChange={formik.handleChange}
+                                                            placeholder="e.g. 52-18-140"
+                                                            disabled={isReadOnly}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* Qty, Unit & Price */}
@@ -3674,7 +3664,7 @@ const OrderWizard = () => {
                                                 </label>
                                                 <input
                                                     type="number"
-                                                    className="w-full text-xs font-semibold text-center bg-white border border-gray-200 rounded-xl px-2 py-2.5 outline-none focus:border-[#2980B9]"
+                                                    className="w-full text-xs font-semibold text-center bg-white border border-gray-200 rounded-xl px-2 py-2.5 outline-none focus:border-[#6d99cf]"
                                                     name={`products.${index}.qty`}
                                                     value={product.qty}
                                                     onChange={formik.handleChange}
@@ -3685,7 +3675,7 @@ const OrderWizard = () => {
                                                     Unit
                                                 </label>
                                                 <select
-                                                    className="w-full text-xs font-semibold text-center bg-white border border-gray-200 rounded-xl px-2 py-2.5 outline-none focus:border-[#2980B9]"
+                                                    className="w-full text-xs font-semibold text-center bg-white border border-gray-200 rounded-xl px-2 py-2.5 outline-none focus:border-[#6d99cf]"
                                                     name={`products.${index}.unit`}
                                                     value={product.unit || 'piece'}
                                                     onChange={formik.handleChange}
@@ -3701,7 +3691,7 @@ const OrderWizard = () => {
                                                 </label>
                                                 <input
                                                     type="number"
-                                                    className="w-full text-xs font-semibold text-center bg-white border border-gray-200 rounded-xl px-2 py-2.5 outline-none focus:border-[#2980B9]"
+                                                    className="w-full text-xs font-semibold text-center bg-white border border-gray-200 rounded-xl px-2 py-2.5 outline-none focus:border-[#6d99cf]"
                                                     name={`products.${index}.price`}
                                                     value={product.price}
                                                     onChange={formik.handleChange}
@@ -3749,7 +3739,7 @@ const OrderWizard = () => {
                                                 </label>
                                                 <input
                                                     type="number"
-                                                    className="w-full text-xs font-semibold text-center bg-white border border-gray-200 rounded-xl px-2 py-2.5 outline-none focus:border-[#2980B9]"
+                                                    className="w-full text-xs font-semibold text-center bg-white border border-gray-200 rounded-xl px-2 py-2.5 outline-none focus:border-[#6d99cf]"
                                                     name={`products.${index}.discount`}
                                                     value={product.discount || 0}
                                                     onChange={formik.handleChange}
@@ -3761,7 +3751,7 @@ const OrderWizard = () => {
                                                     GST %
                                                 </label>
                                                 <select
-                                                    className="w-full text-xs font-semibold text-center bg-white border border-gray-200 rounded-xl px-2 py-2.5 outline-none focus:border-[#2980B9]"
+                                                    className="w-full text-xs font-semibold text-center bg-white border border-gray-200 rounded-xl px-2 py-2.5 outline-none focus:border-[#6d99cf]"
                                                     name={`products.${index}.gstDetails.gstPercent`}
                                                     value={product.gstDetails?.gstPercent || '0'}
                                                     onChange={(e) => formik.setFieldValue(`products.${index}.gstDetails.gstPercent`, e.target.value)}
@@ -3787,8 +3777,8 @@ const OrderWizard = () => {
                                                 <span className="font-bold text-emerald-600">₹{gstAmt.toFixed(2)}</span>
                                             </div>
                                             <div className="flex flex-col text-right">
-                                                <span className="text-[9px] font-bold text-[#2980B9] uppercase">Total</span>
-                                                <span className="font-black text-[#2980B9]">₹{totalAmount.toFixed(2)}</span>
+                                                <span className="text-[9px] font-bold text-[#6d99cf] uppercase">Total</span>
+                                                <span className="font-black text-[#6d99cf]">₹{totalAmount.toFixed(2)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -3802,7 +3792,7 @@ const OrderWizard = () => {
                         {/* Top Row: Label & Quick Add Row Pills */}
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                             <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wider">
-                                <div className="p-1.5 bg-[#2980B9]/10 rounded-lg text-[#2980B9]">
+                                <div className="p-1.5 bg-[#6d99cf]/10 rounded-lg text-[#6d99cf]">
                                     <Icon icon="mdi:table-row-plus-after" className="text-lg" />
                                 </div>
                                 <span>Add Quick Rows</span>
@@ -3819,7 +3809,7 @@ const OrderWizard = () => {
                                             formik.setFieldValue('products', [...formik.values.products, ...newRows]);
                                             setActiveProductIndex(formik.values.products.length);
                                         }}
-                                        className="px-3.5 py-1.5 rounded-xl border border-blue-200 bg-white text-[#2980B9] hover:bg-[#2980B9] hover:text-white transition-all text-xs font-bold shadow-xs active:scale-95 flex items-center gap-1 whitespace-nowrap flex-shrink-0"
+                                        className="px-3.5 py-1.5 rounded-xl border border-blue-200 bg-white text-[#6d99cf] hover:bg-[#6d99cf] hover:text-white transition-all text-xs font-bold shadow-xs active:scale-95 flex items-center gap-1 whitespace-nowrap flex-shrink-0"
                                     >
                                         <Icon icon="mdi:plus" className="text-sm" />
                                         <span>+{num}</span>
@@ -3853,7 +3843,7 @@ const OrderWizard = () => {
                             <button
                                 type="button"
                                 onClick={() => setIsLensRangeModalOpen(true)}
-                                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-[#2980B9] to-blue-600 text-white hover:opacity-95 transition-all text-xs font-bold shadow-md shadow-blue-500/20 flex items-center justify-center gap-1.5 active:scale-95"
+                                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-[#6d99cf] to-blue-600 text-white hover:opacity-95 transition-all text-xs font-bold shadow-md shadow-blue-500/20 flex items-center justify-center gap-1.5 active:scale-95"
                             >
                                 <Icon icon="mdi:playlist-plus" className="text-base" />
                                 <span>Bulk Lens Generator</span>
@@ -3869,7 +3859,7 @@ const OrderWizard = () => {
                                 {/* GST & Transaction Details */}
                                 <div className="flex-1 bg-white rounded-xl p-4 sm:p-5 border border-slate-100 shadow-xs">
                                     <h4 className="text-xs sm:text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                        <div className="p-1.5 bg-[#2980B9]/10 rounded-lg text-[#2980B9]">
+                                        <div className="p-1.5 bg-[#6d99cf]/10 rounded-lg text-[#6d99cf]">
                                             <Icon icon="mdi:receipt-text-outline" className="text-lg" />
                                         </div>
                                         Transaction Details
@@ -3913,156 +3903,156 @@ const OrderWizard = () => {
 
                                 {/* Order Summary Card */}
                                 <div className="w-full lg:w-80 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                                <div className="bg-gradient-to-r from-erp-accent to-blue-600 px-5 py-4">
-                                    <h3 className="font-bold text-white text-sm uppercase tracking-wider flex items-center gap-2">
-                                        <Icon icon="mdi:calculator" className="text-lg" />
-                                        Order Summary
-                                    </h3>
-                                </div>
-
-                                <div className="p-5 space-y-3">
-                                    {/* Price */}
-                                    <div className="flex justify-between items-center py-2">
-                                        <span className="text-sm text-gray-500">Subtotal</span>
-                                        <span className="text-sm font-bold text-gray-800">
-                                            ₹{formik.values.products.reduce((acc, curr) => {
-                                                const multiplier = curr.unit === 'pair' ? 2 : curr.unit === 'box' ? 10 : 1;
-                                                return acc + ((parseFloat(curr.price) || 0) * (parseFloat(curr.qty) || 1) * multiplier);
-                                            }, 0).toFixed(2)}
-                                        </span>
+                                    <div className="bg-gradient-to-r from-erp-accent to-blue-600 px-5 py-4">
+                                        <h3 className="font-bold text-white text-sm uppercase tracking-wider flex items-center gap-2">
+                                            <Icon icon="mdi:calculator" className="text-lg" />
+                                            Order Summary
+                                        </h3>
                                     </div>
 
-                                    <div className="border-t border-gray-100" />
+                                    <div className="p-5 space-y-3">
+                                        {/* Price */}
+                                        <div className="flex justify-between items-center py-2">
+                                            <span className="text-sm text-gray-500">Subtotal</span>
+                                            <span className="text-sm font-bold text-gray-800">
+                                                ₹{formik.values.products.reduce((acc, curr) => {
+                                                    const multiplier = curr.unit === 'pair' ? 2 : curr.unit === 'box' ? 10 : 1;
+                                                    return acc + ((parseFloat(curr.price) || 0) * (parseFloat(curr.qty) || 1) * multiplier);
+                                                }, 0).toFixed(2)}
+                                            </span>
+                                        </div>
 
-                                    {/* Gross Total */}
-                                    <div className="flex justify-between items-center py-2">
-                                        <span className="text-sm text-gray-500">Gross Total</span>
-                                        <span className="text-sm font-bold text-gray-800">
-                                            ₹{formik.values.products.reduce((acc, curr) =>
-                                                acc + (parseFloat(curr.price) || 0) * (parseFloat(curr.qty) || 1), 0
-                                            ).toFixed(2)}
-                                        </span>
-                                    </div>
+                                        <div className="border-t border-gray-100" />
 
-                                    <div className="border-t border-gray-100" />
+                                        {/* Gross Total */}
+                                        <div className="flex justify-between items-center py-2">
+                                            <span className="text-sm text-gray-500">Gross Total</span>
+                                            <span className="text-sm font-bold text-gray-800">
+                                                ₹{formik.values.products.reduce((acc, curr) =>
+                                                    acc + (parseFloat(curr.price) || 0) * (parseFloat(curr.qty) || 1), 0
+                                                ).toFixed(2)}
+                                            </span>
+                                        </div>
 
-                                    {/* GST Breakdown & Final Adjusted Totals */}
-                                    {(() => {
-                                        let finalTotal = 0;
-                                        let overallGST = 0;
-                                        formik.values.products.forEach(prod => {
-                                            const price = parseFloat(prod.price) || 0;
-                                            const qty = parseFloat(prod.qty) || 1;
-                                            const mult = prod.unit === 'pair' ? 2 : prod.unit === 'box' ? 10 : 1;
-                                            const discount = parseFloat(prod.discount) || 0;
-                                            const gstPct = parseFloat(prod.gstDetails?.gstPercent) || 0;
+                                        <div className="border-t border-gray-100" />
 
-                                            const taxableAmount = (price * qty * mult) - discount;
-                                            const gstAmt = taxableAmount > 0 ? taxableAmount * (gstPct / 100) : 0;
+                                        {/* GST Breakdown & Final Adjusted Totals */}
+                                        {(() => {
+                                            let finalTotal = 0;
+                                            let overallGST = 0;
+                                            formik.values.products.forEach(prod => {
+                                                const price = parseFloat(prod.price) || 0;
+                                                const qty = parseFloat(prod.qty) || 1;
+                                                const mult = prod.unit === 'pair' ? 2 : prod.unit === 'box' ? 10 : 1;
+                                                const discount = parseFloat(prod.discount) || 0;
+                                                const gstPct = parseFloat(prod.gstDetails?.gstPercent) || 0;
 
-                                            overallGST += gstAmt;
-                                            finalTotal += taxableAmount > 0 ? taxableAmount + gstAmt : 0;
-                                        });
+                                                const taxableAmount = (price * qty * mult) - discount;
+                                                const gstAmt = taxableAmount > 0 ? taxableAmount * (gstPct / 100) : 0;
 
-                                        const shipping = parseFloat(formik.values.shippingCharges) || 0;
-                                        const other = parseFloat(formik.values.otherCharges) || 0;
-                                        const globalAdvance = parseFloat(formik.values.advancePayment) || 0;
+                                                overallGST += gstAmt;
+                                                finalTotal += taxableAmount > 0 ? taxableAmount + gstAmt : 0;
+                                            });
 
-                                        const itemAdvance = formik.values.products.reduce((acc, curr) => {
-                                            return acc + (parseFloat(curr.gstDetails?.advance) || 0);
-                                        }, 0);
+                                            const shipping = parseFloat(formik.values.shippingCharges) || 0;
+                                            const other = parseFloat(formik.values.otherCharges) || 0;
+                                            const globalAdvance = parseFloat(formik.values.advancePayment) || 0;
 
-                                        const totalAdvance = itemAdvance + globalAdvance;
-                                        const grossTotalWithCharges = finalTotal + shipping + other;
-                                        const netPayableTotal = Math.max(0, grossTotalWithCharges - totalAdvance);
+                                            const itemAdvance = formik.values.products.reduce((acc, curr) => {
+                                                return acc + (parseFloat(curr.gstDetails?.advance) || 0);
+                                            }, 0);
 
-                                        const totalGst = overallGST.toFixed(2);
-                                        const cgst = (overallGST / 2).toFixed(2);
-                                        const sgst = (overallGST / 2).toFixed(2);
+                                            const totalAdvance = itemAdvance + globalAdvance;
+                                            const grossTotalWithCharges = finalTotal + shipping + other;
+                                            const netPayableTotal = Math.max(0, grossTotalWithCharges - totalAdvance);
 
-                                        return (
-                                            <>
-                                                <div className="bg-emerald-50/70 rounded-lg p-3 space-y-2 border border-emerald-100">
-                                                    <div className="flex justify-between items-center">
-                                                        <span className="text-xs text-emerald-600 font-medium">CGST</span>
-                                                        <span className="text-xs font-bold text-emerald-700">₹{cgst}</span>
-                                                    </div>
-                                                    <div className="flex justify-between items-center">
-                                                        <span className="text-xs text-emerald-600 font-medium">SGST</span>
-                                                        <span className="text-xs font-bold text-emerald-700">₹{sgst}</span>
-                                                    </div>
-                                                    <div className="border-t border-emerald-200 pt-2">
+                                            const totalGst = overallGST.toFixed(2);
+                                            const cgst = (overallGST / 2).toFixed(2);
+                                            const sgst = (overallGST / 2).toFixed(2);
+
+                                            return (
+                                                <>
+                                                    <div className="bg-emerald-50/70 rounded-lg p-3 space-y-2 border border-emerald-100">
                                                         <div className="flex justify-between items-center">
-                                                            <span className="text-xs text-emerald-700 font-semibold">Total GST</span>
-                                                            <span className="text-sm font-bold text-emerald-700">₹{totalGst}</span>
+                                                            <span className="text-xs text-emerald-600 font-medium">CGST</span>
+                                                            <span className="text-xs font-bold text-emerald-700">₹{cgst}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center">
+                                                            <span className="text-xs text-emerald-600 font-medium">SGST</span>
+                                                            <span className="text-xs font-bold text-emerald-700">₹{sgst}</span>
+                                                        </div>
+                                                        <div className="border-t border-emerald-200 pt-2">
+                                                            <div className="flex justify-between items-center">
+                                                                <span className="text-xs text-emerald-700 font-semibold">Total GST</span>
+                                                                <span className="text-sm font-bold text-emerald-700">₹{totalGst}</span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
 
-                                                {(shipping > 0 || other > 0) && (
-                                                    <div className="space-y-1.5 py-1 text-xs font-medium border-t border-gray-100">
-                                                        {shipping > 0 && (
-                                                            <div className="flex justify-between items-center text-gray-600">
-                                                                <span>Shipping Charges</span>
-                                                                <span className="font-bold text-gray-800">+₹{shipping.toFixed(2)}</span>
-                                                            </div>
-                                                        )}
-                                                        {other > 0 && (
-                                                            <div className="flex justify-between items-center text-gray-600">
-                                                                <span>Other Charges</span>
-                                                                <span className="font-bold text-gray-800">+₹{other.toFixed(2)}</span>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
-
-                                                <div className="border-t border-gray-100" />
-
-                                                {/* Gross Total */}
-                                                <div className="flex justify-between items-center py-1">
-                                                    <span className="text-xs font-bold uppercase text-gray-500">Gross Total</span>
-                                                    <span className="text-sm font-bold text-gray-900">
-                                                        ₹{grossTotalWithCharges.toFixed(2)}
-                                                    </span>
-                                                </div>
-
-                                                {/* Advance Paid Deduction */}
-                                                {totalAdvance > 0 && (
-                                                    <div className="flex justify-between items-center py-2 px-3 bg-amber-50 rounded-lg border border-amber-200">
-                                                        <span className="text-xs font-bold text-amber-700 uppercase flex items-center gap-1">
-                                                            <Icon icon="mdi:minus-circle" className="text-amber-600" /> Advance Paid
-                                                        </span>
-                                                        <span className="text-sm font-black text-amber-700">
-                                                            - ₹{totalAdvance.toFixed(2)}
-                                                        </span>
-                                                    </div>
-                                                )}
-
-                                                {/* Final Adjusted Total */}
-                                                <div className="bg-gradient-to-r from-erp-accent/10 to-blue-100/50 rounded-xl p-4 -mx-1 border border-erp-accent/20">
-                                                    <div className="flex justify-between items-center">
-                                                        <div className="flex flex-col">
-                                                            <span className="text-xs font-black uppercase text-gray-700 tracking-wider">
-                                                                {totalAdvance > 0 ? "Adjusted Total" : "Final Total"}
-                                                            </span>
-                                                            {totalAdvance > 0 && (
-                                                                <span className="text-[10px] font-bold text-emerald-600">
-                                                                    (Advance Deducted)
-                                                                </span>
+                                                    {(shipping > 0 || other > 0) && (
+                                                        <div className="space-y-1.5 py-1 text-xs font-medium border-t border-gray-100">
+                                                            {shipping > 0 && (
+                                                                <div className="flex justify-between items-center text-gray-600">
+                                                                    <span>Shipping Charges</span>
+                                                                    <span className="font-bold text-gray-800">+₹{shipping.toFixed(2)}</span>
+                                                                </div>
+                                                            )}
+                                                            {other > 0 && (
+                                                                <div className="flex justify-between items-center text-gray-600">
+                                                                    <span>Other Charges</span>
+                                                                    <span className="font-bold text-gray-800">+₹{other.toFixed(2)}</span>
+                                                                </div>
                                                             )}
                                                         </div>
-                                                        <span className="text-xl font-black text-erp-accent">
-                                                            ₹{netPayableTotal.toFixed(2)}
+                                                    )}
+
+                                                    <div className="border-t border-gray-100" />
+
+                                                    {/* Gross Total */}
+                                                    <div className="flex justify-between items-center py-1">
+                                                        <span className="text-xs font-bold uppercase text-gray-500">Gross Total</span>
+                                                        <span className="text-sm font-bold text-gray-900">
+                                                            ₹{grossTotalWithCharges.toFixed(2)}
                                                         </span>
                                                     </div>
-                                                </div>
-                                            </>
-                                        );
-                                    })()}
+
+                                                    {/* Advance Paid Deduction */}
+                                                    {totalAdvance > 0 && (
+                                                        <div className="flex justify-between items-center py-2 px-3 bg-amber-50 rounded-lg border border-amber-200">
+                                                            <span className="text-xs font-bold text-amber-700 uppercase flex items-center gap-1">
+                                                                <Icon icon="mdi:minus-circle" className="text-amber-600" /> Advance Paid
+                                                            </span>
+                                                            <span className="text-sm font-black text-amber-700">
+                                                                - ₹{totalAdvance.toFixed(2)}
+                                                            </span>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Final Adjusted Total */}
+                                                    <div className="bg-gradient-to-r from-erp-accent/10 to-blue-100/50 rounded-xl p-4 -mx-1 border border-erp-accent/20">
+                                                        <div className="flex justify-between items-center">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-xs font-black uppercase text-gray-700 tracking-wider">
+                                                                    {totalAdvance > 0 ? "Adjusted Total" : "Final Total"}
+                                                                </span>
+                                                                {totalAdvance > 0 && (
+                                                                    <span className="text-[10px] font-bold text-emerald-600">
+                                                                        (Advance Deducted)
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            <span className="text-xl font-black text-erp-accent">
+                                                                ₹{netPayableTotal.toFixed(2)}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            );
+                                        })()}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    );
+                        );
                     })()}
                 </div>
             )}

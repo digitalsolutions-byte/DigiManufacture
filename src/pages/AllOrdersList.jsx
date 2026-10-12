@@ -112,7 +112,7 @@ function StatusJourneyModal({ order, currentStatus, onClose, onTransition, loadi
                         {(() => {
                             const est = order?.estimatedDeliveryDate || order?.orders?.[0]?.estimatedDeliveryDate;
                             return est ? (
-                                <p className="text-[11px] font-semibold text-[#2980B9] mt-0.5">
+                                <p className="text-[11px] font-semibold text-[#6d99cf] mt-0.5">
                                     Est. Delivery: {dayjs(est).format('DD MMM YYYY, hh:mm A')}
                                 </p>
                             ) : null;
@@ -125,7 +125,7 @@ function StatusJourneyModal({ order, currentStatus, onClose, onTransition, loadi
                                 navigator.clipboard.writeText(shareUrl);
                                 toast.success("Public status link copied to clipboard!");
                             }}
-                            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-[#2980B9] border border-blue-100 hover:bg-blue-100 rounded-xl text-xs font-semibold transition-all"
+                            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-[#6d99cf] border border-blue-100 hover:bg-blue-100 rounded-xl text-xs font-semibold transition-all"
                             title="Copy Public Tracking Link"
                         >
                             <Icon icon="mdi:share-variant-outline" className="text-base" /> Share Link
@@ -152,10 +152,10 @@ function StatusJourneyModal({ order, currentStatus, onClose, onTransition, loadi
                                     <div
                                         key={step}
                                         className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap border flex-shrink-0 ${isDone
-                                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                                : isCurrent
-                                                    ? 'bg-blue-50 text-blue-700 border-blue-300 ring-2 ring-blue-100'
-                                                    : 'bg-white text-slate-400 border-slate-200'
+                                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                            : isCurrent
+                                                ? 'bg-blue-50 text-blue-700 border-blue-300 ring-2 ring-blue-100'
+                                                : 'bg-white text-slate-400 border-slate-200'
                                             }`}
                                     >
                                         <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${isDone ? 'bg-emerald-500 text-white' : isCurrent ? 'bg-blue-500 text-white' : 'bg-slate-200 text-slate-500'
@@ -243,7 +243,7 @@ function StatusJourneyModal({ order, currentStatus, onClose, onTransition, loadi
                                     value={remarks}
                                     onChange={e => setRemarks(e.target.value)}
                                     placeholder="e.g. Order ReadyToDispatch by production team..."
-                                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] transition-all bg-slate-50/50"
+                                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] transition-all bg-slate-50/50"
                                 />
                             </div>
                         )}
@@ -304,7 +304,7 @@ function StatusJourneyModal({ order, currentStatus, onClose, onTransition, loadi
                         {statusHistory && statusHistory.length > 0 && (
                             <div className="border-t border-slate-100 pt-4 mt-2">
                                 <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                                    <Icon icon="mdi:history" className="text-[#2980B9] text-sm" />
+                                    <Icon icon="mdi:history" className="text-[#6d99cf] text-sm" />
                                     Status Change Audit Logs
                                 </p>
                                 <div className="space-y-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
@@ -858,7 +858,7 @@ const AllOrdersList = ({ isPendingOnly = false, defaultStatus = '' }) => {
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
                                                                         onClick={e => e.stopPropagation()}
-                                                                        className="text-[#2980B9] font-bold underline flex items-center gap-0.5"
+                                                                        className="text-[#6d99cf] font-bold underline flex items-center gap-0.5"
                                                                     >
                                                                         Track <Icon icon="mdi:open-in-new" className="text-[10px]" />
                                                                     </a>
@@ -887,7 +887,7 @@ const AllOrdersList = ({ isPendingOnly = false, defaultStatus = '' }) => {
                                                             </div>
                                                             <div className="col-span-2 flex justify-between items-center pt-1 border-t border-gray-200/60 font-bold">
                                                                 <span className="text-gray-500 uppercase text-[9px]">Now Payable</span>
-                                                                <span className="text-xs text-[#2980B9] font-black">₹{nowPayableVal.toFixed(2)}</span>
+                                                                <span className="text-xs text-[#6d99cf] font-black">₹{nowPayableVal.toFixed(2)}</span>
                                                             </div>
                                                         </div>
                                                     )}
@@ -1015,7 +1015,7 @@ const AllOrdersList = ({ isPendingOnly = false, defaultStatus = '' }) => {
                                                             const est = order.estimatedDeliveryDate || order.orders?.[0]?.estimatedDeliveryDate;
                                                             return est ? (
                                                                 <div className="flex flex-col items-center">
-                                                                    <span className="text-xs font-bold text-[#2980B9]">{dayjs(est).format('DD MMM YYYY')}</span>
+                                                                    <span className="text-xs font-bold text-[#6d99cf]">{dayjs(est).format('DD MMM YYYY')}</span>
                                                                     <span className="text-[10px] font-black text-gray-400 uppercase">{dayjs(est).format('hh:mm A')}</span>
                                                                 </div>
                                                             ) : (
@@ -1355,7 +1355,7 @@ const AllOrdersList = ({ isPendingOnly = false, defaultStatus = '' }) => {
                                 toast.success("Public status tracking link copied!");
                                 setActiveActionMenu(null);
                             }}
-                            className="w-full flex items-center gap-3 px-4 py-2.5 text-[11px] font-black uppercase text-[#2980B9] hover:bg-blue-50 transition-colors"
+                            className="w-full flex items-center gap-3 px-4 py-2.5 text-[11px] font-black uppercase text-[#6d99cf] hover:bg-blue-50 transition-colors"
                         >
                             <Icon icon="mdi:share-variant-outline" className="text-base text-blue-500" />
                             Share Status Link

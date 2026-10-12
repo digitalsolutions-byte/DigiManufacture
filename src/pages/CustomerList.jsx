@@ -28,10 +28,10 @@ const datePickerStyles = {
             borderColor: '#e5e7eb',
         },
         '&:hover fieldset': {
-            borderColor: '#2980B9',
+            borderColor: '#6d99cf',
         },
         '&.Mui-focused fieldset': {
-            borderColor: '#2980B9',
+            borderColor: '#6d99cf',
         },
     },
     '& .MuiInputBase-input': {
@@ -399,7 +399,7 @@ const CustomerList = () => {
                 <div className="flex items-end self-end w-full md:w-auto mb-1">
                     <button
                         onClick={handleResetFilters}
-                        className="flex items-center justify-center gap-2 text-gray-400 hover:text-[#1F618D] px-4 py-2 rounded-lg hover:bg-[#eaf4fb] transition-all duration-300 font-semibold text-[10px] uppercase tracking-wider group border border-transparent hover:border-[#2980B9]/20 w-full md:w-auto"
+                        className="flex items-center justify-center gap-2 text-gray-400 hover:text-[#6d99cf] px-4 py-2 rounded-lg hover:bg-[#eaf4fb] transition-all duration-300 font-semibold text-[10px] uppercase tracking-wider group border border-transparent hover:border-[#6d99cf]/20 w-full md:w-auto"
                     >
                         <Icon icon="mdi:refresh" className="text-lg group-hover:rotate-180 transition-transform duration-700" />
                         Clear Filters
@@ -518,252 +518,252 @@ const CustomerList = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="text-gray-600">
-                                {customers.map((cust) => (
-                                    <React.Fragment key={cust._id}>
-                                        <tr
-                                            className={`border-b border-gray-100 last:border-b-0 hover:bg-erp-accent/5 transition-all h-12 cursor-pointer ${expandedRows.has(cust._id) ? 'bg-[#eaf4fb]/30' : ''}`}
-                                            onClick={() => toggleRow(cust._id)}
-                                        >
-                                            <td className="px-3 py-2 text-center border-r border-gray-50">
-                                                <Icon
-                                                    icon="lucide:chevron-right"
-                                                    className={`text-[#1F618D] text-xs transition-transform duration-200 inline-block ${expandedRows.has(cust._id) ? 'rotate-90' : ''}`}
-                                                />
-                                            </td>
-                                            <td className="px-4 py-2 text-center border-r border-gray-50">
-                                                <span className="text-xs font-black text-erp-accent/80 font-mono tracking-tighter">
-                                                    {cust?.customerCode || cust.serialNumber || '---'}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-2 text-center border-r border-gray-50">
-                                                <div className="flex flex-col">
-                                                    <span className="text-sm font-black text-gray-800 tracking-tight">{cust?.shopName || '---'}</span>
-                                                    <span className="text-[10px] text-gray-400 font-bold uppercase  ">{cust?.ownerName || '---'}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-2 text-center border-r border-gray-50">
-                                                <span className="px-2.5 py-1 bg-gray-100 text-gray-600 whitespace-nowrap rounded-md text-[9px] font-black uppercase tracking-widest border border-gray-200">
-                                                    {cust?.businessType?.name || cust?.businessType || cust?.CustomerType?.name || cust?.CustomerType || '---'}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-2 text-center border-r border-gray-50">
-                                                <div className="flex flex-col">
-                                                    <span className="text-xs font-semibold text-gray-600">{cust?.businessEmail || cust?.emailId || '---'}</span>
-                                                    <span className="text-[10px] font-bold text-erp-accent/80 mt-0.5">{cust?.mobileNo1 || '---'}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-2 text-center border-r border-gray-50">
-                                                <div className="flex flex-col">
-                                                    <span className="text-xs font-bold text-gray-700">{cust?.billToAddress?.city || cust?.address?.[0]?.city || '---'}</span>
-                                                    <span className="text-[9px] font-black text-gray-400 uppercase tracking-tighter">{cust?.billToAddress?.country || cust?.address?.[0]?.country || 'India'}</span>
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-2 text-center border-r border-gray-50">
-                                                <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${cust?.status?.isActive || cust?.Status?.isActive || cust?.status?.toLowerCase?.() === 'active' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'}`}>
-                                                    {cust?.status?.isActive !== undefined ? (cust.status.isActive ? 'ACTIVE' : 'INACTIVE') : (cust?.Status?.isActive ? 'ACTIVE' : (cust?.status || 'ACTIVE'))}
-                                                </span>
-                                            </td>
-                                            <td className="px-4 py-2 text-center border-r border-gray-50">
-                                                <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest '}`}>
-                                                    {cust.salesPerson?.name || '---'}
-                                                </span>
-                                                <br />
-                                                <span className="text-[10px] font-bold text-erp-accent/80 mt-0.5">{cust.zone?.name || '---'}</span>
-                                            </td>
-                                            {/* <td className="px-4 py-2 text-center border-r border-gray-50">
+                                    {customers.map((cust) => (
+                                        <React.Fragment key={cust._id}>
+                                            <tr
+                                                className={`border-b border-gray-100 last:border-b-0 hover:bg-erp-accent/5 transition-all h-12 cursor-pointer ${expandedRows.has(cust._id) ? 'bg-[#eaf4fb]/30' : ''}`}
+                                                onClick={() => toggleRow(cust._id)}
+                                            >
+                                                <td className="px-3 py-2 text-center border-r border-gray-50">
+                                                    <Icon
+                                                        icon="lucide:chevron-right"
+                                                        className={`text-[#6d99cf] text-xs transition-transform duration-200 inline-block ${expandedRows.has(cust._id) ? 'rotate-90' : ''}`}
+                                                    />
+                                                </td>
+                                                <td className="px-4 py-2 text-center border-r border-gray-50">
+                                                    <span className="text-xs font-black text-erp-accent/80 font-mono tracking-tighter">
+                                                        {cust?.customerCode || cust.serialNumber || '---'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-2 text-center border-r border-gray-50">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-black text-gray-800 tracking-tight">{cust?.shopName || '---'}</span>
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase  ">{cust?.ownerName || '---'}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-4 py-2 text-center border-r border-gray-50">
+                                                    <span className="px-2.5 py-1 bg-gray-100 text-gray-600 whitespace-nowrap rounded-md text-[9px] font-black uppercase tracking-widest border border-gray-200">
+                                                        {cust?.businessType?.name || cust?.businessType || cust?.CustomerType?.name || cust?.CustomerType || '---'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-2 text-center border-r border-gray-50">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-xs font-semibold text-gray-600">{cust?.businessEmail || cust?.emailId || '---'}</span>
+                                                        <span className="text-[10px] font-bold text-erp-accent/80 mt-0.5">{cust?.mobileNo1 || '---'}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-2 text-center border-r border-gray-50">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-xs font-bold text-gray-700">{cust?.billToAddress?.city || cust?.address?.[0]?.city || '---'}</span>
+                                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-tighter">{cust?.billToAddress?.country || cust?.address?.[0]?.country || 'India'}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-4 py-2 text-center border-r border-gray-50">
+                                                    <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${cust?.status?.isActive || cust?.Status?.isActive || cust?.status?.toLowerCase?.() === 'active' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'}`}>
+                                                        {cust?.status?.isActive !== undefined ? (cust.status.isActive ? 'ACTIVE' : 'INACTIVE') : (cust?.Status?.isActive ? 'ACTIVE' : (cust?.status || 'ACTIVE'))}
+                                                    </span>
+                                                </td>
+                                                <td className="px-4 py-2 text-center border-r border-gray-50">
+                                                    <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest '}`}>
+                                                        {cust.salesPerson?.name || '---'}
+                                                    </span>
+                                                    <br />
+                                                    <span className="text-[10px] font-bold text-erp-accent/80 mt-0.5">{cust.zone?.name || '---'}</span>
+                                                </td>
+                                                {/* <td className="px-4 py-2 text-center border-r border-gray-50">
                                                 <div className="flex flex-col items-center gap-1">
                                                     <span className="text-xs font-black text-gray-600">{cust?.createdByDepartment || 'SUPERADMIN'}</span>
                                                     <Icon icon="mdi:account-circle" className="text-gray-300 text-lg" />
                                                 </div>
                                             </td> */}
-                                            <td className="px-4 py-2 text-center relative" onClick={(e) => e.stopPropagation()}>
-                                                {/* Action Menu Button */}
-                                                <button
-                                                    onClick={(e) => {
-                                                        const rect = e.currentTarget.getBoundingClientRect();
-                                                        if (activeActionMenu?.id === cust._id) {
-                                                            setActiveActionMenu(null);
-                                                        } else {
-                                                            setActiveActionMenu({
-                                                                id: cust._id,
-                                                                top: rect.top + window.scrollY,
-                                                                left: rect.left + window.scrollX,
-                                                                cust
-                                                            });
-                                                        }
-                                                    }}
-                                                    className={`p-2 rounded-xl transition-all ${activeActionMenu?.id === cust._id ? 'bg-erp-accent text-white shadow-lg' : 'text-gray-400 hover:text-erp-accent hover:bg-erp-accent/5'}`}
-                                                >
-                                                    <Icon icon="mdi:dots-vertical" className="w-6 h-6" />
-                                                </button>
-                                            </td>
-                                        </tr>
+                                                <td className="px-4 py-2 text-center relative" onClick={(e) => e.stopPropagation()}>
+                                                    {/* Action Menu Button */}
+                                                    <button
+                                                        onClick={(e) => {
+                                                            const rect = e.currentTarget.getBoundingClientRect();
+                                                            if (activeActionMenu?.id === cust._id) {
+                                                                setActiveActionMenu(null);
+                                                            } else {
+                                                                setActiveActionMenu({
+                                                                    id: cust._id,
+                                                                    top: rect.top + window.scrollY,
+                                                                    left: rect.left + window.scrollX,
+                                                                    cust
+                                                                });
+                                                            }
+                                                        }}
+                                                        className={`p-2 rounded-xl transition-all ${activeActionMenu?.id === cust._id ? 'bg-erp-accent text-white shadow-lg' : 'text-gray-400 hover:text-erp-accent hover:bg-erp-accent/5'}`}
+                                                    >
+                                                        <Icon icon="mdi:dots-vertical" className="w-6 h-6" />
+                                                    </button>
+                                                </td>
+                                            </tr>
 
-                                        {/* Collapsible Details Row */}
-                                        {expandedRows.has(cust._id) && (
-                                            <tr className="bg-gray-50/50">
-                                                <td colSpan="9" className="p-0 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
-                                                    <div className="p-10 border-x-4 border-erp-accent/20 bg-gradient-to-br from-white to-amber-50/30">
-                                                        <div className="grid grid-cols-4 gap-12">
-                                                            {/* Detailed Columns */}
-                                                            <div className="space-y-6">
-                                                                <h4 className="text-[11px] font-black text-erp-accent/80 uppercase tracking-widest border-b border-erp-accent/10 pb-2">Business Info</h4>
-                                                                <DetailItem label="Full Shop Name" value={cust.shopName} />
-                                                                <DetailItem label="Owner Full Name" value={cust.ownerName} />
-                                                                {/* <div className="flex items-center gap-2 group/id cursor-pointer" onClick={(e) => { e.stopPropagation(); copyToClipboard(cust.username || cust._id); }}>
+                                            {/* Collapsible Details Row */}
+                                            {expandedRows.has(cust._id) && (
+                                                <tr className="bg-gray-50/50">
+                                                    <td colSpan="9" className="p-0 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
+                                                        <div className="p-10 border-x-4 border-erp-accent/20 bg-gradient-to-br from-white to-amber-50/30">
+                                                            <div className="grid grid-cols-4 gap-12">
+                                                                {/* Detailed Columns */}
+                                                                <div className="space-y-6">
+                                                                    <h4 className="text-[11px] font-black text-erp-accent/80 uppercase tracking-widest border-b border-erp-accent/10 pb-2">Business Info</h4>
+                                                                    <DetailItem label="Full Shop Name" value={cust.shopName} />
+                                                                    <DetailItem label="Owner Full Name" value={cust.ownerName} />
+                                                                    {/* <div className="flex items-center gap-2 group/id cursor-pointer" onClick={(e) => { e.stopPropagation(); copyToClipboard(cust.username || cust._id); }}>
                                                                     <DetailItem label="User ID (Click to Copy)" value={cust.username || cust._id} />
                                                                     <Icon icon="mdi:content-copy" className="text-amber-400 opacity-0 group-hover/id:opacity-100 transition-opacity mt-4" />
                                                                 </div> */}
-                                                                <DetailItem label="Business Type" value={cust.businessType?.name || cust.businessType || cust.CustomerType?.name || cust.CustomerType} />
-                                                                <DetailItem label="Order Mode" value={cust.orderMode} />
-                                                            </div>
+                                                                    <DetailItem label="Business Type" value={cust.businessType?.name || cust.businessType || cust.CustomerType?.name || cust.CustomerType} />
+                                                                    <DetailItem label="Order Mode" value={cust.orderMode} />
+                                                                </div>
 
-                                                            <div className="space-y-6">
-                                                                <h4 className="text-[11px] font-black text-erp-accent/80 uppercase tracking-widest border-b border-erp-accent/10 pb-2">Contact Details</h4>
-                                                                <DetailItem label="Business Email" value={cust.businessEmail || cust.emailId} />
-                                                                <DetailItem label="Primary Phone" value={cust.mobileNo1} />
-                                                                <DetailItem label="Secondary Phone" value={cust.mobileNo2} />
-                                                                <DetailItem label="Landline" value={cust.landlineNo} />
-                                                            </div>
+                                                                <div className="space-y-6">
+                                                                    <h4 className="text-[11px] font-black text-erp-accent/80 uppercase tracking-widest border-b border-erp-accent/10 pb-2">Contact Details</h4>
+                                                                    <DetailItem label="Business Email" value={cust.businessEmail || cust.emailId} />
+                                                                    <DetailItem label="Primary Phone" value={cust.mobileNo1} />
+                                                                    <DetailItem label="Secondary Phone" value={cust.mobileNo2} />
+                                                                    <DetailItem label="Landline" value={cust.landlineNo} />
+                                                                </div>
 
-                                                            <div className="space-y-6">
-                                                                <h4 className="text-[11px] font-black text-erp-accent/80 uppercase tracking-widest border-b border-erp-accent/10 pb-2">Logistics & Sales</h4>
-                                                                <DetailItem label="Zone / Region" value={cust.zone?.name || cust.zone} />
-                                                                <DetailItem label="Sales Person" value={cust.salesPerson?.name || cust.salesPerson} />
-                                                                <DetailItem label="Courier" value={cust.courierName?.name || cust.courierName} />
-                                                                <DetailItem label="Courier Time" value={cust.courierTime?.name || cust.courierTime} />
-                                                                <div>
-                                                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Assigned Brands</p>
-                                                                    <div className="flex flex-wrap gap-1.5">
-                                                                        {Array.isArray(cust.brands) && cust.brands.length > 0 ? (
-                                                                            cust.brands.map((b, i) => (
-                                                                                <span key={i} className="px-2 py-0.5 bg-blue-50 text-[#2980B9] border border-blue-100 rounded text-[10px] font-black uppercase">
-                                                                                    {b.brandName || b.name}
-                                                                                </span>
-                                                                            ))
-                                                                        ) : (
-                                                                            <span className="text-xs text-gray-400 font-semibold">---</span>
-                                                                        )}
+                                                                <div className="space-y-6">
+                                                                    <h4 className="text-[11px] font-black text-erp-accent/80 uppercase tracking-widest border-b border-erp-accent/10 pb-2">Logistics & Sales</h4>
+                                                                    <DetailItem label="Zone / Region" value={cust.zone?.name || cust.zone} />
+                                                                    <DetailItem label="Sales Person" value={cust.salesPerson?.name || cust.salesPerson} />
+                                                                    <DetailItem label="Courier" value={cust.courierName?.name || cust.courierName} />
+                                                                    <DetailItem label="Courier Time" value={cust.courierTime?.name || cust.courierTime} />
+                                                                    <div>
+                                                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Assigned Brands</p>
+                                                                        <div className="flex flex-wrap gap-1.5">
+                                                                            {Array.isArray(cust.brands) && cust.brands.length > 0 ? (
+                                                                                cust.brands.map((b, i) => (
+                                                                                    <span key={i} className="px-2 py-0.5 bg-blue-50 text-[#6d99cf] border border-blue-100 rounded text-[10px] font-black uppercase">
+                                                                                        {b.brandName || b.name}
+                                                                                    </span>
+                                                                                ))
+                                                                            ) : (
+                                                                                <span className="text-xs text-gray-400 font-semibold">---</span>
+                                                                            )}
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
 
-                                                            <div className="space-y-6">
-                                                                <h4 className="text-[11px] font-black text-erp-accent/80 uppercase tracking-widest border-b border-erp-accent/10 pb-2">Account Status</h4>
-                                                                <DetailItem label="Credit Limit" value={cust?.creditLimit ? `₹${cust.creditLimit.toLocaleString()}` : '---'} />
-                                                                <DetailItem label="Credit Days" value={cust?.creditDays?.name || cust?.creditDays} />
-                                                                <DetailItem label="GST Registered" value={cust?.isGSTRegistered || cust?.IsGSTRegistered ? 'YES' : 'NO'} />
-                                                                {(cust?.isGSTRegistered || cust?.IsGSTRegistered) ? (
-                                                                    <DetailItem label="GST Number" value={cust?.gstNumber || cust?.GSTNumber} />
-                                                                ) : (
-                                                                    <>
-                                                                        <DetailItem label="Aadhar Card No." value={cust?.aadharCard || cust?.AadharCard} />
-                                                                        <DetailItem label="PAN Card No." value={cust?.panCard || cust?.PANCard} />
-                                                                    </>
-                                                                )}
-                                                            </div>
+                                                                <div className="space-y-6">
+                                                                    <h4 className="text-[11px] font-black text-erp-accent/80 uppercase tracking-widest border-b border-erp-accent/10 pb-2">Account Status</h4>
+                                                                    <DetailItem label="Credit Limit" value={cust?.creditLimit ? `₹${cust.creditLimit.toLocaleString()}` : '---'} />
+                                                                    <DetailItem label="Credit Days" value={cust?.creditDays?.name || cust?.creditDays} />
+                                                                    <DetailItem label="GST Registered" value={cust?.isGSTRegistered || cust?.IsGSTRegistered ? 'YES' : 'NO'} />
+                                                                    {(cust?.isGSTRegistered || cust?.IsGSTRegistered) ? (
+                                                                        <DetailItem label="GST Number" value={cust?.gstNumber || cust?.GSTNumber} />
+                                                                    ) : (
+                                                                        <>
+                                                                            <DetailItem label="Aadhar Card No." value={cust?.aadharCard || cust?.AadharCard} />
+                                                                            <DetailItem label="PAN Card No." value={cust?.panCard || cust?.PANCard} />
+                                                                        </>
+                                                                    )}
+                                                                </div>
 
-                                                            {/* Bill To Address */}
-                                                            {cust?.billToAddress && (
-                                                                <div className="md:col-span-4 mt-4">
-                                                                    <h4 className="text-[11px] font-black text-blue-600 uppercase tracking-widest border-b border-blue-100 pb-2 mb-6">Bill To Address</h4>
-                                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                                        <div className="bg-blue-50/40 p-5 rounded-[2rem] border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
-                                                                            <div className="flex items-center gap-3 mb-4">
-                                                                                <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] font-black">
-                                                                                    1
+                                                                {/* Bill To Address */}
+                                                                {cust?.billToAddress && (
+                                                                    <div className="md:col-span-4 mt-4">
+                                                                        <h4 className="text-[11px] font-black text-blue-600 uppercase tracking-widest border-b border-blue-100 pb-2 mb-6">Bill To Address</h4>
+                                                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                                            <div className="bg-blue-50/40 p-5 rounded-[2rem] border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+                                                                                <div className="flex items-center gap-3 mb-4">
+                                                                                    <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] font-black">
+                                                                                        1
+                                                                                    </div>
+                                                                                    <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Bill To</span>
                                                                                 </div>
-                                                                                <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Bill To</span>
-                                                                            </div>
-                                                                            <p className="text-[10px] font-bold text-gray-500 mb-1">{cust?.billToAddress?.branchName || '---'}</p>
-                                                                            <p className="text-xs font-semibold text-gray-700 leading-relaxed mb-4">{cust?.billToAddress?.address || '---'}</p>
-                                                                            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-blue-50">
-                                                                                <div>
-                                                                                    <p className="text-[9px] font-black text-gray-300 uppercase">Contact</p>
-                                                                                    <p className="text-xs font-semibold text-gray-700">{cust?.billToAddress?.customerContactName || '---'}</p>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <p className="text-[9px] font-black text-gray-300 uppercase">Phone</p>
-                                                                                    <p className="text-xs font-semibold text-gray-700">{cust?.billToAddress?.customerContactNumber || '---'}</p>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <p className="text-[9px] font-black text-gray-300 uppercase">Currency</p>
-                                                                                    <p className="text-[10px] font-bold text-blue-600">{cust?.billToAddress?.billingCurrency || '---'}</p>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <p className="text-[9px] font-black text-gray-300 uppercase">Billing Mode</p>
-                                                                                    <p className="text-[10px] font-bold text-blue-600">{cust?.billToAddress?.billingMode || '---'}</p>
+                                                                                <p className="text-[10px] font-bold text-gray-500 mb-1">{cust?.billToAddress?.branchName || '---'}</p>
+                                                                                <p className="text-xs font-semibold text-gray-700 leading-relaxed mb-4">{cust?.billToAddress?.address || '---'}</p>
+                                                                                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-blue-50">
+                                                                                    <div>
+                                                                                        <p className="text-[9px] font-black text-gray-300 uppercase">Contact</p>
+                                                                                        <p className="text-xs font-semibold text-gray-700">{cust?.billToAddress?.customerContactName || '---'}</p>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <p className="text-[9px] font-black text-gray-300 uppercase">Phone</p>
+                                                                                        <p className="text-xs font-semibold text-gray-700">{cust?.billToAddress?.customerContactNumber || '---'}</p>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <p className="text-[9px] font-black text-gray-300 uppercase">Currency</p>
+                                                                                        <p className="text-[10px] font-bold text-blue-600">{cust?.billToAddress?.billingCurrency || '---'}</p>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <p className="text-[9px] font-black text-gray-300 uppercase">Billing Mode</p>
+                                                                                        <p className="text-[10px] font-bold text-blue-600">{cust?.billToAddress?.billingMode || '---'}</p>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            )}
+                                                                )}
 
-                                                            {/* Ship To Addresses */}
-                                                            {cust?.customerShipToDetails?.length > 0 && (
-                                                                <div className="md:col-span-4 mt-4">
-                                                                    <h4 className="text-[11px] font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2 mb-6">Ship To Addresses</h4>
-                                                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                                        {cust?.customerShipToDetails?.map((addr, idx) => (
-                                                                            <div key={idx} className="bg-emerald-50/40 p-5 rounded-[2rem] border border-emerald-100 shadow-sm hover:shadow-md transition-shadow">
-                                                                                <div className="flex items-center gap-3 mb-4">
-                                                                                    <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-black">
-                                                                                        {idx + 1}
+                                                                {/* Ship To Addresses */}
+                                                                {cust?.customerShipToDetails?.length > 0 && (
+                                                                    <div className="md:col-span-4 mt-4">
+                                                                        <h4 className="text-[11px] font-black text-emerald-600 uppercase tracking-widest border-b border-emerald-100 pb-2 mb-6">Ship To Addresses</h4>
+                                                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                                            {cust?.customerShipToDetails?.map((addr, idx) => (
+                                                                                <div key={idx} className="bg-emerald-50/40 p-5 rounded-[2rem] border border-emerald-100 shadow-sm hover:shadow-md transition-shadow">
+                                                                                    <div className="flex items-center gap-3 mb-4">
+                                                                                        <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-black">
+                                                                                            {idx + 1}
+                                                                                        </div>
+                                                                                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Ship To</span>
                                                                                     </div>
-                                                                                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Ship To</span>
+                                                                                    <p className="text-[10px] font-bold text-gray-500 mb-1">{addr?.branchName || '---'}</p>
+                                                                                    <p className="text-xs font-semibold text-gray-700 leading-relaxed mb-4">{addr?.address || addr?.branchAddress || '---'}</p>
+                                                                                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-emerald-50">
+                                                                                        <div>
+                                                                                            <p className="text-[9px] font-black text-gray-300 uppercase">Contact</p>
+                                                                                            <p className="text-xs font-semibold text-gray-700">{addr?.contactPerson || '---'}</p>
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <p className="text-[9px] font-black text-gray-300 uppercase">Phone</p>
+                                                                                            <p className="text-xs font-semibold text-gray-700">{addr?.mobileNo || '---'}</p>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
-                                                                                <p className="text-[10px] font-bold text-gray-500 mb-1">{addr?.branchName || '---'}</p>
-                                                                                <p className="text-xs font-semibold text-gray-700 leading-relaxed mb-4">{addr?.address || addr?.branchAddress || '---'}</p>
-                                                                                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-emerald-50">
-                                                                                    <div>
-                                                                                        <p className="text-[9px] font-black text-gray-300 uppercase">Contact</p>
-                                                                                        <p className="text-xs font-semibold text-gray-700">{addr?.contactPerson || '---'}</p>
-                                                                                    </div>
-                                                                                    <div>
-                                                                                        <p className="text-[9px] font-black text-gray-300 uppercase">Phone</p>
-                                                                                        <p className="text-xs font-semibold text-gray-700">{addr?.mobileNo || '---'}</p>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        ))}
+                                                                            ))}
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            )}
+                                                                )}
 
-                                                            {/* Documents */}
-                                                            <div className="md:col-span-4 mt-6">
-                                                                <h4 className="text-[11px] font-black text-erp-accent/80 uppercase tracking-widest border-b border-erp-accent/10 pb-2 mb-6">Verification Documents</h4>
-                                                                <div className="flex flex-wrap gap-8">
-                                                                    <DocumentChip label="GST Certificate" url={cust?.gstCertificateImg || cust?.GSTCertificateImg} />
-                                                                    <DocumentChip label="Aadhar Card" url={cust?.aadharCardImg || cust?.AadharCardImg || cust?.aadharImage} />
-                                                                    <DocumentChip label="PAN Card" url={cust?.panCardImg || cust?.PANCardImg || cust?.panImage} />
+                                                                {/* Documents */}
+                                                                <div className="md:col-span-4 mt-6">
+                                                                    <h4 className="text-[11px] font-black text-erp-accent/80 uppercase tracking-widest border-b border-erp-accent/10 pb-2 mb-6">Verification Documents</h4>
+                                                                    <div className="flex flex-wrap gap-8">
+                                                                        <DocumentChip label="GST Certificate" url={cust?.gstCertificateImg || cust?.GSTCertificateImg} />
+                                                                        <DocumentChip label="Aadhar Card" url={cust?.aadharCardImg || cust?.AadharCardImg || cust?.aadharImage} />
+                                                                        <DocumentChip label="PAN Card" url={cust?.panCardImg || cust?.PANCardImg || cust?.panImage} />
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </React.Fragment>
-                                ))}
-                                {Array(emptyRowsCount).fill(0).map((_, i) => (
-                                    <tr key={`empty-${i}`} className="border-b border-gray-100 last:border-b-0 h-14">
-                                        <td className="border-r border-gray-100"></td>
-                                        <td className="border-r border-gray-100"></td>
-                                        <td className="border-r border-gray-100"></td>
-                                        <td className="border-r border-gray-100"></td>
-                                        <td className="border-r border-gray-100"></td>
-                                        <td className="border-r border-gray-100"></td>
-                                        <td className="border-r border-gray-100"></td>
-                                        <td></td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </>
-            )}
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </React.Fragment>
+                                    ))}
+                                    {Array(emptyRowsCount).fill(0).map((_, i) => (
+                                        <tr key={`empty-${i}`} className="border-b border-gray-100 last:border-b-0 h-14">
+                                            <td className="border-r border-gray-100"></td>
+                                            <td className="border-r border-gray-100"></td>
+                                            <td className="border-r border-gray-100"></td>
+                                            <td className="border-r border-gray-100"></td>
+                                            <td className="border-r border-gray-100"></td>
+                                            <td className="border-r border-gray-100"></td>
+                                            <td className="border-r border-gray-100"></td>
+                                            <td></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </>
+                )}
 
                 {!loading && pagination.totalPages > 1 && (
                     <div className="flex justify-center items-center gap-4 py-4 border-t border-gray-100">
@@ -1035,8 +1035,8 @@ const DocumentChip = ({ label, url }) => (
 );
 
 const FilterSelect = ({ placeholder, value, onChange, options = [], icon }) => (
-    <div className="relative flex items-center bg-white rounded-lg border border-gray-200 px-3 py-1.5 focus-within:ring-2 focus-within:ring-[#2980B9]/20 focus-within:border-[#2980B9] transition-all w-full group">
-        {icon && <Icon icon={icon} className="text-gray-400 text-base mr-2 group-focus-within:text-[#1F618D] transition-colors" />}
+    <div className="relative flex items-center bg-white rounded-lg border border-gray-200 px-3 py-1.5 focus-within:ring-2 focus-within:ring-[#6d99cf]/20 focus-within:border-[#6d99cf] transition-all w-full group">
+        {icon && <Icon icon={icon} className="text-gray-400 text-base mr-2 group-focus-within:text-[#6d99cf] transition-colors" />}
         <select
             value={value}
             onChange={onChange}
@@ -1047,15 +1047,15 @@ const FilterSelect = ({ placeholder, value, onChange, options = [], icon }) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
         </select>
-        <div className="absolute right-3 pointer-events-none text-gray-400 group-hover:text-[#1F618D] transition-colors">
+        <div className="absolute right-3 pointer-events-none text-gray-400 group-hover:text-[#6d99cf] transition-colors">
             <Icon icon="mdi:chevron-down" className="text-base" />
         </div>
     </div>
 );
 
 const FilterInput = ({ placeholder, value, onChange, icon }) => (
-    <div className="relative flex items-center bg-white rounded-lg border border-gray-200 px-3 py-1.5 focus-within:ring-2 focus-within:ring-[#2980B9]/20 focus-within:border-[#2980B9] transition-all w-full group">
-        {icon && <Icon icon={icon} className="text-gray-400 text-base mr-2 group-focus-within:text-[#1F618D] transition-colors" />}
+    <div className="relative flex items-center bg-white rounded-lg border border-gray-200 px-3 py-1.5 focus-within:ring-2 focus-within:ring-[#6d99cf]/20 focus-within:border-[#6d99cf] transition-all w-full group">
+        {icon && <Icon icon={icon} className="text-gray-400 text-base mr-2 group-focus-within:text-[#6d99cf] transition-colors" />}
         <input
             type="text"
             placeholder={placeholder}

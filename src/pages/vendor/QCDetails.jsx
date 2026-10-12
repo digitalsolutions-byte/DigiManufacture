@@ -144,14 +144,14 @@ const QCDetails = () => {
             {/* Items Table */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-4 border-b border-gray-100 bg-[#eaf4fb]/20">
-                    <h2 className="text-sm font-bold text-[#1F618D] flex items-center gap-2">
+                    <h2 className="text-sm font-bold text-[#6d99cf] flex items-center gap-2">
                         <Icon icon="lucide:list-checks" /> QC Items
                     </h2>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
                         <thead>
-                            <tr className="bg-[#eaf4fb]/50 border-b border-[#2980B9]/15 text-[#1F618D] font-bold text-xs uppercase tracking-wider">
+                            <tr className="bg-[#eaf4fb]/50 border-b border-[#6d99cf]/15 text-[#6d99cf] font-bold text-xs uppercase tracking-wider">
                                 <th className="px-4 py-2.5 font-bold">#</th>
                                 <th className="px-4 py-2.5 font-bold">Item</th>
                                 <th className="px-4 py-2.5 font-bold">Category</th>

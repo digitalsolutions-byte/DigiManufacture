@@ -72,7 +72,7 @@ export default function OrderLensRangeModal({ isOpen, onClose, configs, onAddPro
             // Preset first category
             const initialCat = categories[0]?._id || "";
             const initialCatName = (categories[0]?.name || "").toUpperCase();
-            
+
             let defaultHsn = "9001";
             let defaultPrefix = "DO";
             if (initialCatName.includes("FRAME") || initialCatName.includes("GLASSES")) {
@@ -359,7 +359,7 @@ export default function OrderLensRangeModal({ isOpen, onClose, configs, onAddPro
         const productsToCreate = previewRows.map(({ sph, cyl, addition, buyingPrice, sellingPrice, price, mrp, qty }, i) => {
             const hasPower = (sph && sph !== "0.00") || (cyl && cyl !== "0.00") || addition;
             const labelPower = hasPower ? ("SPH " + sph + " CYL " + cyl + (addition ? " ADD " + addition : "")) : (form.size ? "SIZE " + form.size : "");
-            const generatedName = labelPower 
+            const generatedName = labelPower
                 ? (form.productName.trim().toUpperCase() + " " + labelPower)
                 : form.productName.trim().toUpperCase();
 
@@ -410,13 +410,13 @@ export default function OrderLensRangeModal({ isOpen, onClose, configs, onAddPro
 
             if (res.data?.success) {
                 toast.success(res.data.count + " bulk items created in inventory database!");
-                
+
                 // Construct the formik items
                 const createdProducts = res.data.products || [];
                 const finalOrderWizardRows = productsToCreate.map((prod, index) => {
                     const matchFromDb = createdProducts.find(p => p.productName === prod.productName) || {};
                     const dbId = matchFromDb._id || matchFromDb.id || "";
-                    
+
                     const isRxType = isLens;
                     const bVal = Number(prod.buyingPrice != null ? prod.buyingPrice : (prod.price || 0));
                     const sVal = Number(prod.sellingPrice != null ? prod.sellingPrice : (prod.mrp || 0));
@@ -502,8 +502,8 @@ export default function OrderLensRangeModal({ isOpen, onClose, configs, onAddPro
         }
     };
 
-    const inputCls = "w-full px-3 py-2.5 sm:py-2 text-xs border border-gray-200 rounded-xl sm:rounded-lg outline-none transition bg-gray-50 text-gray-700 focus:border-[#2980B9] focus:bg-white hover:border-gray-300";
-    const selectCls = "w-full px-3 py-2.5 sm:py-2 text-xs border border-gray-200 rounded-xl sm:rounded-lg outline-none transition bg-gray-50 text-gray-700 focus:border-[#2980B9] focus:bg-white hover:border-gray-300";
+    const inputCls = "w-full px-3 py-2.5 sm:py-2 text-xs border border-gray-200 rounded-xl sm:rounded-lg outline-none transition bg-gray-50 text-gray-700 focus:border-[#6d99cf] focus:bg-white hover:border-gray-300";
+    const selectCls = "w-full px-3 py-2.5 sm:py-2 text-xs border border-gray-200 rounded-xl sm:rounded-lg outline-none transition bg-gray-50 text-gray-700 focus:border-[#6d99cf] focus:bg-white hover:border-gray-300";
 
     if (!isOpen) return null;
 
@@ -511,10 +511,10 @@ export default function OrderLensRangeModal({ isOpen, onClose, configs, onAddPro
         <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center sm:p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
             <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-5xl flex flex-col max-h-[95vh] sm:max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-4 sm:zoom-in-95 duration-200 border border-gray-100">
                 {/* Header */}
-                <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-r from-[#2980B9]/5 to-transparent flex-shrink-0">
+                <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-r from-[#6d99cf]/5 to-transparent flex-shrink-0">
                     <div className="min-w-0">
                         <h2 className="text-sm sm:text-base font-bold text-gray-800 flex items-center gap-2">
-                            <Icon icon="mdi:playlist-plus" className="text-[#2980B9] text-lg sm:text-xl flex-shrink-0" />
+                            <Icon icon="mdi:playlist-plus" className="text-[#6d99cf] text-lg sm:text-xl flex-shrink-0" />
                             <span className="truncate">Bulk {isFrameOrGlass ? 'Frame & Glass' : isContactLens ? 'Contact Lens' : 'Lens'} Generator</span>
                         </h2>
                         <p className="text-[10px] sm:text-[11px] text-gray-400 mt-0.5 truncate">
@@ -534,10 +534,10 @@ export default function OrderLensRangeModal({ isOpen, onClose, configs, onAddPro
                     {/* Basic Info */}
                     <div className="bg-gray-50/50 p-3 sm:p-4 rounded-xl border border-gray-100 space-y-3 sm:space-y-4">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-[11px] font-black text-[#1F618D] uppercase tracking-wider">
+                            <h3 className="text-[11px] font-black text-[#6d99cf] uppercase tracking-wider">
                                 {isFrameOrGlass ? 'Frame / Glass Details' : isContactLens ? 'Contact Lens Details' : 'Lens Details'}
                             </h3>
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#2980B9]/10 text-[#2980B9] uppercase">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#6d99cf]/10 text-[#6d99cf] uppercase">
                                 Mode: {isFrameOrGlass ? 'Frame / Glasses' : isContactLens ? 'Contact Lens' : 'Optical Lens'}
                             </span>
                         </div>
@@ -761,7 +761,7 @@ export default function OrderLensRangeModal({ isOpen, onClose, configs, onAddPro
 
                     {/* Defaults & Pricing */}
                     <div className="bg-gray-50/50 p-3 sm:p-4 rounded-xl border border-gray-100 space-y-3 sm:space-y-4">
-                        <h3 className="text-[11px] font-black text-[#1F618D] uppercase tracking-wider">Default Pricing, Qty & Vendor</h3>
+                        <h3 className="text-[11px] font-black text-[#6d99cf] uppercase tracking-wider">Default Pricing, Qty & Vendor</h3>
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4">
                             <div>
                                 <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Buying Price *</label>
@@ -810,17 +810,17 @@ export default function OrderLensRangeModal({ isOpen, onClose, configs, onAddPro
                     <div className="space-y-3 sm:space-y-4">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                             <div>
-                                <h3 className="text-[11px] font-black text-[#1F618D] uppercase tracking-wider">
+                                <h3 className="text-[11px] font-black text-[#6d99cf] uppercase tracking-wider">
                                     {isFrameOrGlass ? 'Power Range / Item Generation Rows' : 'Lens Power Range Rows'}
                                 </h3>
                                 <p className="text-[10px] text-gray-400 mt-0.5">
-                                    {isFrameOrGlass 
-                                        ? 'Configure power steps for reading glasses, or leave blank to create standard frame units' 
+                                    {isFrameOrGlass
+                                        ? 'Configure power steps for reading glasses, or leave blank to create standard frame units'
                                         : 'Configure SPH, CYL and ADD power ranges with step values'}
                                 </p>
                             </div>
                             {totalComboCount > 0 && (
-                                <div className="px-3 py-1 bg-[#eaf4fb] text-[#1F618D] text-[10px] sm:text-xs font-bold rounded-lg border border-[#2980B9]/20 flex-shrink-0">
+                                <div className="px-3 py-1 bg-[#eaf4fb] text-[#6d99cf] text-[10px] sm:text-xs font-bold rounded-lg border border-[#6d99cf]/20 flex-shrink-0">
                                     Total: {totalComboCount} items
                                 </div>
                             )}
@@ -941,7 +941,7 @@ export default function OrderLensRangeModal({ isOpen, onClose, configs, onAddPro
                         <div className="space-y-3 sm:space-y-4 pt-2 border-t border-gray-100">
                             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                                 <div>
-                                    <h3 className="text-[11px] font-black text-[#1F618D] uppercase tracking-wider">
+                                    <h3 className="text-[11px] font-black text-[#6d99cf] uppercase tracking-wider">
                                         Generated Preview ({filteredPreviewRows.length} items)
                                     </h3>
                                     <p className="text-[10px] text-gray-400 mt-0.5">Review generated sheet before injecting into order</p>
@@ -1111,14 +1111,14 @@ export default function OrderLensRangeModal({ isOpen, onClose, configs, onAddPro
                         <button
                             onClick={handlePreview}
                             disabled={submitting || hasAnyRangeErrors}
-                            className="flex-1 sm:flex-none px-4 py-2.5 sm:py-2 rounded-xl sm:rounded-lg border border-[#2980B9] text-[#2980B9] hover:bg-blue-50 text-[10px] sm:text-xs font-bold uppercase tracking-wider transition disabled:opacity-50 text-center"
+                            className="flex-1 sm:flex-none px-4 py-2.5 sm:py-2 rounded-xl sm:rounded-lg border border-[#6d99cf] text-[#6d99cf] hover:bg-blue-50 text-[10px] sm:text-xs font-bold uppercase tracking-wider transition disabled:opacity-50 text-center"
                         >
                             Preview
                         </button>
                         <button
                             onClick={handleSubmit}
                             disabled={submitting || previewRows.length === 0}
-                            className="flex-1 sm:flex-none px-4 py-2.5 sm:py-2 rounded-xl sm:rounded-lg bg-[#2980B9] hover:bg-[#1F618D] text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider transition flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 sm:flex-none px-4 py-2.5 sm:py-2 rounded-xl sm:rounded-lg bg-[#6d99cf] hover:bg-[#6d99cf] text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider transition flex items-center justify-center gap-1.5 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {submitting && <Icon icon="mdi:loading" className="animate-spin text-sm" />}
                             <span className="hidden sm:inline">Generate & Add to Order</span>

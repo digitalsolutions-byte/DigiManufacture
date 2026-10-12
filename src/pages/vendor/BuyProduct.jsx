@@ -212,13 +212,13 @@ const BuyProduct = () => {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => navigate('/vendor/proposal/list')}
-                        className="p-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 hover:text-[#2980B9] hover:bg-blue-50 transition-all"
+                        className="p-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 hover:text-[#6d99cf] hover:bg-blue-50 transition-all"
                     >
                         <Icon icon="mdi:arrow-left" className="text-xl" />
                     </button>
                     <div>
                         <h1 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2">
-                            <Icon icon="lucide:shopping-bag" className="text-[#2980B9]" />
+                            <Icon icon="lucide:shopping-bag" className="text-[#6d99cf]" />
                             Create Purchase Proposal / RFQ
                         </h1>
                         <p className="text-xs text-gray-500 mt-0.5">Send quote request directly via Email + WhatsApp to suppliers</p>
@@ -231,7 +231,7 @@ const BuyProduct = () => {
 
                 {/* 1. Product Selection */}
                 <div className="space-y-3">
-                    <h2 className="text-xs font-bold uppercase tracking-wider text-[#2980B9] flex items-center gap-2 border-b border-gray-100 pb-2">
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-[#6d99cf] flex items-center gap-2 border-b border-gray-100 pb-2">
                         <Icon icon="lucide:search" className="text-base" />
                         1. Product Information
                     </h2>
@@ -298,11 +298,11 @@ const BuyProduct = () => {
                                     onBlur={() => {
                                         setTimeout(() => setShowDropdown(false), 200);
                                     }}
-                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#2980B9] focus:bg-white pr-9"
+                                    className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#6d99cf] focus:bg-white pr-9"
                                     required
                                 />
                                 {isSearchingProduct ? (
-                                    <Icon icon="lucide:loader-2" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#2980B9] animate-spin text-sm" />
+                                    <Icon icon="lucide:loader-2" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6d99cf] animate-spin text-sm" />
                                 ) : form.productName ? (
                                     <button
                                         type="button"
@@ -345,7 +345,7 @@ const BuyProduct = () => {
                                                         {pCode && `Code: ${pCode}`} {pBrand && `• Brand: ${pBrand}`} {pCat && `• Cat: ${pCat}`}
                                                     </span>
                                                 </div>
-                                                <span className="px-2.5 py-1 bg-[#2980B9] text-white font-bold text-[10px] rounded-lg shadow-2xs">
+                                                <span className="px-2.5 py-1 bg-[#6d99cf] text-white font-bold text-[10px] rounded-lg shadow-2xs">
                                                     Select
                                                 </span>
                                             </div>
@@ -362,7 +362,7 @@ const BuyProduct = () => {
                                 placeholder="e.g. ZS-PRIME-1.6"
                                 value={form.productCode}
                                 onChange={(e) => setForm(p => ({ ...p, productCode: e.target.value }))}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#2980B9] focus:bg-white"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#6d99cf] focus:bg-white"
                             />
                         </div>
 
@@ -381,7 +381,7 @@ const BuyProduct = () => {
                                         handleSearchProducts(productSearch, newCat);
                                     }
                                 }}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#2980B9] focus:bg-white"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#6d99cf] focus:bg-white"
                             >
                                 <option value="ALL">ALL CATEGORIES</option>
                                 <option value="LENS">LENS</option>
@@ -399,7 +399,7 @@ const BuyProduct = () => {
                                 placeholder="e.g. ZEISS"
                                 value={form.brand}
                                 onChange={(e) => setForm(p => ({ ...p, brand: e.target.value }))}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#2980B9] focus:bg-white"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#6d99cf] focus:bg-white"
                             />
                         </div>
 
@@ -408,7 +408,7 @@ const BuyProduct = () => {
                             <select
                                 value={form.unit}
                                 onChange={(e) => setForm(p => ({ ...p, unit: e.target.value }))}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#2980B9] focus:bg-white"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#6d99cf] focus:bg-white"
                             >
                                 <option value="PIECE">PIECE</option>
                                 <option value="BOX">BOX</option>
@@ -454,7 +454,7 @@ const BuyProduct = () => {
 
                 {/* 2. Requirement Details */}
                 <div className="space-y-3 pt-2">
-                    <h2 className="text-xs font-bold uppercase tracking-wider text-[#2980B9] flex items-center gap-2 border-b border-gray-100 pb-2">
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-[#6d99cf] flex items-center gap-2 border-b border-gray-100 pb-2">
                         <Icon icon="lucide:calendar-clock" className="text-base" />
                         2. Quantity & Timeline
                     </h2>
@@ -468,7 +468,7 @@ const BuyProduct = () => {
                                 placeholder="e.g. 50"
                                 value={form.requiredQty}
                                 onChange={(e) => setForm(p => ({ ...p, requiredQty: e.target.value }))}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-[#2980B9] focus:bg-white"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-[#6d99cf] focus:bg-white"
                                 required
                             />
                         </div>
@@ -479,7 +479,7 @@ const BuyProduct = () => {
                                 type="date"
                                 value={form.requiredByDate}
                                 onChange={(e) => setForm(p => ({ ...p, requiredByDate: e.target.value }))}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-[#2980B9] focus:bg-white"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-[#6d99cf] focus:bg-white"
                                 required
                             />
                         </div>
@@ -491,7 +491,7 @@ const BuyProduct = () => {
                                 placeholder="Need AR coating variant only, urgent delivery required..."
                                 value={form.description}
                                 onChange={(e) => setForm(p => ({ ...p, description: e.target.value }))}
-                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium text-gray-800 outline-none focus:border-[#2980B9] focus:bg-white resize-none"
+                                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium text-gray-800 outline-none focus:border-[#6d99cf] focus:bg-white resize-none"
                             />
                         </div>
                     </div>
@@ -546,7 +546,7 @@ const BuyProduct = () => {
                 {/* 3. Multi-Vendor Selector */}
                 <div className="space-y-3 pt-2">
                     <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-                        <h2 className="text-xs font-bold uppercase tracking-wider text-[#2980B9] flex items-center gap-2">
+                        <h2 className="text-xs font-bold uppercase tracking-wider text-[#6d99cf] flex items-center gap-2">
                             <Icon icon="lucide:truck" className="text-base" />
                             3. Select Vendors to Request Quote ({form.vendorIds.length} selected) <span className="text-red-500">*</span>
                         </h2>
@@ -563,7 +563,7 @@ const BuyProduct = () => {
                             placeholder="Filter vendors by name, firm or mobile..."
                             value={vendorSearch}
                             onChange={(e) => setVendorSearch(e.target.value)}
-                            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium outline-none focus:border-[#2980B9]"
+                            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium outline-none focus:border-[#6d99cf]"
                         />
                     </div>
 
@@ -580,15 +580,15 @@ const BuyProduct = () => {
                                         key={vendor._id}
                                         onClick={() => toggleVendorSelection(vendor._id)}
                                         className={`p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between gap-2 ${isSelected
-                                                ? 'bg-blue-50/80 border-[#2980B9] shadow-2xs'
-                                                : 'bg-white border-gray-200 hover:border-blue-200'
+                                            ? 'bg-blue-50/80 border-[#6d99cf] shadow-2xs'
+                                            : 'bg-white border-gray-200 hover:border-blue-200'
                                             }`}
                                     >
                                         <div className="min-w-0">
                                             <h4 className="text-xs font-bold text-gray-900 truncate">{vendor.name}</h4>
                                             <span className="text-[10px] text-gray-500 font-semibold truncate block">{vendor.firm || 'No firm name'}</span>
                                         </div>
-                                        <div className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${isSelected ? 'bg-[#2980B9] text-white' : 'border border-gray-300 bg-white'
+                                        <div className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${isSelected ? 'bg-[#6d99cf] text-white' : 'border border-gray-300 bg-white'
                                             }`}>
                                             {isSelected && <Icon icon="mdi:check" className="text-xs" />}
                                         </div>
@@ -612,7 +612,7 @@ const BuyProduct = () => {
                     <button
                         type="submit"
                         disabled={submitting}
-                        className="flex items-center gap-2 px-8 py-3 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-bold rounded-full transition-all shadow-md active:scale-95 disabled:opacity-50"
+                        className="flex items-center gap-2 px-8 py-3 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-bold rounded-full transition-all shadow-md active:scale-95 disabled:opacity-50"
                     >
                         {submitting ? (
                             <>

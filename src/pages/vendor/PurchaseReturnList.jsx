@@ -8,10 +8,10 @@ import { toast } from 'react-toastify';
 
 // ─── Color palette (erp-* tokens only) ───────────────────────────────────────
 const STATUS_META = {
-    Pending:       { cls: 'bg-gray-100 text-gray-600',          icon: 'lucide:clock' },
-    VendorNotified:{ cls: 'bg-[#fef2f0] text-[#E74C3C]',        icon: 'lucide:bell' },
-    Replaced:      { cls: 'bg-[#eaf4fb] text-[#1F618D]',        icon: 'lucide:check-circle' },
-    Closed:        { cls: 'bg-[#f0f4f8] text-[#2980B9]',        icon: 'lucide:lock' },
+    Pending: { cls: 'bg-gray-100 text-gray-600', icon: 'lucide:clock' },
+    VendorNotified: { cls: 'bg-[#fef2f0] text-[#E74C3C]', icon: 'lucide:bell' },
+    Replaced: { cls: 'bg-[#eaf4fb] text-[#6d99cf]', icon: 'lucide:check-circle' },
+    Closed: { cls: 'bg-[#f0f4f8] text-[#6d99cf]', icon: 'lucide:lock' },
 };
 
 const getStatusMeta = (status) =>
@@ -83,15 +83,15 @@ function ProductSearchInput({ value, onChange, onSelect }) {
                 onChange={handleChange}
                 onFocus={() => fetchSuggestions(value)}
                 placeholder="Search product name..."
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 outline-none focus:border-[#2980B9] focus:ring-2 focus:ring-[#2980B9]/20 transition-all placeholder:text-gray-300"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 outline-none focus:border-[#6d99cf] focus:ring-2 focus:ring-[#6d99cf]/20 transition-all placeholder:text-gray-300"
             />
             {searching && (
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 border-2 border-[#2980B9]/40 border-t-[#2980B9] rounded-full animate-spin pointer-events-none" />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 border-2 border-[#6d99cf]/40 border-t-[#6d99cf] rounded-full animate-spin pointer-events-none" />
             )}
             {showSuggestions && suggestions.length > 0 && createPortal(
                 <div className="rpl-dropdown-portal bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden" style={dropdownStyles}>
                     <div className="px-3 py-1.5 border-b border-gray-100 bg-[#eaf4fb]">
-                        <p className="text-[10px] font-bold text-[#1F618D] uppercase tracking-wide">Product Suggestions</p>
+                        <p className="text-[10px] font-bold text-[#6d99cf] uppercase tracking-wide">Product Suggestions</p>
                     </div>
                     <ul className="max-h-40 overflow-y-auto">
                         {suggestions.map((s, i) => (
@@ -99,7 +99,7 @@ function ProductSearchInput({ value, onChange, onSelect }) {
                                 <button onMouseDown={() => handleSelect(s)}
                                     className="w-full flex items-center gap-2 px-3 py-2 hover:bg-[#eaf4fb] transition text-left">
                                     <div className="w-6 h-6 rounded bg-[#eaf4fb] flex items-center justify-center shrink-0">
-                                        <Icon icon="lucide:box" className="text-[#2980B9] text-xs" />
+                                        <Icon icon="lucide:box" className="text-[#6d99cf] text-xs" />
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-xs font-semibold text-gray-800 truncate">{s.name || s.itemName || s.productName || '—'}</p>
@@ -331,13 +331,12 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                         <div className="p-6 overflow-y-auto flex-1 space-y-5">
                             {/* Overall Difference Banner */}
                             {resResult.totalPriceDifference && (
-                                <div className={`p-4 rounded-xl border flex items-center justify-between ${
-                                    resResult.totalPriceDifference.direction === 'HIGHER'
-                                        ? 'bg-amber-50 border-amber-200 text-amber-900'
-                                        : resResult.totalPriceDifference.direction === 'LOWER'
+                                <div className={`p-4 rounded-xl border flex items-center justify-between ${resResult.totalPriceDifference.direction === 'HIGHER'
+                                    ? 'bg-amber-50 border-amber-200 text-amber-900'
+                                    : resResult.totalPriceDifference.direction === 'LOWER'
                                         ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
                                         : 'bg-gray-50 border-gray-200 text-gray-800'
-                                }`}>
+                                    }`}>
                                     <div className="flex items-center gap-3">
                                         <DirectionBadge direction={resResult.totalPriceDifference.direction} />
                                         <div>
@@ -348,8 +347,8 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                                 {resResult.totalPriceDifference.direction === 'HIGHER'
                                                     ? 'Replacement is expensive compared to original item(s)'
                                                     : resResult.totalPriceDifference.direction === 'LOWER'
-                                                    ? 'Replacement is cheaper compared to original item(s)'
-                                                    : 'No price difference'}
+                                                        ? 'Replacement is cheaper compared to original item(s)'
+                                                        : 'No price difference'}
                                             </p>
                                         </div>
                                     </div>
@@ -406,7 +405,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                         <div className="p-4 border-t border-gray-100 bg-gray-50/50 flex justify-end shrink-0">
                             <button
                                 onClick={onClose}
-                                className="px-6 py-2.5 text-xs font-bold text-white bg-[#1F618D] hover:bg-[#174e71] rounded-lg transition-colors"
+                                className="px-6 py-2.5 text-xs font-bold text-white bg-[#6d99cf] hover:bg-[#174e71] rounded-lg transition-colors"
                             >
                                 Done & Close
                             </button>
@@ -418,12 +417,12 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                         {/* Header */}
                         <div className="p-4 border-b border-gray-100 bg-[#eaf4fb] flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-xl bg-[#1F618D] flex items-center justify-center">
+                                <div className="w-9 h-9 rounded-xl bg-[#6d99cf] flex items-center justify-center">
                                     <Icon icon="lucide:package-plus" className="text-white text-lg" />
                                 </div>
                                 <div>
-                                    <h2 className="text-sm font-bold text-[#1F618D]">Create Replacement Order</h2>
-                                    <p className="text-xs text-[#2980B9]">
+                                    <h2 className="text-sm font-bold text-[#6d99cf]">Create Replacement Order</h2>
+                                    <p className="text-xs text-[#6d99cf]">
                                         Vendor: <strong>{returnRecord.vendorName}</strong> · Return #{returnRecord._id?.slice(-6).toUpperCase()}
                                     </p>
                                 </div>
@@ -440,7 +439,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                 <button
                                     type="button"
                                     onClick={handleAddRow}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#1F618D] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-lg transition-colors"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#6d99cf] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-lg transition-colors"
                                 >
                                     <Icon icon="lucide:plus" /> Add Item
                                 </button>
@@ -463,7 +462,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                             {/* Header / Row count & Live Price Diff Tag */}
                                             <div className="flex justify-between items-center border-b border-gray-200/60 pb-2">
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-xs font-bold text-[#1F618D]">Item #{idx + 1}</span>
+                                                    <span className="text-xs font-bold text-[#6d99cf]">Item #{idx + 1}</span>
                                                     {origItem && (
                                                         <span className="text-[10px] text-gray-400">
                                                             (Original: <span className="font-semibold text-gray-600">₹{origPrice}</span>)
@@ -502,12 +501,12 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                                         <label className="block text-[11px] font-semibold text-gray-500">
                                                             Product Name <span className="text-[#E74C3C]">*</span>
                                                         </label>
-                                                        <label className="flex items-center gap-1.5 text-[10px] text-[#1F618D] cursor-pointer">
-                                                            <input 
-                                                                type="checkbox" 
+                                                        <label className="flex items-center gap-1.5 text-[10px] text-[#6d99cf] cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
                                                                 checked={row.isNewProduct}
                                                                 onChange={e => handleRowChange(idx, 'isNewProduct', e.target.checked)}
-                                                                className="rounded border-gray-300 text-[#2980B9] focus:ring-[#2980B9]"
+                                                                className="rounded border-gray-300 text-[#6d99cf] focus:ring-[#6d99cf]"
                                                             />
                                                             Add Custom Item
                                                         </label>
@@ -516,7 +515,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                                         <input
                                                             value={row.productName}
                                                             onChange={e => handleRowChange(idx, 'productName', e.target.value)}
-                                                            className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#2980B9] focus:ring-2 focus:ring-[#2980B9]/20"
+                                                            className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#6d99cf] focus:ring-2 focus:ring-[#6d99cf]/20"
                                                             placeholder="Enter custom product name"
                                                         />
                                                     ) : (
@@ -536,7 +535,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                                     <input
                                                         value={row.productCode}
                                                         onChange={e => handleRowChange(idx, 'productCode', e.target.value)}
-                                                        className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#2980B9] focus:ring-2 focus:ring-[#2980B9]/20"
+                                                        className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#6d99cf] focus:ring-2 focus:ring-[#6d99cf]/20"
                                                         placeholder="Code"
                                                     />
                                                 </div>
@@ -548,7 +547,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                                     <select
                                                         value={row.category}
                                                         onChange={e => handleRowChange(idx, 'category', e.target.value)}
-                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#2980B9]"
+                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#6d99cf]"
                                                     >
                                                         <option value="LENS">Lens</option>
                                                         <option value="FRAME">Frame</option>
@@ -563,7 +562,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                                         min="1"
                                                         value={row.quantity}
                                                         onChange={e => handleRowChange(idx, 'quantity', e.target.value)}
-                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#2980B9]"
+                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#6d99cf]"
                                                     />
                                                 </div>
 
@@ -574,7 +573,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                                         min="0"
                                                         value={row.price}
                                                         onChange={e => handleRowChange(idx, 'price', e.target.value)}
-                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#2980B9]"
+                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#6d99cf]"
                                                         placeholder="0.00"
                                                     />
                                                 </div>
@@ -586,7 +585,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                                         min="0"
                                                         value={row.mrp}
                                                         onChange={e => handleRowChange(idx, 'mrp', e.target.value)}
-                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#2980B9]"
+                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#6d99cf]"
                                                         placeholder="0.00"
                                                     />
                                                 </div>
@@ -597,7 +596,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                                         type="number"
                                                         value={row.gstPercent}
                                                         onChange={e => handleRowChange(idx, 'gstPercent', e.target.value)}
-                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#2980B9]"
+                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#6d99cf]"
                                                         placeholder="0"
                                                     />
                                                 </div>
@@ -608,7 +607,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                                         type="date"
                                                         value={row.expectedDate}
                                                         onChange={e => handleRowChange(idx, 'expectedDate', e.target.value)}
-                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#2980B9]"
+                                                        className="w-full bg-white border border-gray-200 rounded-lg px-2 py-2 text-xs focus:outline-none focus:border-[#6d99cf]"
                                                     />
                                                 </div>
                                             </div>
@@ -625,15 +624,15 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                     value={remarks}
                                     onChange={e => setRemarks(e.target.value)}
                                     placeholder="Overall remarks for this replacement order..."
-                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#2980B9] focus:ring-2 focus:ring-[#2980B9]/20 resize-none"
+                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#6d99cf] focus:ring-2 focus:ring-[#6d99cf]/20 resize-none"
                                 />
                             </div>
 
                             {/* Live Summary & Price Difference Card */}
                             {orderSummary.subtotal > 0 && (
-                                <div className="bg-[#eaf4fb] border border-[#2980B9]/20 rounded-xl p-4 space-y-3">
+                                <div className="bg-[#eaf4fb] border border-[#6d99cf]/20 rounded-xl p-4 space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <p className="text-xs font-bold text-[#1F618D]">Order Summary</p>
+                                        <p className="text-xs font-bold text-[#6d99cf]">Order Summary</p>
                                         {/* Total Price Diff Chip */}
                                         {totalOriginalSubtotal > 0 && (
                                             <div className="flex items-center gap-2">
@@ -646,8 +645,8 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                                         overallDirection === 'HIGHER'
                                                             ? `HIGHER (+₹${overallNetDiff.toFixed(2)})`
                                                             : overallDirection === 'LOWER'
-                                                            ? `LOWER (-₹${Math.abs(overallNetDiff).toFixed(2)})`
-                                                            : 'SAME (₹0)'
+                                                                ? `LOWER (-₹${Math.abs(overallNetDiff).toFixed(2)})`
+                                                                : 'SAME (₹0)'
                                                     }
                                                 />
                                             </div>
@@ -668,7 +667,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                             <span className="font-semibold font-mono">₹{orderSummary.gstTotal.toFixed(2)}</span>
                                         </div>
                                     )}
-                                    <div className="flex justify-between text-sm font-bold text-[#1F618D] border-t border-[#2980B9]/20 pt-2">
+                                    <div className="flex justify-between text-sm font-bold text-[#6d99cf] border-t border-[#6d99cf]/20 pt-2">
                                         <span>Grand Total</span>
                                         <span className="font-mono">₹{orderSummary.grandTotal.toFixed(2)}</span>
                                     </div>
@@ -683,7 +682,7 @@ function ReplacementOrderModal({ returnRecord, onClose, onRefresh }) {
                                 Cancel
                             </button>
                             <button onClick={handleSubmit} disabled={submitting}
-                                className="px-6 py-2.5 text-xs font-semibold text-white bg-[#1F618D] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50">
+                                className="px-6 py-2.5 text-xs font-semibold text-white bg-[#6d99cf] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50">
                                 {submitting
                                     ? <><Icon icon="lucide:loader-2" className="animate-spin" /> Submitting…</>
                                     : <><Icon icon="lucide:package-plus" /> Create Replacement Order</>
@@ -782,14 +781,14 @@ const PurchaseReturnList = () => {
             <div className="flex justify-between items-start mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                        <Icon icon="lucide:undo-2" className="text-[#2980B9]" />
+                        <Icon icon="lucide:undo-2" className="text-[#6d99cf]" />
                         QC Failed (Awaiting Replacement)
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">Track and manage QC-failed items that need vendor replacement</p>
                 </div>
                 <button
                     onClick={fetchReturns}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#2980B9] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#6d99cf] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
                 >
                     <Icon icon="lucide:refresh-cw" className={loading ? 'animate-spin' : ''} />
                     Refresh
@@ -804,7 +803,7 @@ const PurchaseReturnList = () => {
                         onClick={() => setStatusFilter(prev => prev === status ? '' : status)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all
                             ${statusFilter === status
-                                ? 'ring-2 ring-offset-1 ring-[#2980B9] border-transparent ' + meta.cls
+                                ? 'ring-2 ring-offset-1 ring-[#6d99cf] border-transparent ' + meta.cls
                                 : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'}`}
                     >
                         <Icon icon={meta.icon} className="text-sm" />
@@ -830,7 +829,7 @@ const PurchaseReturnList = () => {
                         value={search}
                         onChange={e => { setSearch(e.target.value); setPage(1); }}
                         placeholder="Search vendor name…"
-                        className="pl-9 pr-4 py-2.5 w-full border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] bg-white"
+                        className="pl-9 pr-4 py-2.5 w-full border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] bg-white"
                     />
                 </div>
             </div>
@@ -839,7 +838,7 @@ const PurchaseReturnList = () => {
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm flex-1 overflow-hidden flex flex-col">
                 {loading ? (
                     <div className="flex-1 flex items-center justify-center flex-col gap-3 text-gray-400">
-                        <Icon icon="lucide:loader-2" className="animate-spin text-3xl text-[#2980B9]" />
+                        <Icon icon="lucide:loader-2" className="animate-spin text-3xl text-[#6d99cf]" />
                         <p className="text-sm">Loading returns…</p>
                     </div>
                 ) : filtered.length === 0 ? (
@@ -851,15 +850,15 @@ const PurchaseReturnList = () => {
                     <div className="overflow-x-auto flex-1">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-[#eaf4fb]/50 border-b border-[#2980B9]/15">
-                                    <th className="py-2.5 px-4 w-10 text-[#1F618D]"></th>
-                                    <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Return ID</th>
-                                    <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Vendor</th>
-                                    <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Items</th>
-                                    <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Status</th>
-                                    <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Notified</th>
-                                    <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Date</th>
-                                    <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Actions</th>
+                                <tr className="bg-[#eaf4fb]/50 border-b border-[#6d99cf]/15">
+                                    <th className="py-2.5 px-4 w-10 text-[#6d99cf]"></th>
+                                    <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Return ID</th>
+                                    <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Vendor</th>
+                                    <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Items</th>
+                                    <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Status</th>
+                                    <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Notified</th>
+                                    <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Date</th>
+                                    <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
@@ -875,7 +874,7 @@ const PurchaseReturnList = () => {
                                                 <td className="px-4 py-2 text-center">
                                                     <Icon
                                                         icon="lucide:chevron-right"
-                                                        className={`text-[#1F618D] text-xs transition-transform duration-200 inline-block ${isExpanded ? 'rotate-90' : ''}`}
+                                                        className={`text-[#6d99cf] text-xs transition-transform duration-200 inline-block ${isExpanded ? 'rotate-90' : ''}`}
                                                     />
                                                 </td>
 
@@ -906,7 +905,7 @@ const PurchaseReturnList = () => {
 
                                                 <td className="px-4 py-2">
                                                     {ret.vendorNotified ? (
-                                                        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#2980B9] bg-[#eaf4fb] px-2 py-0.5 rounded-full">
+                                                        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#6d99cf] bg-[#eaf4fb] px-2 py-0.5 rounded-full">
                                                             <Icon icon="lucide:bell-ring" className="text-xs" />
                                                             Yes
                                                         </span>
@@ -925,14 +924,14 @@ const PurchaseReturnList = () => {
                                                     <div className="flex items-center gap-2">
                                                         <button
                                                             onClick={() => navigate(`/vendor/purchase-items/${ret.purchaseOrderId}`)}
-                                                            className="text-[10px] text-[#2980B9] hover:text-[#1F618D] font-medium flex items-center gap-1 bg-[#eaf4fb] hover:bg-[#d4eaf6] px-2.5 py-1 rounded-lg transition-colors"
+                                                            className="text-[10px] text-[#6d99cf] hover:text-[#6d99cf] font-medium flex items-center gap-1 bg-[#eaf4fb] hover:bg-[#d4eaf6] px-2.5 py-1 rounded-lg transition-colors"
                                                         >
                                                             <Icon icon="lucide:receipt" className="text-xs" />
                                                             View PO
                                                         </button>
                                                         <button
                                                             onClick={() => setReplacementModal(ret)}
-                                                            className="text-[10px] text-[#1F618D] hover:text-white font-medium flex items-center gap-1 bg-[#eaf4fb] hover:bg-[#1F618D] border border-[#2980B9]/20 px-2.5 py-1 rounded-lg transition-colors"
+                                                            className="text-[10px] text-[#6d99cf] hover:text-white font-medium flex items-center gap-1 bg-[#eaf4fb] hover:bg-[#6d99cf] border border-[#6d99cf]/20 px-2.5 py-1 rounded-lg transition-colors"
                                                             title="Create Replacement Order"
                                                         >
                                                             <Icon icon="lucide:package-plus" className="text-xs" />
@@ -954,7 +953,7 @@ const PurchaseReturnList = () => {
                                                                         className="flex items-start justify-between bg-white rounded-xl border border-gray-100 p-4 gap-4 shadow-sm">
                                                                         <div className="flex items-start gap-3 flex-1 min-w-0">
                                                                             <div className="w-9 h-9 bg-[#eaf4fb] rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                                                                                <Icon icon="lucide:box" className="text-[#2980B9] text-sm" />
+                                                                                <Icon icon="lucide:box" className="text-[#6d99cf] text-sm" />
                                                                             </div>
                                                                             <div className="min-w-0">
                                                                                 <p className="text-sm font-semibold text-gray-800">{item.itemName}</p>
@@ -1002,7 +1001,7 @@ const PurchaseReturnList = () => {
                                                                             </span>
                                                                             <button
                                                                                 onClick={e => { e.stopPropagation(); openModal(ret._id, item.itemId, item.itemStatus); }}
-                                                                                className="text-xs text-[#2980B9] hover:text-[#1F618D] font-medium bg-[#eaf4fb] hover:bg-[#d4eaf6] px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 whitespace-nowrap"
+                                                                                className="text-xs text-[#6d99cf] hover:text-[#6d99cf] font-medium bg-[#eaf4fb] hover:bg-[#d4eaf6] px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 whitespace-nowrap"
                                                                             >
                                                                                 <Icon icon="lucide:pencil" className="text-sm" />
                                                                                 Update
@@ -1055,12 +1054,12 @@ const PurchaseReturnList = () => {
 
                         <div className="p-6 border-b border-gray-100 bg-[#eaf4fb] flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-[#1F618D] rounded-xl flex items-center justify-center">
+                                <div className="w-10 h-10 bg-[#6d99cf] rounded-xl flex items-center justify-center">
                                     <Icon icon="lucide:refresh-ccw" className="text-white text-xl" />
                                 </div>
                                 <div>
-                                    <h2 className="text-base font-bold text-[#1F618D]">Update Return Item Status</h2>
-                                    <p className="text-xs text-[#2980B9] font-mono mt-0.5">
+                                    <h2 className="text-base font-bold text-[#6d99cf]">Update Return Item Status</h2>
+                                    <p className="text-xs text-[#6d99cf] font-mono mt-0.5">
                                         Item: {modal.itemId?.slice(-8).toUpperCase()}
                                     </p>
                                 </div>
@@ -1074,7 +1073,7 @@ const PurchaseReturnList = () => {
                             <div>
                                 <label className="block text-xs font-semibold text-gray-600 mb-1.5">New Status</label>
                                 <select value={modalStatus} onChange={e => setModalStatus(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] bg-white">
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] bg-white">
                                     <option value="Pending">Pending</option>
                                     <option value="VendorNotified">Vendor Notified</option>
                                     <option value="Replaced">Replaced</option>
@@ -1088,7 +1087,7 @@ const PurchaseReturnList = () => {
                                     value={modalRemarks}
                                     onChange={e => setModalRemarks(e.target.value)}
                                     placeholder="e.g. Replacement received on 10 July 2026…"
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9] transition-all resize-none"
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf] transition-all resize-none"
                                 />
                             </div>
                         </div>
@@ -1099,7 +1098,7 @@ const PurchaseReturnList = () => {
                                 Cancel
                             </button>
                             <button onClick={handleUpdateStatus} disabled={submitting}
-                                className="px-5 py-2.5 text-sm font-medium text-white bg-[#1F618D] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50">
+                                className="px-5 py-2.5 text-sm font-medium text-white bg-[#6d99cf] hover:bg-[#174e71] rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50">
                                 {submitting
                                     ? <Icon icon="lucide:loader-2" className="animate-spin" />
                                     : <Icon icon="lucide:check" />

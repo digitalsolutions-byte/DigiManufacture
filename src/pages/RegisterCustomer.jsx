@@ -1020,7 +1020,7 @@ export default function RegisterCustomer() {
                     </button>
                     <div className="h-5 w-px bg-gray-200 flex-shrink-0" />
                     <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#2980B9] flex items-center justify-center flex-shrink-0">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#6d99cf] flex items-center justify-center flex-shrink-0">
                             <Icon icon="mdi:account-group-outline" className="text-white text-base sm:text-lg" />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -1037,7 +1037,7 @@ export default function RegisterCustomer() {
                             type="button"
                             onClick={handleSaveDraft}
                             disabled={savingDraft || loadingDraftData}
-                            className="flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg border border-[#2980B9] text-[#2980B9] text-[11px] sm:text-[12px] font-bold hover:bg-blue-50 transition-all disabled:opacity-50"
+                            className="flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg border border-[#6d99cf] text-[#6d99cf] text-[11px] sm:text-[12px] font-bold hover:bg-blue-50 transition-all disabled:opacity-50"
                         >
                             <Icon icon={savingDraft ? "mdi:loading" : "mdi:content-save-outline"} className={savingDraft ? "animate-spin text-xs sm:text-sm" : "text-xs sm:text-sm"} />
                             <span className="hidden xs:inline">{savingDraft ? 'Saving...' : draftCustomerId ? 'Update Draft' : 'Save Draft'}</span>
@@ -1048,261 +1048,261 @@ export default function RegisterCustomer() {
             </div>
 
             <div className="max-w-5xl mx-auto px-4 space-y-4">
-            {/* Correction Header */}
-            {correctionRequest && (
-                <div className="bg-red-50/80 border border-red-200 rounded-xl p-4 flex items-start gap-4 shadow-sm">
-                    <div className="w-9 h-9 rounded-lg bg-red-500 text-white flex items-center justify-center shrink-0">
-                        <Icon icon="mdi:comment-alert" className="text-xl" />
-                    </div>
-                    <div>
-                        <h4 className="text-red-800 font-black uppercase tracking-widest text-xs mb-1">Correction Required</h4>
-                        <p className="text-red-700 font-medium text-xs leading-relaxed">{correctionRequest.remark}</p>
-                        <p className="text-red-500 text-[10px] uppercase font-bold tracking-widest mt-1">
-                            Requested By: {correctionRequest.requestedBy?.employeeName || 'Finance'} • {correctionRequest.requestedAt ? new Date(correctionRequest.requestedAt).toLocaleDateString() : 'Recent'}
-                        </p>
-                    </div>
-                </div>
-            )}
-
-            {/* Approval Mode Banner */}
-            {isApprovalMode && (
-                <div className="bg-blue-50/80 border border-blue-200 rounded-xl p-4 flex items-start gap-4 shadow-sm">
-                    <div className="w-9 h-9 rounded-lg bg-[#2980B9] text-white flex items-center justify-center shrink-0">
-                        <Icon icon="mdi:shield-check" className="text-xl" />
-                    </div>
-                    <div className="flex-1">
-                        <h4 className="text-[#2980B9] font-black uppercase tracking-widest text-xs mb-1">
-                            {currentStage === 'salesHead' ? 'Sales Head Approval Mode' : 'Finance Approval Mode'}
-                        </h4>
-                        <p className="text-gray-700 font-medium text-xs leading-relaxed">
-                            {currentStage === 'salesHead'
-                                ? 'You are reviewing a customer registration as Sales Head. Please verify all details and Approve or Request Redirection.'
-                                : 'You are reviewing a customer registration submitted by Sales. Please verify all details, provide mandatory details, and click Approve to finalize.'}
-                        </p>
-                    </div>
-                    {hasApprovalAccess && (activeStep === 0 || activeStep === 1 || activeStep === steps.length - 1) && (
-                        <button
-                            type="button"
-                            className="px-3 py-1.5 rounded-lg border border-[#2980B9] text-[#2980B9] text-xs font-bold hover:bg-blue-100/50 transition-all"
-                            onClick={() => dispatch(toggleVerificationMode())}
-                        >
-                            {isVerificationMode ? 'Cancel Selection' : 'Send for Correction'}
-                        </button>
-                    )}
-                </div>
-            )}
-
-            {isReadOnlyMode && (
-                <div className="bg-gray-100 border border-gray-200 rounded-xl p-4 flex items-start gap-4 shadow-sm">
-                    <div className="w-9 h-9 rounded-lg bg-gray-500 text-white flex items-center justify-center shrink-0">
-                        <Icon icon="mdi:eye" className="text-xl" />
-                    </div>
-                    <div className="flex-1">
-                        <h4 className="text-gray-800 font-black uppercase tracking-widest text-xs mb-1">View Only Mode</h4>
-                        <p className="text-gray-600 font-medium text-xs leading-relaxed">
-                            This registration is currently <span className="text-[#2980B9] font-bold">Pending {currentStage === 'salesHead' ? 'Sales Head' : 'Finance'} Approval</span>. Modifications are restricted at this stage.
-                        </p>
-                    </div>
-                    <div className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-[10px] font-black uppercase tracking-widest">
-                        READ ONLY
-                    </div>
-                </div>
-            )}
-
-            {/* Main Content Card with Accordion */}
-            <div className="max-w-6xl mx-auto">
-                <div className="space-y-6">
-                    {!configsLoaded || loadingDraftData ? (
-                        <div className="flex flex-col items-center justify-center p-20 bg-white rounded-3xl border border-gray-100 shadow-sm animate-in fade-in zoom-in duration-500">
-                            <div className="relative">
-                                <div className="w-16 h-16 rounded-full border-4 border-erp-accent/10 border-t-erp-accent animate-spin" />
-                                <Icon icon="mdi:account-details" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl text-erp-accent" />
-                            </div>
-                            <p className="mt-6 text-gray-400 font-black uppercase tracking-[0.2em] text-[10px] animate-pulse">Initializing Application...</p>
+                {/* Correction Header */}
+                {correctionRequest && (
+                    <div className="bg-red-50/80 border border-red-200 rounded-xl p-4 flex items-start gap-4 shadow-sm">
+                        <div className="w-9 h-9 rounded-lg bg-red-500 text-white flex items-center justify-center shrink-0">
+                            <Icon icon="mdi:comment-alert" className="text-xl" />
                         </div>
-                    ) : (
-                        <FormikProvider value={formik}>
-                            {steps.map((label, idx) => {
-                                const isActive = activeStep === idx;
-                                const isValid = isStepValid(idx);
-                                const isCompleted = idx < activeStep && isValid;
-                                const hasError = !isValid && (idx < activeStep || formik.submitCount > 0);
+                        <div>
+                            <h4 className="text-red-800 font-black uppercase tracking-widest text-xs mb-1">Correction Required</h4>
+                            <p className="text-red-700 font-medium text-xs leading-relaxed">{correctionRequest.remark}</p>
+                            <p className="text-red-500 text-[10px] uppercase font-bold tracking-widest mt-1">
+                                Requested By: {correctionRequest.requestedBy?.employeeName || 'Finance'} • {correctionRequest.requestedAt ? new Date(correctionRequest.requestedAt).toLocaleDateString() : 'Recent'}
+                            </p>
+                        </div>
+                    </div>
+                )}
 
-                                return (
-                                    <div
-                                        key={idx}
-                                        className={`bg-white rounded-xl border overflow-hidden transition-all duration-300 ${hasError
-                                            ? 'border-red-300 shadow-sm'
-                                            : isActive
-                                                ? 'border-[#2980B9] shadow-md ring-1 ring-[#2980B9]/20'
-                                                : 'border-gray-200 shadow-sm hover:border-gray-300'
-                                            }`}
-                                    >
-                                        {/* Accordion Header */}
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                if (idx <= activeStep || isStepValid(activeStep) || isReadOnlyMode || isApprovalMode) {
-                                                    setStep(idx);
-                                                } else {
-                                                    toast.warning(`Please complete the current step first.`);
-                                                }
-                                            }}
-                                            className={`w-full flex items-center justify-between px-5 py-3.5 cursor-pointer transition-colors ${isActive ? 'bg-gray-50/80 border-b border-gray-100' : 'bg-white hover:bg-gray-50/50'}`}
+                {/* Approval Mode Banner */}
+                {isApprovalMode && (
+                    <div className="bg-blue-50/80 border border-blue-200 rounded-xl p-4 flex items-start gap-4 shadow-sm">
+                        <div className="w-9 h-9 rounded-lg bg-[#6d99cf] text-white flex items-center justify-center shrink-0">
+                            <Icon icon="mdi:shield-check" className="text-xl" />
+                        </div>
+                        <div className="flex-1">
+                            <h4 className="text-[#6d99cf] font-black uppercase tracking-widest text-xs mb-1">
+                                {currentStage === 'salesHead' ? 'Sales Head Approval Mode' : 'Finance Approval Mode'}
+                            </h4>
+                            <p className="text-gray-700 font-medium text-xs leading-relaxed">
+                                {currentStage === 'salesHead'
+                                    ? 'You are reviewing a customer registration as Sales Head. Please verify all details and Approve or Request Redirection.'
+                                    : 'You are reviewing a customer registration submitted by Sales. Please verify all details, provide mandatory details, and click Approve to finalize.'}
+                            </p>
+                        </div>
+                        {hasApprovalAccess && (activeStep === 0 || activeStep === 1 || activeStep === steps.length - 1) && (
+                            <button
+                                type="button"
+                                className="px-3 py-1.5 rounded-lg border border-[#6d99cf] text-[#6d99cf] text-xs font-bold hover:bg-blue-100/50 transition-all"
+                                onClick={() => dispatch(toggleVerificationMode())}
+                            >
+                                {isVerificationMode ? 'Cancel Selection' : 'Send for Correction'}
+                            </button>
+                        )}
+                    </div>
+                )}
+
+                {isReadOnlyMode && (
+                    <div className="bg-gray-100 border border-gray-200 rounded-xl p-4 flex items-start gap-4 shadow-sm">
+                        <div className="w-9 h-9 rounded-lg bg-gray-500 text-white flex items-center justify-center shrink-0">
+                            <Icon icon="mdi:eye" className="text-xl" />
+                        </div>
+                        <div className="flex-1">
+                            <h4 className="text-gray-800 font-black uppercase tracking-widest text-xs mb-1">View Only Mode</h4>
+                            <p className="text-gray-600 font-medium text-xs leading-relaxed">
+                                This registration is currently <span className="text-[#6d99cf] font-bold">Pending {currentStage === 'salesHead' ? 'Sales Head' : 'Finance'} Approval</span>. Modifications are restricted at this stage.
+                            </p>
+                        </div>
+                        <div className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md text-[10px] font-black uppercase tracking-widest">
+                            READ ONLY
+                        </div>
+                    </div>
+                )}
+
+                {/* Main Content Card with Accordion */}
+                <div className="max-w-6xl mx-auto">
+                    <div className="space-y-6">
+                        {!configsLoaded || loadingDraftData ? (
+                            <div className="flex flex-col items-center justify-center p-20 bg-white rounded-3xl border border-gray-100 shadow-sm animate-in fade-in zoom-in duration-500">
+                                <div className="relative">
+                                    <div className="w-16 h-16 rounded-full border-4 border-erp-accent/10 border-t-erp-accent animate-spin" />
+                                    <Icon icon="mdi:account-details" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl text-erp-accent" />
+                                </div>
+                                <p className="mt-6 text-gray-400 font-black uppercase tracking-[0.2em] text-[10px] animate-pulse">Initializing Application...</p>
+                            </div>
+                        ) : (
+                            <FormikProvider value={formik}>
+                                {steps.map((label, idx) => {
+                                    const isActive = activeStep === idx;
+                                    const isValid = isStepValid(idx);
+                                    const isCompleted = idx < activeStep && isValid;
+                                    const hasError = !isValid && (idx < activeStep || formik.submitCount > 0);
+
+                                    return (
+                                        <div
+                                            key={idx}
+                                            className={`bg-white rounded-xl border overflow-hidden transition-all duration-300 ${hasError
+                                                ? 'border-red-300 shadow-sm'
+                                                : isActive
+                                                    ? 'border-[#6d99cf] shadow-md ring-1 ring-[#6d99cf]/20'
+                                                    : 'border-gray-200 shadow-sm hover:border-gray-300'
+                                                }`}
                                         >
-                                            <div className="flex items-center gap-3">
-                                                <div className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold transition-all ${hasError
-                                                    ? 'bg-red-500 text-white'
-                                                    : isActive
-                                                        ? 'bg-[#2980B9] text-white shadow-sm'
-                                                        : isCompleted
-                                                            ? 'bg-emerald-600 text-white'
-                                                            : 'bg-gray-100 text-gray-500'
-                                                    }`}>
-                                                    {hasError ? <Icon icon="mdi:alert-circle" className="text-base" /> : (isCompleted ? <Icon icon="mdi:check" className="text-base" /> : idx + 1)}
-                                                </div>
-                                                <div className="text-left">
-                                                    <h3 className={`font-black uppercase tracking-widest text-xs transition-colors ${hasError
-                                                        ? 'text-red-600'
+                                            {/* Accordion Header */}
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (idx <= activeStep || isStepValid(activeStep) || isReadOnlyMode || isApprovalMode) {
+                                                        setStep(idx);
+                                                    } else {
+                                                        toast.warning(`Please complete the current step first.`);
+                                                    }
+                                                }}
+                                                className={`w-full flex items-center justify-between px-5 py-3.5 cursor-pointer transition-colors ${isActive ? 'bg-gray-50/80 border-b border-gray-100' : 'bg-white hover:bg-gray-50/50'}`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold transition-all ${hasError
+                                                        ? 'bg-red-500 text-white'
                                                         : isActive
-                                                            ? 'text-[#2980B9]'
-                                                            : 'text-gray-700'
+                                                            ? 'bg-[#6d99cf] text-white shadow-sm'
+                                                            : isCompleted
+                                                                ? 'bg-emerald-600 text-white'
+                                                                : 'bg-gray-100 text-gray-500'
                                                         }`}>
-                                                        {label}
-                                                    </h3>
-                                                    <p className="text-[10px] text-gray-400 font-medium">
-                                                        {hasError ? 'Attention Required' : (isActive ? 'Currently Editing' : isCompleted ? 'Completed' : 'Pending Details')}
-                                                    </p>
+                                                        {hasError ? <Icon icon="mdi:alert-circle" className="text-base" /> : (isCompleted ? <Icon icon="mdi:check" className="text-base" /> : idx + 1)}
+                                                    </div>
+                                                    <div className="text-left">
+                                                        <h3 className={`font-black uppercase tracking-widest text-xs transition-colors ${hasError
+                                                            ? 'text-red-600'
+                                                            : isActive
+                                                                ? 'text-[#6d99cf]'
+                                                                : 'text-gray-700'
+                                                            }`}>
+                                                            {label}
+                                                        </h3>
+                                                        <p className="text-[10px] text-gray-400 font-medium">
+                                                            {hasError ? 'Attention Required' : (isActive ? 'Currently Editing' : isCompleted ? 'Completed' : 'Pending Details')}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ${isActive ? 'rotate-180 bg-blue-50 text-[#2980B9]' : 'bg-gray-100 text-gray-400'}`}>
-                                                <Icon icon="mdi:chevron-down" className="text-lg" />
-                                            </div>
-                                        </button>
+                                                <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-300 ${isActive ? 'rotate-180 bg-blue-50 text-[#6d99cf]' : 'bg-gray-100 text-gray-400'}`}>
+                                                    <Icon icon="mdi:chevron-down" className="text-lg" />
+                                                </div>
+                                            </button>
 
-                                        {/* Accordion Content */}
-                                        {isActive && (
-                                            <div className="p-6 md:p-8 animate-in fade-in duration-300">
-                                                {renderStepContent(idx)}
+                                            {/* Accordion Content */}
+                                            {isActive && (
+                                                <div className="p-6 md:p-8 animate-in fade-in duration-300">
+                                                    {renderStepContent(idx)}
 
-                                                {/* Step Footer Navigation */}
-                                                {!isReadOnlyMode && (
-                                                    <div className="mt-8 pt-5 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                                                        <div className="flex items-center gap-2">
-                                                            {!isApprovalMode && (
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={handleSaveDraft}
-                                                                    disabled={savingDraft || loadingDraftData}
-                                                                    className="flex items-center gap-1.5 px-4 py-2 bg-white border border-gray-200 text-gray-600 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-gray-50 transition-all disabled:opacity-50"
-                                                                >
-                                                                    <Icon icon={draftCustomerId ? "mdi:cloud-check" : "mdi:content-save"} className="text-sm text-gray-400" />
-                                                                    {draftCustomerId ? 'Update Draft' : 'Save Draft'}
-                                                                </button>
-                                                            )}
+                                                    {/* Step Footer Navigation */}
+                                                    {!isReadOnlyMode && (
+                                                        <div className="mt-8 pt-5 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                                            <div className="flex items-center gap-2">
+                                                                {!isApprovalMode && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={handleSaveDraft}
+                                                                        disabled={savingDraft || loadingDraftData}
+                                                                        className="flex items-center gap-1.5 px-4 py-2 bg-white border border-gray-200 text-gray-600 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-gray-50 transition-all disabled:opacity-50"
+                                                                    >
+                                                                        <Icon icon={draftCustomerId ? "mdi:cloud-check" : "mdi:content-save"} className="text-sm text-gray-400" />
+                                                                        {draftCustomerId ? 'Update Draft' : 'Save Draft'}
+                                                                    </button>
+                                                                )}
 
-                                                            {activeStep > 0 && (
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => setStep(activeStep - 1)}
-                                                                    className="flex items-center gap-1 px-4 py-2 bg-gray-100 text-gray-600 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-gray-200 transition-all"
-                                                                >
-                                                                    <Icon icon="mdi:chevron-left" className="text-base" />
-                                                                    Back
-                                                                </button>
-                                                            )}
-                                                        </div>
+                                                                {activeStep > 0 && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => setStep(activeStep - 1)}
+                                                                        className="flex items-center gap-1 px-4 py-2 bg-gray-100 text-gray-600 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-gray-200 transition-all"
+                                                                    >
+                                                                        <Icon icon="mdi:chevron-left" className="text-base" />
+                                                                        Back
+                                                                    </button>
+                                                                )}
+                                                            </div>
 
-                                                        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                                                            {hasApprovalAccess && isApprovalMode && (
-                                                                <div className="flex gap-2 w-full sm:w-auto">
-                                                                    {!isVerificationMode ? (
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => dispatch(toggleVerificationMode())}
-                                                                            className="flex-1 sm:flex-none px-4 py-2 bg-amber-50 border border-amber-200 text-amber-700 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-amber-100 transition-all"
-                                                                        >
-                                                                            Needs Correction
-                                                                        </button>
-                                                                    ) : (
-                                                                        <>
+                                                            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                                                {hasApprovalAccess && isApprovalMode && (
+                                                                    <div className="flex gap-2 w-full sm:w-auto">
+                                                                        {!isVerificationMode ? (
                                                                             <button
                                                                                 type="button"
                                                                                 onClick={() => dispatch(toggleVerificationMode())}
-                                                                                className="flex-1 sm:flex-none px-4 py-2 bg-gray-100 text-gray-600 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-gray-200 transition-all"
+                                                                                className="flex-1 sm:flex-none px-4 py-2 bg-amber-50 border border-amber-200 text-amber-700 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-amber-100 transition-all"
                                                                             >
-                                                                                Cancel
+                                                                                Needs Correction
                                                                             </button>
-                                                                            <button
-                                                                                type="button"
-                                                                                onClick={() => {
-                                                                                    const fields = Object.keys(rejectedFields).filter(k => rejectedFields[k]);
-                                                                                    if (fields.length === 0) {
-                                                                                        toast.warning("Please select fields to reject");
-                                                                                        return;
-                                                                                    }
-                                                                                    setCorrectionRequest({ fields, remarks: '' });
-                                                                                    setIsCorrectionModalOpen(true);
-                                                                                }}
-                                                                                className="flex-1 sm:flex-none px-4 py-2 bg-red-600 text-white text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-red-700 transition-all"
-                                                                            >
-                                                                                Confirm Rejection
-                                                                            </button>
-                                                                        </>
-                                                                    )}
-                                                                </div>
-                                                            )}
+                                                                        ) : (
+                                                                            <>
+                                                                                <button
+                                                                                    type="button"
+                                                                                    onClick={() => dispatch(toggleVerificationMode())}
+                                                                                    className="flex-1 sm:flex-none px-4 py-2 bg-gray-100 text-gray-600 text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-gray-200 transition-all"
+                                                                                >
+                                                                                    Cancel
+                                                                                </button>
+                                                                                <button
+                                                                                    type="button"
+                                                                                    onClick={() => {
+                                                                                        const fields = Object.keys(rejectedFields).filter(k => rejectedFields[k]);
+                                                                                        if (fields.length === 0) {
+                                                                                            toast.warning("Please select fields to reject");
+                                                                                            return;
+                                                                                        }
+                                                                                        setCorrectionRequest({ fields, remarks: '' });
+                                                                                        setIsCorrectionModalOpen(true);
+                                                                                    }}
+                                                                                    className="flex-1 sm:flex-none px-4 py-2 bg-red-600 text-white text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-red-700 transition-all"
+                                                                                >
+                                                                                    Confirm Rejection
+                                                                                </button>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                )}
 
+                                                                <button
+                                                                    type="button"
+                                                                    disabled={isVerificationMode}
+                                                                    onClick={handleMainAction}
+                                                                    className={`flex-1 sm:flex-none flex items-center justify-center px-6 py-2 bg-[#6d99cf] hover:bg-[#2471a3] text-white text-[11px] font-bold uppercase tracking-wider rounded-lg transition-all gap-1.5 shadow-sm active:scale-95 ${isVerificationMode ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+                                                                >
+                                                                    <span>
+                                                                        {activeStep === steps.length - 1
+                                                                            ? (isApprovalMode ? (currentStage === 'salesHead' ? 'Approve as Sales Head' : 'Approve & Finalize (Finance)') : (correctionCustomerId ? 'Resubmit' : (hasApprovalAccess ? 'Register' : 'Submit')))
+                                                                            : 'Next Step'}
+                                                                    </span>
+                                                                    <Icon icon={activeStep === steps.length - 1 ? "mdi:check-decagram" : "mdi:arrow-right-circle"} className="text-sm" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {isReadOnlyMode && activeStep === steps.length - 1 && (
+                                                        <div className="mt-8 pt-5 border-t border-gray-100 flex justify-end">
                                                             <button
                                                                 type="button"
-                                                                disabled={isVerificationMode}
                                                                 onClick={handleMainAction}
-                                                                className={`flex-1 sm:flex-none flex items-center justify-center px-6 py-2 bg-[#2980B9] hover:bg-[#2471a3] text-white text-[11px] font-bold uppercase tracking-wider rounded-lg transition-all gap-1.5 shadow-sm active:scale-95 ${isVerificationMode ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+                                                                className="px-6 py-2 bg-gray-800 text-white text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-gray-900 transition-all active:scale-95"
                                                             >
-                                                                <span>
-                                                                    {activeStep === steps.length - 1
-                                                                        ? (isApprovalMode ? (currentStage === 'salesHead' ? 'Approve as Sales Head' : 'Approve & Finalize (Finance)') : (correctionCustomerId ? 'Resubmit' : (hasApprovalAccess ? 'Register' : 'Submit')))
-                                                                        : 'Next Step'}
-                                                                </span>
-                                                                <Icon icon={activeStep === steps.length - 1 ? "mdi:check-decagram" : "mdi:arrow-right-circle"} className="text-sm" />
+                                                                Close Review
                                                             </button>
                                                         </div>
-                                                    </div>
-                                                )}
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </FormikProvider>
+                        )}
+                    </div>
 
-                                                {isReadOnlyMode && activeStep === steps.length - 1 && (
-                                                    <div className="mt-8 pt-5 border-t border-gray-100 flex justify-end">
-                                                        <button
-                                                            type="button"
-                                                            onClick={handleMainAction}
-                                                            className="px-6 py-2 bg-gray-800 text-white text-[11px] font-bold uppercase tracking-wider rounded-lg hover:bg-gray-900 transition-all active:scale-95"
-                                                        >
-                                                            Close Review
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </FormikProvider>
-                    )}
+                    {/* Footer removed and moved to top header */}
+                    <div className="h-32" />
                 </div>
 
-                {/* Footer removed and moved to top header */}
-                <div className="h-32" />
-            </div>
-
-            <CorrectionRequestModal
-                isOpen={isCorrectionModalOpen}
-                onClose={() => setIsCorrectionModalOpen(false)}
-                onSubmit={handleSendForCorrection}
-                customerName={formik.values.shopName || formik.values.ownerName}
-                initialFields={correctionRequest?.fields || correctionRequest?.fieldsToCorrect || []}
-                loading={saving}
-                showTargetRole={currentStage === 'salesHead'}
-            />
+                <CorrectionRequestModal
+                    isOpen={isCorrectionModalOpen}
+                    onClose={() => setIsCorrectionModalOpen(false)}
+                    onSubmit={handleSendForCorrection}
+                    customerName={formik.values.shopName || formik.values.ownerName}
+                    initialFields={correctionRequest?.fields || correctionRequest?.fieldsToCorrect || []}
+                    loading={saving}
+                    showTargetRole={currentStage === 'salesHead'}
+                />
             </div>
         </div>
     );

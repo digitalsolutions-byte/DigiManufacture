@@ -42,11 +42,10 @@ const VendorTabNav = ({ groupKey, activePath }) => {
                             key={tab.path}
                             type="button"
                             onClick={() => navigate(tab.path)}
-                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition-all whitespace-nowrap cursor-pointer ${
-                                isActive
-                                    ? 'bg-[#2980B9] text-white shadow-sm ring-2 ring-[#2980B9]/20'
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition-all whitespace-nowrap cursor-pointer ${isActive
+                                    ? 'bg-[#6d99cf] text-white shadow-sm ring-2 ring-[#6d99cf]/20'
                                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/80 bg-white/40 border border-transparent'
-                            }`}
+                                }`}
                         >
                             {tab.icon && <Icon icon={tab.icon} className={`text-base ${isActive ? 'text-white' : 'text-slate-400'}`} />}
                             <span>{tab.label}</span>

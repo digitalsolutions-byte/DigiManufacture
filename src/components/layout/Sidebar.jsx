@@ -42,7 +42,7 @@ const navItems = [
         label: 'Orders',
         icon: 'lucide:headphones',
         subItems: [
-            { label: 'New Order', path: PATHS.CUSTOMER_CARE.NEW_ORDER, page: 'NEW_ORDER', isBold: true },
+            { label: 'Bulk Order', path: PATHS.CUSTOMER_CARE.NEW_ORDER, page: 'NEW_ORDER', isBold: true },
             { label: 'All Orders', path: PATHS.CUSTOMER_CARE.ALL_ORDERS, page: 'ALL_ORDERS' },
             { label: 'Retailer Orders', path: PATHS.CUSTOMER_CARE.RETAILER_ORDERS, page: 'ALL_ORDERS' },
             { label: 'Draft Orders', path: PATHS.CUSTOMER_CARE.DRAFT_ORDERS, page: 'ALL_ORDERS' },
@@ -115,8 +115,6 @@ const navItems = [
             },
         ],
     },
-    // { label: 'Quality', icon: 'lucide:badge-check', path: PATHS.OPERATIONS.QC, page: 'QUALITY' },
-    // { label: 'Fitting', icon: 'lucide:ruler', path: PATHS.OPERATIONS.FITTING, page: 'FITTING' },
     {
         label: 'Ecommerce',
         icon: 'lucide:store',
@@ -125,6 +123,13 @@ const navItems = [
             { label: 'Frames', path: PATHS.ECOMMERCE.FRAMES },
         ],
     },
+    { label: 'Lab', icon: 'lucide:flask-conical', path: PATHS.OPERATIONS.LAB, showArrow: true },
+    { label: 'Tint', icon: 'lucide:droplet', path: PATHS.OPERATIONS.TINT, showArrow: true },
+    { label: 'Hard Coat', icon: 'lucide:shield', path: PATHS.OPERATIONS.HARD_COAT, showArrow: true },
+    { label: 'ARC', icon: 'lucide:layers', path: PATHS.OPERATIONS.ARC, showArrow: true },
+    { label: 'QC', icon: 'lucide:clipboard-check', path: PATHS.OPERATIONS.QC, showArrow: true },
+    { label: 'Fitting', icon: 'lucide:ruler', path: PATHS.OPERATIONS.FITTING, showArrow: true },
+    { label: 'Dispatch', icon: 'lucide:truck', path: PATHS.OPERATIONS.DISPATCH, showArrow: true },
     {
         label: 'Accounts & Payments',
         icon: 'lucide:coins',
@@ -144,11 +149,11 @@ const navItems = [
 const platformOwnerNavItems = [
     { label: ' Dashboard', icon: 'lucide:layout-dashboard', path: PATHS.ROOT },
     {
-        label: 'Wholesalers',
+        label: 'Manufacturers',
         icon: 'lucide:building-2',
         subItems: [
-            { label: 'Register Wholesaler ', path: PATHS.TENANTS.REGISTER },
-            { label: 'Wholesalers List', path: PATHS.TENANTS.LIST },
+            { label: 'Register Manufacturer ', path: PATHS.TENANTS.REGISTER },
+            { label: 'Manufacturers List', path: PATHS.TENANTS.LIST },
         ],
     },
 ];
@@ -281,7 +286,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     },
                 }}
             >
-                {/* Logo & Wholesaler Header Area */}
+                {/* Logo & Manufacturer Header Area */}
                 <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
                     <img
                         src={tenant?.storeInformation?.storeLogo || logo}
@@ -375,6 +380,22 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                                         color: isActive ? "white" : "text.primary"
                                                     }}
                                                 />
+                                                {item.showArrow && (
+                                                    <svg
+                                                        width="8"
+                                                        height="8"
+                                                        viewBox="0 0 24 24"
+                                                        fill="currentColor"
+                                                        style={{
+                                                            opacity: isActive ? 0.95 : 0.45,
+                                                            color: isActive ? 'white' : 'inherit',
+                                                            flexShrink: 0,
+                                                            marginLeft: 'auto'
+                                                        }}
+                                                    >
+                                                        <path d="M8 5v14l11-7z" />
+                                                    </svg>
+                                                )}
                                             </ListItemButton>
                                         )}
                                     </ListItem>
@@ -382,11 +403,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                                     {hasSub && (
                                         <Collapse in={isOpenSub} timeout="auto" unmountOnExit>
                                             <List component="div" disablePadding sx={{ ml: 2, borderLeft: '1px solid', borderColor: 'divider', my: 1 }}>
-                                                {item.subItems.map((sub) => {
+                                                {item.subItems.map((sub, sIdx) => {
                                                     const isSubActive = location.pathname === sub.path || (sub.paths && sub.paths.includes(location.pathname));
+                                                    const subKey = sub.path ? `${sub.path}-${sub.label}` : `sub-${sIdx}-${sub.label}`;
                                                     return (
                                                         <ListItemButton
-                                                            key={sub.path}
+                                                            key={subKey}
                                                             component={NavLink}
                                                             to={sub.path}
                                                             onClick={() => isMobile && toggleSidebar()}

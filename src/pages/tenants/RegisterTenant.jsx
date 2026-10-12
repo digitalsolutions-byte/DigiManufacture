@@ -91,7 +91,7 @@ const FileUploadBox = ({ label, required, value, onChange, fieldName }) => {
                                 href={value}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-[11px] text-[#2980B9] font-medium hover:underline inline-flex items-center gap-1 mt-0.5"
+                                className="text-[11px] text-[#6d99cf] font-medium hover:underline inline-flex items-center gap-1 mt-0.5"
                             >
                                 <span>View File</span>
                                 <Icon icon="lucide:external-link" className="text-[10px]" />
@@ -108,7 +108,7 @@ const FileUploadBox = ({ label, required, value, onChange, fieldName }) => {
                     </button>
                 </div>
             ) : (
-                <label className="relative flex flex-col items-center justify-center p-3.5 border border-dashed border-slate-300 hover:border-[#2980B9] rounded-xl cursor-pointer bg-slate-50/50 hover:bg-slate-50 transition-all text-center group">
+                <label className="relative flex flex-col items-center justify-center p-3.5 border border-dashed border-slate-300 hover:border-[#6d99cf] rounded-xl cursor-pointer bg-slate-50/50 hover:bg-slate-50 transition-all text-center group">
                     <input
                         type="file"
                         accept="image/*,.pdf"
@@ -117,17 +117,17 @@ const FileUploadBox = ({ label, required, value, onChange, fieldName }) => {
                         className="hidden"
                     />
                     {uploading ? (
-                        <div className="flex items-center gap-2 text-xs font-semibold text-[#2980B9]">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-[#6d99cf]">
                             <Icon icon="lucide:loader-2" className="animate-spin text-base" />
                             <span>Uploading file...</span>
                         </div>
                     ) : (
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-[#2980B9]/10 flex items-center justify-center text-slate-400 group-hover:text-[#2980B9] transition-colors">
+                            <div className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-[#6d99cf]/10 flex items-center justify-center text-slate-400 group-hover:text-[#6d99cf] transition-colors">
                                 <Icon icon="lucide:upload-cloud" className="text-base" />
                             </div>
                             <div className="text-left">
-                                <div className="text-xs font-semibold text-slate-700 group-hover:text-[#2980B9]">Click to upload</div>
+                                <div className="text-xs font-semibold text-slate-700 group-hover:text-[#6d99cf]">Click to upload</div>
                                 <div className="text-[10px] text-slate-400 font-medium">PNG, JPG, PDF up to 5MB</div>
                             </div>
                         </div>
@@ -240,7 +240,7 @@ export default function RegisterTenant() {
         e.preventDefault();
 
         if (!formData.storeName || !formData.address || !formData.ownerName || !formData.email || !formData.mobile || !formData.password) {
-            toast.error('Please fill in all required Wholesaler and Owner details.');
+            toast.error('Please fill in all required Manufacturer and Owner details.');
             return;
         }
 
@@ -257,25 +257,25 @@ export default function RegisterTenant() {
         setSubmitting(true);
         try {
             const isDemoOn = Boolean(formData.demoMode);
-          const demoExpVal = formData.demoExpiry || null;
-          const payload = {
-              ...formData,
-              demoMode: isDemoOn,
-              demoExpiry: demoExpVal,
-              featureFlags: {
-                  ...(formData.featureFlags || {}),
-                  demoMode: isDemoOn,
-                  demoExpiry: demoExpVal
-              }
-          };
-          const res = await registerTenant(payload);
+            const demoExpVal = formData.demoExpiry || null;
+            const payload = {
+                ...formData,
+                demoMode: isDemoOn,
+                demoExpiry: demoExpVal,
+                featureFlags: {
+                    ...(formData.featureFlags || {}),
+                    demoMode: isDemoOn,
+                    demoExpiry: demoExpVal
+                }
+            };
+            const res = await registerTenant(payload);
             if (res.success) {
-                toast.success(res.message || 'Wholesaler created successfully!');
+                toast.success(res.message || 'Manufacturer created successfully!');
                 navigate(PATHS.TENANTS.LIST);
             }
         } catch (error) {
-            console.error('Create Wholesaler Error:', error);
-            toast.error(error.message || error.error?.message || 'Failed to create wholesaler.');
+            console.error('Create Manufacturer Error:', error);
+            toast.error(error.message || error.error?.message || 'Failed to create manufacturer.');
         } finally {
             setSubmitting(false);
         }
@@ -286,13 +286,13 @@ export default function RegisterTenant() {
             {/* Header & Breadcrumb */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-100 pb-4">
                 <div>
-                    <h1 className="text-xl font-bold text-slate-800 tracking-tight">Create Wholesaler</h1>
+                    <h1 className="text-xl font-bold text-slate-800 tracking-tight">Create Manufacturer</h1>
                     <div className="flex items-center gap-2 text-xs text-slate-400 font-medium mt-0.5">
                         <span className="hover:text-slate-600 cursor-pointer" onClick={() => navigate(PATHS.ROOT)}>Home</span>
                         <span>/</span>
-                        <span className="hover:text-slate-600 cursor-pointer" onClick={() => navigate(PATHS.TENANTS.LIST)}>Wholesalers</span>
+                        <span className="hover:text-slate-600 cursor-pointer" onClick={() => navigate(PATHS.TENANTS.LIST)}>Manufacturers</span>
                         <span>/</span>
-                        <span className="text-[#2980B9] font-semibold">Create</span>
+                        <span className="text-[#6d99cf] font-semibold">Create</span>
                     </div>
                 </div>
                 <button
@@ -300,34 +300,34 @@ export default function RegisterTenant() {
                     onClick={() => navigate(PATHS.TENANTS.LIST)}
                     className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all"
                 >
-                    <Icon icon="lucide:arrow-left" className="text-sm" /> Wholesaler List
+                    <Icon icon="lucide:arrow-left" className="text-sm" /> Manufacturer List
                 </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* TOP SECTION: Wholesaler Info & Owner Details */}
+                {/* TOP SECTION: Manufacturer Info & Owner Details */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                    {/* 1. Wholesaler Information Card */}
+                    {/* 1. Manufacturer Information Card */}
                     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-xs space-y-5">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                             <div className="flex items-center gap-2.5">
-                                <Icon icon="lucide:building-2" className="text-[#2980B9] text-xl" />
-                                <h2 className="text-sm font-bold text-slate-800">Wholesaler Information</h2>
+                                <Icon icon="lucide:building-2" className="text-[#6d99cf] text-xl" />
+                                <h2 className="text-sm font-bold text-slate-800">Manufacturer Information</h2>
                             </div>
                             <span className="px-2.5 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-semibold uppercase">Required</span>
                         </div>
 
                         <div className="space-y-4">
                             <div>
-                                <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">WHOLESALER NAME *</label>
+                                <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">MANUFACTURER NAME *</label>
                                 <input
                                     type="text"
                                     name="storeName"
                                     value={formData.storeName}
                                     onChange={handleChange}
                                     placeholder="e.g. Vision Care Optics"
-                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all"
+                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all"
                                     required
                                 />
                             </div>
@@ -340,7 +340,7 @@ export default function RegisterTenant() {
                                     value={formData.address}
                                     onChange={handleChange}
                                     placeholder="Full business address"
-                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all"
+                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all"
                                     required
                                 />
                             </div>
@@ -354,7 +354,7 @@ export default function RegisterTenant() {
                                         value={formData.storeTiming}
                                         onChange={handleChange}
                                         placeholder="10 AM – 8 PM"
-                                        className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all"
+                                        className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all"
                                         required
                                     />
                                 </div>
@@ -365,7 +365,7 @@ export default function RegisterTenant() {
                                         name="expiryDate"
                                         value={formData.expiryDate}
                                         onChange={handleChange}
-                                        className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all cursor-pointer"
+                                        className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all cursor-pointer"
                                         required
                                     />
                                 </div>
@@ -379,7 +379,7 @@ export default function RegisterTenant() {
                                     value={formData.emailApi}
                                     onChange={handleChange}
                                     placeholder="API Integration Key..."
-                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all"
+                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all"
                                 />
                             </div>
 
@@ -389,15 +389,15 @@ export default function RegisterTenant() {
                                 {false && (
                                     <>
                                         <label className="flex items-center gap-2 cursor-pointer select-none">
-                                            <input type="checkbox" name="showAds" checked={formData.showAds} onChange={handleChange} className="w-4 h-4 rounded border-slate-300 text-[#2980B9] focus:ring-0" />
+                                            <input type="checkbox" name="showAds" checked={formData.showAds} onChange={handleChange} className="w-4 h-4 rounded border-slate-300 text-[#6d99cf] focus:ring-0" />
                                             <span className="text-xs font-medium text-slate-700">Show Ads</span>
                                         </label>
                                         <label className="flex items-center gap-2 cursor-pointer select-none">
-                                            <input type="checkbox" name="hasGST" checked={formData.hasGST} onChange={handleChange} className="w-4 h-4 rounded border-slate-300 text-[#2980B9] focus:ring-0" />
+                                            <input type="checkbox" name="hasGST" checked={formData.hasGST} onChange={handleChange} className="w-4 h-4 rounded border-slate-300 text-[#6d99cf] focus:ring-0" />
                                             <span className="text-xs font-medium text-slate-700">Has GST</span>
                                         </label>
                                         <label className="flex items-center gap-2 cursor-pointer select-none">
-                                            <input type="checkbox" name="hasAI" checked={formData.hasAI} onChange={handleChange} className="w-4 h-4 rounded border-slate-300 text-[#2980B9] focus:ring-0" />
+                                            <input type="checkbox" name="hasAI" checked={formData.hasAI} onChange={handleChange} className="w-4 h-4 rounded border-slate-300 text-[#6d99cf] focus:ring-0" />
                                             <span className="text-xs font-medium text-slate-700">Has AI</span>
                                         </label>
                                     </>
@@ -431,7 +431,7 @@ export default function RegisterTenant() {
                                         name="demoExpiry"
                                         value={formData.demoExpiry || ''}
                                         onChange={handleChange}
-                                        className="w-full sm:w-auto px-3.5 py-2 bg-white border border-amber-300 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#2980B9]"
+                                        className="w-full sm:w-auto px-3.5 py-2 bg-white border border-amber-300 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#6d99cf]"
                                     />
                                 </div>
                             ) : null}
@@ -443,7 +443,7 @@ export default function RegisterTenant() {
                         <div className="space-y-4">
                             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                                 <div className="flex items-center gap-2.5">
-                                    <Icon icon="lucide:user" className="text-[#2980B9] text-xl" />
+                                    <Icon icon="lucide:user" className="text-[#6d99cf] text-xl" />
                                     <h2 className="text-sm font-bold text-slate-800">Owner & Account Details</h2>
                                 </div>
                                 <span className="px-2.5 py-0.5 bg-slate-100 text-slate-600 rounded-md text-[10px] font-semibold uppercase">Required</span>
@@ -457,7 +457,7 @@ export default function RegisterTenant() {
                                     value={formData.ownerName}
                                     onChange={handleChange}
                                     placeholder="Full name"
-                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all"
+                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all"
                                     required
                                 />
                             </div>
@@ -471,7 +471,7 @@ export default function RegisterTenant() {
                                         value={formData.email}
                                         onChange={handleChange}
                                         placeholder="owner@domain.com"
-                                        className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all"
+                                        className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all"
                                         required
                                     />
                                 </div>
@@ -483,7 +483,7 @@ export default function RegisterTenant() {
                                         value={formData.mobile}
                                         onChange={handleChange}
                                         placeholder="10-digit mobile"
-                                        className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all"
+                                        className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all"
                                         required
                                     />
                                 </div>
@@ -497,7 +497,7 @@ export default function RegisterTenant() {
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder="Initial account password"
-                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#2980B9] focus:bg-white transition-all"
+                                    className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 outline-none focus:border-[#6d99cf] focus:bg-white transition-all"
                                     required
                                 />
                             </div>
@@ -507,7 +507,7 @@ export default function RegisterTenant() {
                         {false && (
                             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3 mt-2">
                                 <div className="flex items-center gap-2">
-                                    <Icon icon="lucide:star" className="text-[#2980B9] text-sm" />
+                                    <Icon icon="lucide:star" className="text-[#6d99cf] text-sm" />
                                     <h3 className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">LOYALTY &amp; REFERRAL</h3>
                                 </div>
                                 <div className="grid grid-cols-3 gap-3">
@@ -536,7 +536,7 @@ export default function RegisterTenant() {
                     {/* 3. Logo & Documents */}
                     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-xs space-y-4">
                         <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3">
-                            <Icon icon="lucide:image" className="text-[#2980B9] text-xl" />
+                            <Icon icon="lucide:image" className="text-[#6d99cf] text-xl" />
                             <h2 className="text-sm font-bold text-slate-800">Logo & Documents</h2>
                         </div>
 
@@ -584,10 +584,10 @@ export default function RegisterTenant() {
                     <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-100 shadow-xs space-y-4">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                             <div className="flex items-center gap-2.5">
-                                <Icon icon="lucide:shield-check" className="text-[#2980B9] text-xl" />
+                                <Icon icon="lucide:shield-check" className="text-[#6d99cf] text-xl" />
                                 <h2 className="text-sm font-bold text-slate-800">Subscription Plan</h2>
                             </div>
-                            <span className="px-2.5 py-0.5 bg-slate-100 text-[#2980B9] rounded-md text-[10px] font-bold uppercase">
+                            <span className="px-2.5 py-0.5 bg-slate-100 text-[#6d99cf] rounded-md text-[10px] font-bold uppercase">
                                 {formData.planType}
                             </span>
                         </div>
@@ -597,11 +597,10 @@ export default function RegisterTenant() {
                             {/* PRO */}
                             <div
                                 onClick={() => handlePlanSelect('PRO')}
-                                className={`p-3.5 sm:p-4 rounded-xl cursor-pointer transition-all border flex sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center gap-2 ${
-                                    formData.planType === 'PRO'
-                                        ? 'bg-[#2980B9] text-white border-[#2980B9] shadow-xs'
+                                className={`p-3.5 sm:p-4 rounded-xl cursor-pointer transition-all border flex sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center gap-2 ${formData.planType === 'PRO'
+                                        ? 'bg-[#6d99cf] text-white border-[#6d99cf] shadow-xs'
                                         : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                                }`}
+                                    }`}
                             >
                                 <div className="flex items-center sm:flex-col gap-2 sm:gap-1">
                                     <Icon icon="lucide:sparkles" className="text-xl sm:text-lg sm:mx-auto" />
@@ -616,11 +615,10 @@ export default function RegisterTenant() {
                             {/* PREMIUM */}
                             <div
                                 onClick={() => handlePlanSelect('PREMIUM')}
-                                className={`p-3.5 sm:p-4 rounded-xl cursor-pointer transition-all border flex sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center gap-2 ${
-                                    formData.planType === 'PREMIUM'
-                                        ? 'bg-[#2980B9] text-white border-[#2980B9] shadow-xs'
+                                className={`p-3.5 sm:p-4 rounded-xl cursor-pointer transition-all border flex sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center gap-2 ${formData.planType === 'PREMIUM'
+                                        ? 'bg-[#6d99cf] text-white border-[#6d99cf] shadow-xs'
                                         : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                                }`}
+                                    }`}
                             >
                                 <div className="flex items-center sm:flex-col gap-2 sm:gap-1">
                                     <Icon icon="lucide:settings" className="text-xl sm:text-lg sm:mx-auto" />
@@ -635,11 +633,10 @@ export default function RegisterTenant() {
                             {/* CUSTOM */}
                             <div
                                 onClick={() => handlePlanSelect('CUSTOM')}
-                                className={`p-3.5 sm:p-4 rounded-xl cursor-pointer transition-all border flex sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center gap-2 ${
-                                    formData.planType === 'CUSTOM'
-                                        ? 'bg-[#2980B9] text-white border-[#2980B9] shadow-xs'
+                                className={`p-3.5 sm:p-4 rounded-xl cursor-pointer transition-all border flex sm:flex-col items-center justify-between sm:justify-center text-left sm:text-center gap-2 ${formData.planType === 'CUSTOM'
+                                        ? 'bg-[#6d99cf] text-white border-[#6d99cf] shadow-xs'
                                         : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                                }`}
+                                    }`}
                             >
                                 <div className="flex items-center sm:flex-col gap-2 sm:gap-1">
                                     <Icon icon="lucide:sliders" className="text-xl sm:text-lg sm:mx-auto" />
@@ -657,7 +654,7 @@ export default function RegisterTenant() {
                             <div className="space-y-2 pt-2">
                                 <div className="flex justify-between items-center text-[11px] font-semibold text-slate-500">
                                     <span>SELECT PAGES</span>
-                                    <span className="text-[#2980B9] font-bold">{formData.selectedPages.length} selected</span>
+                                    <span className="text-[#6d99cf] font-bold">{formData.selectedPages.length} selected</span>
                                 </div>
                                 <div className="max-h-64 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                                     {ALL_PAGES_LIST.map(p => {
@@ -666,12 +663,11 @@ export default function RegisterTenant() {
                                             <div
                                                 key={p.key}
                                                 onClick={() => togglePageCustom(p.key)}
-                                                className={`p-2.5 rounded-xl border text-xs cursor-pointer transition-all ${
-                                                    checked ? 'bg-slate-100 border-[#2980B9]/40' : 'bg-slate-50/50 border-slate-200 hover:bg-slate-100'
-                                                }`}
+                                                className={`p-2.5 rounded-xl border text-xs cursor-pointer transition-all ${checked ? 'bg-slate-100 border-[#6d99cf]/40' : 'bg-slate-50/50 border-slate-200 hover:bg-slate-100'
+                                                    }`}
                                             >
                                                 <div className="flex items-center gap-2 font-semibold text-slate-800">
-                                                    <input type="checkbox" checked={checked} readOnly className="w-3.5 h-3.5 rounded text-[#2980B9]" />
+                                                    <input type="checkbox" checked={checked} readOnly className="w-3.5 h-3.5 rounded text-[#6d99cf]" />
                                                     <span>{p.key}</span>
                                                 </div>
                                                 {p.permissions && (
@@ -718,16 +714,16 @@ export default function RegisterTenant() {
                     {/* WhatsApp Integration */}
                     <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-100 shadow-xs space-y-5">
                         <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3">
-                            <Icon icon="lucide:message-square" className="text-[#2980B9] text-xl" />
+                            <Icon icon="lucide:message-square" className="text-[#6d99cf] text-xl" />
                             <h2 className="text-sm font-bold text-slate-800">WhatsApp Integration</h2>
                         </div>
                         <div className="space-y-2">
                             <label className="text-[10px] font-semibold text-slate-400 uppercase block">UTILITY MESSAGES PROVIDER</label>
                             <div className="grid grid-cols-2 gap-2">
-                                <button type="button" onClick={() => setFormData(p => ({ ...p, utilityProvider: 'META' }))} className={`py-3 px-3 rounded-xl font-semibold text-xs uppercase flex items-center justify-center gap-2 transition-all ${formData.utilityProvider === 'META' ? 'bg-[#2980B9] text-white shadow-xs' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'}`}>
+                                <button type="button" onClick={() => setFormData(p => ({ ...p, utilityProvider: 'META' }))} className={`py-3 px-3 rounded-xl font-semibold text-xs uppercase flex items-center justify-center gap-2 transition-all ${formData.utilityProvider === 'META' ? 'bg-[#6d99cf] text-white shadow-xs' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'}`}>
                                     <Icon icon="logos:whatsapp-icon" className="text-sm flex-shrink-0" /><span>META</span>
                                 </button>
-                                <button type="button" onClick={() => setFormData(p => ({ ...p, utilityProvider: 'NON_META' }))} className={`py-3 px-3 rounded-xl font-semibold text-xs uppercase flex items-center justify-center gap-2 transition-all ${formData.utilityProvider === 'NON_META' ? 'bg-[#2980B9] text-white shadow-xs' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'}`}>
+                                <button type="button" onClick={() => setFormData(p => ({ ...p, utilityProvider: 'NON_META' }))} className={`py-3 px-3 rounded-xl font-semibold text-xs uppercase flex items-center justify-center gap-2 transition-all ${formData.utilityProvider === 'NON_META' ? 'bg-[#6d99cf] text-white shadow-xs' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'}`}>
                                     <Icon icon="lucide:link" className="text-sm flex-shrink-0" /><span>NON_META</span>
                                 </button>
                             </div>
@@ -735,10 +731,10 @@ export default function RegisterTenant() {
                         <div className="space-y-2">
                             <label className="text-[10px] font-semibold text-slate-400 uppercase block">PROMOTION MESSAGES PROVIDER</label>
                             <div className="grid grid-cols-2 gap-2">
-                                <button type="button" onClick={() => setFormData(p => ({ ...p, promotionProvider: 'META' }))} className={`py-3 px-3 rounded-xl font-semibold text-xs uppercase flex items-center justify-center gap-2 transition-all ${formData.promotionProvider === 'META' ? 'bg-[#2980B9] text-white shadow-xs' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'}`}>
+                                <button type="button" onClick={() => setFormData(p => ({ ...p, promotionProvider: 'META' }))} className={`py-3 px-3 rounded-xl font-semibold text-xs uppercase flex items-center justify-center gap-2 transition-all ${formData.promotionProvider === 'META' ? 'bg-[#6d99cf] text-white shadow-xs' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'}`}>
                                     <Icon icon="logos:whatsapp-icon" className="text-sm flex-shrink-0" /><span>META</span>
                                 </button>
-                                <button type="button" onClick={() => setFormData(p => ({ ...p, promotionProvider: 'NON_META' }))} className={`py-3 px-3 rounded-xl font-semibold text-xs uppercase flex items-center justify-center gap-2 transition-all ${formData.promotionProvider === 'NON_META' ? 'bg-[#2980B9] text-white shadow-xs' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'}`}>
+                                <button type="button" onClick={() => setFormData(p => ({ ...p, promotionProvider: 'NON_META' }))} className={`py-3 px-3 rounded-xl font-semibold text-xs uppercase flex items-center justify-center gap-2 transition-all ${formData.promotionProvider === 'NON_META' ? 'bg-[#6d99cf] text-white shadow-xs' : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'}`}>
                                     <Icon icon="lucide:link" className="text-sm flex-shrink-0" /><span>NON_META</span>
                                 </button>
                             </div>
@@ -755,10 +751,10 @@ export default function RegisterTenant() {
                     <button
                         type="submit"
                         disabled={submitting}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3 bg-[#2980B9] hover:bg-[#2471A3] text-white font-semibold text-xs rounded-xl shadow-xs transition-all active:scale-95 disabled:opacity-50"
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-7 py-3 bg-[#6d99cf] hover:bg-[#2471A3] text-white font-semibold text-xs rounded-xl shadow-xs transition-all active:scale-95 disabled:opacity-50"
                     >
                         {submitting ? <Icon icon="lucide:loader-2" className="animate-spin text-base" /> : <Icon icon="lucide:check-circle" className="text-base" />}
-                        <span>{submitting ? 'Registering...' : 'Create Wholesaler'}</span>
+                        <span>{submitting ? 'Registering...' : 'Create Manufacturer'}</span>
                     </button>
                 </div>
             </form>

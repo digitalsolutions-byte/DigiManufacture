@@ -95,8 +95,8 @@ const PurchaseItemDetails = () => {
     const [submittingInward, setSubmittingInward] = useState(false);
 
     // Inward receipt tracking fields
-    const [inwardReceivedBy, setInwardReceivedBy]     = useState('');
-    const [inwardReceivedOn, setInwardReceivedOn]     = useState('');
+    const [inwardReceivedBy, setInwardReceivedBy] = useState('');
+    const [inwardReceivedOn, setInwardReceivedOn] = useState('');
     const [inwardReceivedFrom, setInwardReceivedFrom] = useState('');
 
     // Fetch Details
@@ -407,10 +407,10 @@ const PurchaseItemDetails = () => {
             const payload = {
                 purchaseOrderId: id,
                 remarks: inwardRemarks,
-                receivedBy:   inwardReceivedBy.trim()   || null,
-                receivedOn:   inwardReceivedOn          || new Date().toISOString().split('T')[0],
+                receivedBy: inwardReceivedBy.trim() || null,
+                receivedOn: inwardReceivedOn || new Date().toISOString().split('T')[0],
                 receivedFrom: inwardReceivedFrom.trim() || null,
-                invoices:     uploadedInvoices,
+                invoices: uploadedInvoices,
                 items: selectedItems.map(item => ({
                     itemId: item.itemId,
                     receivedQty: Number(item.receivedQty),
@@ -569,7 +569,7 @@ const PurchaseItemDetails = () => {
                         </div>
                         <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-1">
                             <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Amount (Inc. GST)</span>
-                            <span className="text-lg font-bold text-[#2980B9]">₹{totals.grandTotal.toFixed(2)}</span>
+                            <span className="text-lg font-bold text-[#6d99cf]">₹{totals.grandTotal.toFixed(2)}</span>
                             <div className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
                                 <span>GST: <span className="font-bold text-emerald-600">₹{totals.gstTotal.toFixed(2)}</span></span>
                                 <span className="text-gray-300">•</span>
@@ -786,10 +786,10 @@ const PurchaseItemDetails = () => {
                             <div className="bg-[#eaf4fb]/40 border border-blue-200/60 rounded-xl p-4 space-y-2">
                                 <div className="flex items-center justify-between">
                                     <label className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
-                                        <Icon icon="lucide:paperclip" className="text-[#1F618D]" />
+                                        <Icon icon="lucide:paperclip" className="text-[#6d99cf]" />
                                         Invoices / Challans / Bills (Optional, max 5)
                                     </label>
-                                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-50 border border-[#2980B9]/30 text-[#1F618D] text-xs font-semibold rounded-lg cursor-pointer transition shadow-2xs">
+                                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-50 border border-[#6d99cf]/30 text-[#6d99cf] text-xs font-semibold rounded-lg cursor-pointer transition shadow-2xs">
                                         <Icon icon="lucide:upload" className="text-xs" />
                                         <span>Attach Files</span>
                                         <input
@@ -810,7 +810,7 @@ const PurchaseItemDetails = () => {
                                     <div className="flex flex-wrap gap-1.5 pt-1">
                                         {inwardInvoices.map((f, fi) => (
                                             <span key={fi} className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-blue-200 text-blue-800 text-[11px] font-medium rounded-lg shadow-2xs">
-                                                <Icon icon="lucide:file-text" className="text-[#1F618D]" />
+                                                <Icon icon="lucide:file-text" className="text-[#6d99cf]" />
                                                 <span className="truncate max-w-[160px]">{f.name}</span>
                                                 <button
                                                     type="button"

@@ -5,22 +5,22 @@ import { getAllInwardedPurchaseItems } from '../../services/vendorOrderService';
 import { toast } from 'react-toastify';
 
 const inwardStatusMeta = {
-    RECEIVED:     { cls: 'bg-[#eaf4fb] text-[#1F618D]',   label: 'Received' },
-    PARTIAL:      { cls: 'bg-[#fdf8ed] text-[#b45309]',   label: 'Partial' },
-    NOT_RECEIVED: { cls: 'bg-gray-100 text-gray-500',      label: 'Not Received' },
-    PENDING:      { cls: 'bg-gray-100 text-gray-500',      label: 'Pending' },
+    RECEIVED: { cls: 'bg-[#eaf4fb] text-[#6d99cf]', label: 'Received' },
+    PARTIAL: { cls: 'bg-[#fdf8ed] text-[#b45309]', label: 'Partial' },
+    NOT_RECEIVED: { cls: 'bg-gray-100 text-gray-500', label: 'Not Received' },
+    PENDING: { cls: 'bg-gray-100 text-gray-500', label: 'Pending' },
 };
 
 const qcStatusMeta = {
-    PASSED:  { cls: 'bg-[#eaf4fb] text-[#1F618D]',   icon: 'lucide:check-circle', label: 'Passed' },
-    PARTIAL: { cls: 'bg-[#fdf8ed] text-[#b45309]',   icon: 'lucide:git-branch',   label: 'Partial' },
-    FAILED:  { cls: 'bg-[#fef2f0] text-[#E74C3C]',   icon: 'lucide:x-circle',     label: 'Failed' },
-    PENDING: { cls: 'bg-gray-100 text-gray-500',      icon: 'lucide:clock',        label: 'Pending' },
+    PASSED: { cls: 'bg-[#eaf4fb] text-[#6d99cf]', icon: 'lucide:check-circle', label: 'Passed' },
+    PARTIAL: { cls: 'bg-[#fdf8ed] text-[#b45309]', icon: 'lucide:git-branch', label: 'Partial' },
+    FAILED: { cls: 'bg-[#fef2f0] text-[#E74C3C]', icon: 'lucide:x-circle', label: 'Failed' },
+    PENDING: { cls: 'bg-gray-100 text-gray-500', icon: 'lucide:clock', label: 'Pending' },
 };
 
 const categoryIcon = {
-    LENS:         'lucide:eye',
-    FRAME:        'lucide:glasses',
+    LENS: 'lucide:eye',
+    FRAME: 'lucide:glasses',
     CONTACT_LENS: 'lucide:circle-dot',
 };
 
@@ -62,8 +62,8 @@ const AllInwardedItems = () => {
             item.orderNumber?.toLowerCase().includes(q) ||
             item.code?.toLowerCase().includes(q);
         const matchesCategory = !categoryFilter || item.category === categoryFilter;
-        const matchesInward  = !inwardFilter  || item.inwardStatus === inwardFilter;
-        const matchesQc      = !qcFilter      || item.qcStatus     === qcFilter;
+        const matchesInward = !inwardFilter || item.inwardStatus === inwardFilter;
+        const matchesQc = !qcFilter || item.qcStatus === qcFilter;
         return matchesSearch && matchesCategory && matchesInward && matchesQc;
     });
 
@@ -74,7 +74,7 @@ const AllInwardedItems = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                        <Icon icon="lucide:package-check" className="text-[#2980B9]" />
+                        <Icon icon="lucide:package-check" className="text-[#6d99cf]" />
                         All Inwarded Items
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">
@@ -84,7 +84,7 @@ const AllInwardedItems = () => {
                 </div>
                 <button
                     onClick={fetchItems}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#2980B9] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#6d99cf] bg-[#eaf4fb] hover:bg-[#d4eaf6] rounded-xl transition-colors"
                 >
                     <Icon icon="lucide:refresh-cw" className={loading ? 'animate-spin' : ''} />
                     Refresh
@@ -100,25 +100,25 @@ const AllInwardedItems = () => {
                         value={search}
                         onChange={e => { setSearch(e.target.value); setPage(1); }}
                         placeholder="Search by item, vendor, order..."
-                        className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]"
+                        className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]"
                     />
                 </div>
                 <select value={categoryFilter} onChange={e => { setCategoryFilter(e.target.value); setPage(1); }}
-                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]">
+                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]">
                     <option value="">All Categories</option>
                     <option value="LENS">Lens</option>
                     <option value="FRAME">Frame</option>
                     <option value="CONTACT_LENS">Contact Lens</option>
                 </select>
                 <select value={inwardFilter} onChange={e => { setInwardFilter(e.target.value); setPage(1); }}
-                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]">
+                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]">
                     <option value="">All Inward Status</option>
                     <option value="RECEIVED">Received</option>
                     <option value="PARTIAL">Partial</option>
                     <option value="NOT_RECEIVED">Not Received</option>
                 </select>
                 <select value={qcFilter} onChange={e => { setQcFilter(e.target.value); setPage(1); }}
-                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2980B9]/20 focus:border-[#2980B9]">
+                    className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6d99cf]/20 focus:border-[#6d99cf]">
                     <option value="">All QC Status</option>
                     <option value="PASSED">Passed</option>
                     <option value="PARTIAL">Partial</option>
@@ -138,22 +138,22 @@ const AllInwardedItems = () => {
                 <div className="overflow-x-auto flex-1">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-[#eaf4fb]/50 border-b border-[#2980B9]/15">
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Item</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Vendor</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Order #</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Category</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Qty / Received</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Inward Status</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">QC Status</th>
-                                <th className="py-2.5 px-4 text-xs font-bold text-[#1F618D] uppercase tracking-wider">Price / MRP</th>
+                            <tr className="bg-[#eaf4fb]/50 border-b border-[#6d99cf]/15">
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Item</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Vendor</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Order #</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Category</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Qty / Received</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Inward Status</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">QC Status</th>
+                                <th className="py-2.5 px-4 text-xs font-bold text-[#6d99cf] uppercase tracking-wider">Price / MRP</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {loading ? (
                                 <tr><td colSpan="8" className="p-8 text-center text-gray-500">
                                     <div className="flex justify-center items-center gap-2">
-                                        <Icon icon="lucide:loader-2" className="animate-spin text-xl text-[#2980B9]" />
+                                        <Icon icon="lucide:loader-2" className="animate-spin text-xl text-[#6d99cf]" />
                                         <span>Loading inwarded items...</span>
                                     </div>
                                 </td></tr>
@@ -167,14 +167,14 @@ const AllInwardedItems = () => {
                             ) : (
                                 filtered.map((item, idx) => {
                                     const inwardMeta = inwardStatusMeta[item.inwardStatus] || inwardStatusMeta.PENDING;
-                                    const qcMeta     = qcStatusMeta[item.qcStatus]         || qcStatusMeta.PENDING;
-                                    const catIcon    = categoryIcon[item.category] || 'lucide:box';
+                                    const qcMeta = qcStatusMeta[item.qcStatus] || qcStatusMeta.PENDING;
+                                    const catIcon = categoryIcon[item.category] || 'lucide:box';
                                     return (
                                         <tr key={item._id || idx} className="hover:bg-[#eaf4fb]/20 transition-colors">
                                             <td className="px-4 py-2">
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-6 h-6 rounded-full bg-[#eaf4fb] flex items-center justify-center shrink-0">
-                                                        <Icon icon={catIcon} className="text-[#2980B9] text-xs" />
+                                                        <Icon icon={catIcon} className="text-[#6d99cf] text-xs" />
                                                     </div>
                                                     <div>
                                                         <p className="text-xs font-semibold text-gray-800">{item.itemName}</p>
@@ -185,7 +185,7 @@ const AllInwardedItems = () => {
                                             <td className="px-4 py-2"><p className="text-xs font-medium text-gray-700">{item.vendorName || '—'}</p></td>
                                             <td className="px-4 py-2"><span className="font-mono text-[10px] text-gray-500">{item.orderNumber}</span></td>
                                             <td className="px-4 py-2">
-                                                <span className="text-[10px] px-2 py-0.5 bg-[#eaf4fb] text-[#1F618D] rounded-full font-medium">
+                                                <span className="text-[10px] px-2 py-0.5 bg-[#eaf4fb] text-[#6d99cf] rounded-full font-medium">
                                                     {item.category?.replace('_', ' ')}
                                                 </span>
                                             </td>

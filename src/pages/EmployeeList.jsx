@@ -24,10 +24,10 @@ const datePickerStyles = {
             borderColor: '#e5e7eb',
         },
         '&:hover fieldset': {
-            borderColor: '#2980B9',
+            borderColor: '#6d99cf',
         },
         '&.Mui-focused fieldset': {
-            borderColor: '#2980B9',
+            borderColor: '#6d99cf',
         },
     },
     '& .MuiInputBase-input': {
@@ -309,7 +309,7 @@ const EmployeeList = () => {
                 <div className="flex items-end self-end w-full md:w-auto mb-1">
                     <button
                         onClick={handleResetFilters}
-                        className="flex items-center justify-center gap-2 text-gray-400 hover:text-[#1F618D] px-4 py-2 rounded-lg hover:bg-[#eaf4fb] transition-all duration-300 font-semibold text-[10px] uppercase tracking-wider group border border-transparent hover:border-[#2980B9]/20 w-full md:w-auto"
+                        className="flex items-center justify-center gap-2 text-gray-400 hover:text-[#6d99cf] px-4 py-2 rounded-lg hover:bg-[#eaf4fb] transition-all duration-300 font-semibold text-[10px] uppercase tracking-wider group border border-transparent hover:border-[#6d99cf]/20 w-full md:w-auto"
                     >
                         <Icon icon="mdi:refresh" className="text-lg group-hover:rotate-180 transition-transform duration-700" />
                         Clear Filters
@@ -457,7 +457,7 @@ const EmployeeList = () => {
                                                 <td className="px-3 py-2 text-center border-r border-gray-50">
                                                     <Icon
                                                         icon="lucide:chevron-right"
-                                                        className={`text-[#1F618D] text-xs transition-transform duration-200 inline-block ${expandedRows.has(emp._id) ? 'rotate-90' : ''}`}
+                                                        className={`text-[#6d99cf] text-xs transition-transform duration-200 inline-block ${expandedRows.has(emp._id) ? 'rotate-90' : ''}`}
                                                     />
                                                 </td>
                                                 <td className="px-4 py-2 text-center border-r border-gray-50">
@@ -726,8 +726,8 @@ const DetailItem = ({ label, value, status, onClick }) => (
 );
 
 const FilterSelect = ({ placeholder, value, onChange, options = [], icon }) => (
-    <div className="relative flex items-center bg-white rounded-lg border border-gray-200 px-3 py-1.5 focus-within:ring-2 focus-within:ring-[#2980B9]/20 focus-within:border-[#2980B9] transition-all w-full group">
-        {icon && <Icon icon={icon} className="text-gray-400 text-base mr-2 group-focus-within:text-[#1F618D] transition-colors" />}
+    <div className="relative flex items-center bg-white rounded-lg border border-gray-200 px-3 py-1.5 focus-within:ring-2 focus-within:ring-[#6d99cf]/20 focus-within:border-[#6d99cf] transition-all w-full group">
+        {icon && <Icon icon={icon} className="text-gray-400 text-base mr-2 group-focus-within:text-[#6d99cf] transition-colors" />}
         <select
             value={value}
             onChange={onChange}
@@ -738,15 +738,15 @@ const FilterSelect = ({ placeholder, value, onChange, options = [], icon }) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
         </select>
-        <div className="absolute right-3 pointer-events-none text-gray-400 group-hover:text-[#1F618D] transition-colors">
+        <div className="absolute right-3 pointer-events-none text-gray-400 group-hover:text-[#6d99cf] transition-colors">
             <Icon icon="mdi:chevron-down" className="text-base" />
         </div>
     </div>
 );
 
 const FilterInput = ({ placeholder, value, onChange, icon }) => (
-    <div className="relative flex items-center bg-white rounded-lg border border-gray-200 px-3 py-1.5 focus-within:ring-2 focus-within:ring-[#2980B9]/20 focus-within:border-[#2980B9] transition-all w-full group">
-        {icon && <Icon icon={icon} className="text-gray-400 text-base mr-2 group-focus-within:text-[#1F618D] transition-colors" />}
+    <div className="relative flex items-center bg-white rounded-lg border border-gray-200 px-3 py-1.5 focus-within:ring-2 focus-within:ring-[#6d99cf]/20 focus-within:border-[#6d99cf] transition-all w-full group">
+        {icon && <Icon icon={icon} className="text-gray-400 text-base mr-2 group-focus-within:text-[#6d99cf] transition-colors" />}
         <input
             type="text"
             placeholder={placeholder}

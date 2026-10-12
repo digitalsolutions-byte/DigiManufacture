@@ -26,7 +26,7 @@ export const CustomerRegn = ({ wrapInput, configs, formValues, formik, dispatch,
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h3 className="text-lg font-bold text-gray-800 uppercase tracking-tight flex items-center gap-2">
-                        <Icon icon="mdi:tag-multiple" className="text-[#2980B9]" /> Brand Selection*
+                        <Icon icon="mdi:tag-multiple" className="text-[#6d99cf]" /> Brand Selection*
                     </h3>
                 </div>
 
@@ -58,7 +58,7 @@ export const CustomerRegn = ({ wrapInput, configs, formValues, formik, dispatch,
                     <div className="flex flex-wrap gap-2 pt-2">
                         {(formik.values.brands || []).length > 0 ? (
                             formik.values.brands.map((b, index) => (
-                                <div key={b.brandId || index} className="flex items-center gap-2 px-3 py-1.5 bg-[#2980B9]/10 text-[#2980B9] border border-[#2980B9]/20 rounded-lg text-xs font-bold uppercase tracking-wider">
+                                <div key={b.brandId || index} className="flex items-center gap-2 px-3 py-1.5 bg-[#6d99cf]/10 text-[#6d99cf] border border-[#6d99cf]/20 rounded-lg text-xs font-bold uppercase tracking-wider">
                                     <Icon icon="mdi:tag-outline" className="text-sm" />
                                     <span>{b.brandName || b.name}</span>
                                     {!isReadOnlyMode && (
@@ -68,7 +68,7 @@ export const CustomerRegn = ({ wrapInput, configs, formValues, formik, dispatch,
                                                 const updated = (formik.values.brands || []).filter((_, i) => i !== index);
                                                 formik.setFieldValue('brands', updated);
                                             }}
-                                            className="hover:bg-[#2980B9]/20 p-0.5 rounded-full transition-colors"
+                                            className="hover:bg-[#6d99cf]/20 p-0.5 rounded-full transition-colors"
                                         >
                                             <Icon icon="mdi:close" className="text-sm" />
                                         </button>
@@ -100,7 +100,7 @@ export const CustomerRegn = ({ wrapInput, configs, formValues, formik, dispatch,
                                 <Button
                                     variant="outlined"
                                     onClick={() => push({ brandId: '', brandName: '', categories: [] })}
-                                    className="bg-gray-50 border-dashed border-2 border-gray-200 text-gray-500 hover:border-[#2980B9] hover:text-[#2980B9] w-full py-4 rounded-2xl flex items-center justify-center gap-2"
+                                    className="bg-gray-50 border-dashed border-2 border-gray-200 text-gray-500 hover:border-[#6d99cf] hover:text-[#6d99cf] w-full py-4 rounded-2xl flex items-center justify-center gap-2"
                                 >
                                     <Icon icon="mdi:plus-circle" /> Add Brand & Category Pair
                                 </Button>

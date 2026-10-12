@@ -91,7 +91,7 @@ const AuthLayout = () => {
 
             {/* Main Content */}
             <Box component="main" sx={{ flexGrow: 1, display: 'flex', position: 'relative' }}>
-                {/* Left Side: DigiWholesale */}
+                {/* Left Side: DigiManufacture */}
                 <Box
                     sx={{
                         display: { xs: 'none', md: 'flex' },

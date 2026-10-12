@@ -93,7 +93,7 @@ const ProposalList = () => {
             <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
-                        <Icon icon="lucide:file-spreadsheet" className="text-[#2980B9]" />
+                        <Icon icon="lucide:file-spreadsheet" className="text-[#6d99cf]" />
                         Purchase Proposals / RFQs
                     </h1>
                     <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Manage quotation requests, vendor bids, and PO placement</p>
@@ -101,7 +101,7 @@ const ProposalList = () => {
 
                 <button
                     onClick={() => navigate('/vendor/proposal/create')}
-                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#2980B9] hover:bg-[#2471A3] text-white text-xs font-bold rounded-xl transition-all shadow-sm active:scale-95"
+                    className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#6d99cf] hover:bg-[#2471A3] text-white text-xs font-bold rounded-xl transition-all shadow-sm active:scale-95"
                 >
                     <Icon icon="lucide:plus" className="text-base" />
                     <span>Buy Product (Create RFQ)</span>
@@ -120,7 +120,7 @@ const ProposalList = () => {
                                 placeholder="Proposal No, Product, Brand..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                                className="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                             />
                         </div>
                     </div>
@@ -130,7 +130,7 @@ const ProposalList = () => {
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                            className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                         >
                             <option value="">All Statuses</option>
                             <option value="DRAFT">Draft</option>
@@ -148,7 +148,7 @@ const ProposalList = () => {
                             type="date"
                             value={fromDate}
                             onChange={(e) => setFromDate(e.target.value)}
-                            className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                            className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                         />
                     </div>
 
@@ -158,7 +158,7 @@ const ProposalList = () => {
                             type="date"
                             value={toDate}
                             onChange={(e) => setToDate(e.target.value)}
-                            className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#2980B9]"
+                            className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-[#6d99cf]"
                         />
                     </div>
                 </form>
@@ -196,7 +196,7 @@ const ProposalList = () => {
                                     className="bg-white rounded-xl border border-gray-200 p-4 space-y-3 shadow-2xs cursor-pointer hover:border-blue-300 transition-colors"
                                 >
                                     <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-                                        <span className="font-mono text-xs font-bold text-[#2980B9] bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                                        <span className="font-mono text-xs font-bold text-[#6d99cf] bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
                                             #{prop.proposalNumber || prop._id.slice(-6).toUpperCase()}
                                         </span>
                                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase border ${cfg.badge}`}>
@@ -216,7 +216,7 @@ const ProposalList = () => {
                                         </div>
                                         <div>
                                             <span className="text-[9px] font-bold text-gray-400 uppercase block">Vendors Count</span>
-                                            <span className="font-bold text-[#2980B9]">{vendorsCount} Vendors</span>
+                                            <span className="font-bold text-[#6d99cf]">{vendorsCount} Vendors</span>
                                         </div>
                                         <div className="col-span-2">
                                             <span className="text-[9px] font-bold text-gray-400 uppercase block">Created Date</span>
@@ -233,15 +233,15 @@ const ProposalList = () => {
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full border-collapse text-left text-xs">
                         <thead>
-                            <tr className="bg-[#eaf4fb]/60 border-b border-[#2980B9]/15">
-                                <th className="px-5 py-3.5 font-bold text-[#1F618D] uppercase tracking-wider">Proposal No</th>
-                                <th className="px-5 py-3.5 font-bold text-[#1F618D] uppercase tracking-wider">Product Name</th>
-                                <th className="px-5 py-3.5 font-bold text-[#1F618D] uppercase tracking-wider">Category & Brand</th>
-                                <th className="px-5 py-3.5 font-bold text-[#1F618D] uppercase tracking-wider text-center">Req. Qty</th>
-                                <th className="px-5 py-3.5 font-bold text-[#1F618D] uppercase tracking-wider text-center">Vendors</th>
-                                <th className="px-5 py-3.5 font-bold text-[#1F618D] uppercase tracking-wider text-center">Status</th>
-                                <th className="px-5 py-3.5 font-bold text-[#1F618D] uppercase tracking-wider">Created Date</th>
-                                <th className="px-5 py-3.5 font-bold text-[#1F618D] uppercase tracking-wider text-right">Action</th>
+                            <tr className="bg-[#eaf4fb]/60 border-b border-[#6d99cf]/15">
+                                <th className="px-5 py-3.5 font-bold text-[#6d99cf] uppercase tracking-wider">Proposal No</th>
+                                <th className="px-5 py-3.5 font-bold text-[#6d99cf] uppercase tracking-wider">Product Name</th>
+                                <th className="px-5 py-3.5 font-bold text-[#6d99cf] uppercase tracking-wider">Category & Brand</th>
+                                <th className="px-5 py-3.5 font-bold text-[#6d99cf] uppercase tracking-wider text-center">Req. Qty</th>
+                                <th className="px-5 py-3.5 font-bold text-[#6d99cf] uppercase tracking-wider text-center">Vendors</th>
+                                <th className="px-5 py-3.5 font-bold text-[#6d99cf] uppercase tracking-wider text-center">Status</th>
+                                <th className="px-5 py-3.5 font-bold text-[#6d99cf] uppercase tracking-wider">Created Date</th>
+                                <th className="px-5 py-3.5 font-bold text-[#6d99cf] uppercase tracking-wider text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -269,7 +269,7 @@ const ProposalList = () => {
                                             onClick={() => navigate(`/vendor/proposal/view/${prop._id}`)}
                                             className="hover:bg-blue-50/40 cursor-pointer transition-colors"
                                         >
-                                            <td className="px-5 py-3.5 font-mono font-bold text-[#2980B9]">
+                                            <td className="px-5 py-3.5 font-mono font-bold text-[#6d99cf]">
                                                 #{prop.proposalNumber || prop._id.slice(-6).toUpperCase()}
                                             </td>
                                             <td className="px-5 py-3.5">
@@ -284,7 +284,7 @@ const ProposalList = () => {
                                                 {prop.requiredQty} {prop.unit || 'PIECE'}
                                             </td>
                                             <td className="px-5 py-3.5 text-center">
-                                                <span className="px-2.5 py-1 bg-blue-50 text-[#2980B9] font-bold rounded-md border border-blue-100">
+                                                <span className="px-2.5 py-1 bg-blue-50 text-[#6d99cf] font-bold rounded-md border border-blue-100">
                                                     {vendorsCount} Vendors
                                                 </span>
                                             </td>
@@ -302,7 +302,7 @@ const ProposalList = () => {
                                                         e.stopPropagation();
                                                         navigate(`/vendor/proposal/view/${prop._id}`);
                                                     }}
-                                                    className="px-3 py-1.5 bg-gray-100 hover:bg-[#2980B9] hover:text-white text-gray-700 font-bold rounded-lg transition-colors text-xs"
+                                                    className="px-3 py-1.5 bg-gray-100 hover:bg-[#6d99cf] hover:text-white text-gray-700 font-bold rounded-lg transition-colors text-xs"
                                                 >
                                                     View Details
                                                 </button>

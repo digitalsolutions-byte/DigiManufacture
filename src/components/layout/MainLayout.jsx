@@ -129,7 +129,7 @@ const MainLayout = () => {
                 </Container>
             </Box>
 
-            
+
             {/* Floating Action Button (New Order) */}
             <Tooltip title="Create New Order" placement="left">
                 <Fab
@@ -143,9 +143,9 @@ const MainLayout = () => {
                         width: { xs: 46, sm: 52, md: 56 },
                         height: { xs: 46, sm: 52, md: 56 },
                         minHeight: 'unset',
-                        bgcolor: '#2980B9',
+                        bgcolor: '#6d99cf',
                         '&:hover': {
-                            bgcolor: '#1F618D',
+                            bgcolor: '#6d99cf',
                             transform: 'scale(1.08)',
                         },
                         transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',

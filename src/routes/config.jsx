@@ -83,7 +83,7 @@ const FeatureFlagRoute = ({ flag, element }) => {
     if (loading) {
         return (
             <div className="flex justify-center items-center h-[500px]">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#2980B9]" />
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#6d99cf]" />
             </div>
         );
     }
@@ -125,16 +125,34 @@ const CUSTOMER_CARE_MODULE = [
     { path: PATHS.CUSTOMER_CARE.ORDER_DETAILS, element: OrderDetails },
 ];
 
+// ── Lab Process Module ────────────────────────────────────────────────────────
+const LAB_PROCESS_MODULE = [
+    { path: PATHS.LAB_PROCESS.PROCESS_1, element: PlaceholderPage },
+    { path: PATHS.LAB_PROCESS.PROCESS_2, element: PlaceholderPage },
+    { path: PATHS.LAB_PROCESS.PROCESS_3, element: PlaceholderPage },
+    { path: PATHS.LAB_PROCESS.QC_1, element: PlaceholderPage },
+    { path: '/lab-process/:processName', element: PlaceholderPage },
+    { path: '/placeholder/:pageName', element: PlaceholderPage },
+    { path: PATHS.PLACEHOLDERPAGE, element: PlaceholderPage },
+];
+
 // ── Operations ────────────────────────────────────────────────────────────────
 const OPERATIONS_MODULE = [
+    // 7 Core Manufacturing Tabs (Placeholder pages with "On Customisation")
+    { path: 'lab', element: PlaceholderPage, props: { title: 'Lab', category: 'Lab Operations', icon: 'lucide:flask-conical' } },
+    { path: 'tint', element: PlaceholderPage, props: { title: 'Tint', category: 'Lab Operations', icon: 'lucide:droplet' } },
+    { path: 'hard-coat', element: PlaceholderPage, props: { title: 'Hard Coat', category: 'Lab Operations', icon: 'lucide:shield' } },
+    { path: 'arc', element: PlaceholderPage, props: { title: 'ARC', category: 'Lab Operations', icon: 'lucide:layers' } },
+    { path: 'qc', element: PlaceholderPage, props: { title: 'QC', category: 'Quality Control', icon: 'lucide:clipboard-check' } },
+    { path: 'fitting', element: PlaceholderPage, props: { title: 'Fitting', category: 'Lab Operations', icon: 'lucide:ruler' } },
+    { path: 'dispatch', element: PlaceholderPage, props: { title: 'Dispatch', category: 'Shipping & Dispatch', icon: 'lucide:truck' } },
+
     { path: 'inventory', element: Inventory, page: 'INVENTORY' },
-    { path: 'qc', element: PlaceholderPage, page: 'QUALITY', props: { title: 'QC' } },
-    { path: 'fitting', element: PlaceholderPage, page: 'FITTING', props: { title: 'Fitting' } },
-    { path: 'dispatch', element: PlaceholderPage, page: 'SHIPPING', props: { title: 'Shipping' } },
+    { path: 'qc-1', element: PlaceholderPage, props: { title: 'QC 1' } },
     { path: 'surfacing', element: PlaceholderPage, page: 'INVENTORY', props: { title: 'Surfacing' } },
-    { path: 'process-1', element: PlaceholderPage, page: 'QUALITY', props: { title: 'Process 1' } },
-    { path: 'process-2', element: PlaceholderPage, page: 'QUALITY', props: { title: 'Process 2' } },
-    { path: 'process-3', element: PlaceholderPage, page: 'QUALITY', props: { title: 'Process 3' } },
+    { path: 'process-1', element: PlaceholderPage, props: { title: 'Process 1' } },
+    { path: 'process-2', element: PlaceholderPage, props: { title: 'Process 2' } },
+    { path: 'process-3', element: PlaceholderPage, props: { title: 'Process 3' } },
     { path: 'dms', element: PlaceholderPage, page: 'INVENTORY', props: { title: 'DMS' } },
     { path: 'finance', element: PlaceholderPage, page: 'MAIN_REPORT', props: { title: 'F&A' } },
     { path: 'reports', element: PlaceholderPage, page: 'MAIN_REPORT', props: { title: 'Reports' } },
@@ -198,6 +216,7 @@ const TENANTS_MODULE = [
     { path: PATHS.TENANTS.DETAILS, element: TenantDetails, page: 'TENANTS' },
     { path: PATHS.TENANTS.EDIT, element: TenantDetails, page: 'TENANTS' },
     { path: PATHS.TENANTS.SETTINGS, element: WholesalerSettings },
+    { path: '/owner/wholesalers/:id/settings', element: WholesalerSettings },
 ];
 
 
@@ -267,6 +286,7 @@ export const routesConfig = [
                     ...TENANTS_MODULE,
                     ...ACCOUNTING_MODULE,
                     ...EXTERNAL_MODULE,
+                    ...LAB_PROCESS_MODULE,
                     {
                         path: PATHS.ECOMMERCE.SUNGLASSES,
                         element: FeatureFlagRoute,
@@ -290,27 +310,27 @@ export const getFirstAllowedRoute = (user) => {
     if (user.EmployeeType === 'SUPERADMIN' || user.EmployeeType === 'PLATFORM_OWNER') return PATHS.ROOT;
 
     const pageAccess = Array.isArray(user.pageAccess) ? user.pageAccess : [];
-    
+
     // If they have DASHBOARD access, just return ROOT to be safe
     if (pageAccess.includes('DASHBOARD')) return PATHS.ROOT;
 
     const findRoute = (routeList, basePath = '') => {
         for (const route of routeList) {
             if (route.isPublic) continue;
-            
+
             let currentPath = basePath;
             if (route.path) {
-                currentPath = route.path.startsWith('/') 
-                    ? route.path 
+                currentPath = route.path.startsWith('/')
+                    ? route.path
                     : `${basePath}/${route.path}`.replace(/\/+/g, '/');
             }
-            
+
             // if it has a page requirement and the user has it, return this path
             // (or if it's an index route, return basePath)
             if (route.page && pageAccess.includes(route.page)) {
                 return currentPath || PATHS.ROOT;
             }
-            
+
             if (route.children) {
                 const childPath = findRoute(route.children, currentPath);
                 if (childPath) return childPath;
@@ -320,5 +340,5 @@ export const getFirstAllowedRoute = (user) => {
     };
 
     const firstAllowed = findRoute(routesConfig);
-    return firstAllowed || PATHS.UNAUTHORIZED; 
+    return firstAllowed || PATHS.UNAUTHORIZED;
 };

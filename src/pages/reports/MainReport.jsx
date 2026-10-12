@@ -35,7 +35,7 @@ const PRESETS = [
 const Badge = ({ v }) => {
     const cfg = {
         Active: "bg-emerald-50 text-emerald-700 border-emerald-200",
-        Delivered: "bg-[#2980B9]/10 text-[#2980B9] border-blue-200",
+        Delivered: "bg-[#6d99cf]/10 text-[#6d99cf] border-blue-200",
         Draft: "bg-gray-100 text-gray-600 border-gray-200",
         "In-process": "bg-amber-50 text-amber-700 border-amber-200",
         Pending: "bg-rose-50 text-rose-700 border-rose-200",
@@ -51,8 +51,8 @@ const Badge = ({ v }) => {
 const MetricCard = ({ label, value, sub, icon, highlight }) => (
     <div className={`group relative rounded-xl p-5 overflow-hidden border transition-all duration-300
         ${highlight
-            ? "bg-[#2980B9] border-[#2980B9] text-white shadow-md"
-            : "bg-white border-gray-200 shadow-sm hover:border-[#2980B9]/40"
+            ? "bg-[#6d99cf] border-[#6d99cf] text-white shadow-md"
+            : "bg-white border-gray-200 shadow-sm hover:border-[#6d99cf]/40"
         }`}>
         <div className="relative z-10 flex items-start justify-between">
             <div>
@@ -60,7 +60,7 @@ const MetricCard = ({ label, value, sub, icon, highlight }) => (
                 <p className={`text-xl font-black leading-none ${highlight ? 'text-white' : 'text-gray-800'}`}>{value ?? 0}</p>
                 {sub && <p className={`text-[11px] font-semibold mt-2 ${highlight ? 'text-blue-100' : 'text-gray-400'}`}>{sub}</p>}
             </div>
-            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${highlight ? 'bg-white/20 text-white' : 'bg-blue-50 text-[#2980B9]'}`}>
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${highlight ? 'bg-white/20 text-white' : 'bg-blue-50 text-[#6d99cf]'}`}>
                 <Icon icon={icon} className="text-xl" />
             </div>
         </div>
@@ -79,7 +79,7 @@ const TxnPill = ({ label, count, amount, icon, colorClass }) => (
         </div>
         <div className="text-right">
             <p className="text-[9px] font-bold uppercase tracking-wider text-gray-400">Revenue</p>
-            <p className="text-xs font-black text-[#2980B9]">₹{amount?.toLocaleString() || 0}</p>
+            <p className="text-xs font-black text-[#6d99cf]">₹{amount?.toLocaleString() || 0}</p>
         </div>
     </div>
 );
@@ -89,7 +89,7 @@ const Section = ({ icon, title, badge, children }) => (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-6">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/80">
             <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#2980B9]/10 text-[#2980B9] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-[#6d99cf]/10 text-[#6d99cf] flex items-center justify-center">
                     <Icon icon={icon} className="text-lg" />
                 </div>
                 <div className="flex flex-col">
@@ -226,44 +226,44 @@ export default function MainReport() {
 
     /* ── Columns ── */
     const bookingCols = useMemo(() => [
-        { 
-            header: "Date", 
-            accessorKey: "createdAt", 
-            cell: ({ row }) => fmt(row.original.createdAt) 
-        },
-        { 
-            header: "Customer", 
-            accessorKey: "customer", 
-            cell: ({ row }) => <span className="font-black text-gray-800">{row.original.customer?.customerName || row.original.customerName || "—"}</span> 
-        },
-        { 
-            header: "Mobile", 
-            accessorKey: "mobile", 
-            cell: ({ row }) => row.original.customer?.mobile || row.original.customer?.customerMobile || row.original.mobile || "—" 
-        },
-        { 
-            header: "Delivery Date", 
-            accessorKey: "deliveryDate", 
-            cell: ({ row }) => fmt(row.original.deliveryDate || row.original.submittedAt || row.original.createdAt) 
+        {
+            header: "Date",
+            accessorKey: "createdAt",
+            cell: ({ row }) => fmt(row.original.createdAt)
         },
         {
-            header: "Txn", 
-            accessorKey: "productMode", 
+            header: "Customer",
+            accessorKey: "customer",
+            cell: ({ row }) => <span className="font-black text-gray-800">{row.original.customer?.customerName || row.original.customerName || "—"}</span>
+        },
+        {
+            header: "Mobile",
+            accessorKey: "mobile",
+            cell: ({ row }) => row.original.customer?.mobile || row.original.customer?.customerMobile || row.original.mobile || "—"
+        },
+        {
+            header: "Delivery Date",
+            accessorKey: "deliveryDate",
+            cell: ({ row }) => fmt(row.original.deliveryDate || row.original.submittedAt || row.original.createdAt)
+        },
+        {
+            header: "Txn",
+            accessorKey: "productMode",
             cell: ({ row }) => <span className="text-[9px] font-black uppercase text-gray-400 bg-gray-50 border border-gray-100 px-3 py-1 rounded-full">{row.original.productMode || row.original.transactionType || "—"}</span>
         },
-        { 
-            header: "Total", 
-            accessorKey: "totalOrderPrice", 
-            cell: ({ row }) => <span className="font-black text-erp-accent">₹{(row.original.totalOrderPrice ?? row.original.total ?? 0).toLocaleString()}</span> 
-        },
-        { 
-            header: "Advance", 
-            accessorKey: "advance", 
-            cell: ({ row }) => `₹${(row.original.advance ?? 0).toLocaleString()}` 
+        {
+            header: "Total",
+            accessorKey: "totalOrderPrice",
+            cell: ({ row }) => <span className="font-black text-erp-accent">₹{(row.original.totalOrderPrice ?? row.original.total ?? 0).toLocaleString()}</span>
         },
         {
-            header: "Balance", 
-            accessorKey: "balance", 
+            header: "Advance",
+            accessorKey: "advance",
+            cell: ({ row }) => `₹${(row.original.advance ?? 0).toLocaleString()}`
+        },
+        {
+            header: "Balance",
+            accessorKey: "balance",
             cell: ({ row }) => {
                 const total = row.original.totalOrderPrice ?? row.original.total ?? 0;
                 const adv = row.original.advance ?? 0;
@@ -271,57 +271,57 @@ export default function MainReport() {
                 return <span className={`font-black ${Number(bal) > 0 ? "text-rose-500" : "text-emerald-500"}`}>₹{bal?.toLocaleString() ?? 0}</span>
             }
         },
-        { 
-            header: "Status", 
-            accessorKey: "status", 
-            cell: ({ row }) => <Badge v={row.original.status} /> 
+        {
+            header: "Status",
+            accessorKey: "status",
+            cell: ({ row }) => <Badge v={row.original.status} />
         },
-        { 
-            header: "Process", 
-            accessorKey: "pstatus", 
-            cell: ({ row }) => <Badge v={row.original.status || row.original.pstatus} /> 
+        {
+            header: "Process",
+            accessorKey: "pstatus",
+            cell: ({ row }) => <Badge v={row.original.status || row.original.pstatus} />
         },
     ], []);
 
     const deliveredCols = useMemo(() => [
-        { 
-            header: "Date", 
-            accessorKey: "createdAt", 
-            cell: ({ row }) => fmt(row.original.createdAt) 
-        },
-        { 
-            header: "Customer", 
-            accessorKey: "customer", 
-            cell: ({ row }) => <span className="font-black text-gray-800">{row.original.customer?.customerName || row.original.customerName || "—"}</span> 
-        },
-        { 
-            header: "Mobile", 
-            accessorKey: "mobile", 
-            cell: ({ row }) => row.original.customer?.mobile || row.original.customer?.customerMobile || row.original.mobile || "—" 
-        },
-        { 
-            header: "Delivered", 
-            accessorKey: "deliveredDate", 
-            cell: ({ row }) => fmt(row.original.deliveredDate || row.original.updatedAt) 
+        {
+            header: "Date",
+            accessorKey: "createdAt",
+            cell: ({ row }) => fmt(row.original.createdAt)
         },
         {
-            header: "Txn", 
-            accessorKey: "productMode", 
+            header: "Customer",
+            accessorKey: "customer",
+            cell: ({ row }) => <span className="font-black text-gray-800">{row.original.customer?.customerName || row.original.customerName || "—"}</span>
+        },
+        {
+            header: "Mobile",
+            accessorKey: "mobile",
+            cell: ({ row }) => row.original.customer?.mobile || row.original.customer?.customerMobile || row.original.mobile || "—"
+        },
+        {
+            header: "Delivered",
+            accessorKey: "deliveredDate",
+            cell: ({ row }) => fmt(row.original.deliveredDate || row.original.updatedAt)
+        },
+        {
+            header: "Txn",
+            accessorKey: "productMode",
             cell: ({ row }) => <span className="text-[9px] font-black uppercase text-gray-400 bg-gray-50 border border-gray-100 px-3 py-1 rounded-full">{row.original.productMode || row.original.transactionType || "—"}</span>
         },
-        { 
-            header: "Total", 
-            accessorKey: "totalOrderPrice", 
-            cell: ({ row }) => <span className="font-black text-erp-accent">₹{(row.original.totalOrderPrice ?? row.original.total ?? 0).toLocaleString()}</span> 
-        },
-        { 
-            header: "Advance", 
-            accessorKey: "advance", 
-            cell: ({ row }) => `₹${(row.original.advance ?? 0).toLocaleString()}` 
+        {
+            header: "Total",
+            accessorKey: "totalOrderPrice",
+            cell: ({ row }) => <span className="font-black text-erp-accent">₹{(row.original.totalOrderPrice ?? row.original.total ?? 0).toLocaleString()}</span>
         },
         {
-            header: "Balance", 
-            accessorKey: "balance", 
+            header: "Advance",
+            accessorKey: "advance",
+            cell: ({ row }) => `₹${(row.original.advance ?? 0).toLocaleString()}`
+        },
+        {
+            header: "Balance",
+            accessorKey: "balance",
             cell: ({ row }) => {
                 const total = row.original.totalOrderPrice ?? row.original.total ?? 0;
                 const adv = row.original.advance ?? 0;
@@ -329,33 +329,33 @@ export default function MainReport() {
                 return <span className={`font-black ${Number(bal) > 0 ? "text-rose-500" : "text-emerald-500"}`}>₹{bal?.toLocaleString() ?? 0}</span>
             }
         },
-        { 
-            header: "Status", 
-            accessorKey: "status", 
-            cell: ({ row }) => <Badge v={row.original.status} /> 
+        {
+            header: "Status",
+            accessorKey: "status",
+            cell: ({ row }) => <Badge v={row.original.status} />
         },
-        { 
-            header: "Process", 
-            accessorKey: "pstatus", 
-            cell: ({ row }) => <Badge v={row.original.status || row.original.pstatus} /> 
+        {
+            header: "Process",
+            accessorKey: "pstatus",
+            cell: ({ row }) => <Badge v={row.original.status || row.original.pstatus} />
         },
     ], []);
 
     const commissionCols = useMemo(() => [
-        { 
-            header: "Employee", 
-            accessorKey: "bookedByName", 
-            cell: ({ row }) => <span className="font-black text-gray-800 uppercase">{row.original.bookedByName || row.original.employeeName || "—"}</span> 
+        {
+            header: "Employee",
+            accessorKey: "bookedByName",
+            cell: ({ row }) => <span className="font-black text-gray-800 uppercase">{row.original.bookedByName || row.original.employeeName || "—"}</span>
         },
-        { 
-            header: "Commission", 
-            accessorKey: "totalCommission", 
-            cell: ({ row }) => <span className="font-black text-orange-500 text-sm">₹{(row.original.totalCommission ?? 0).toLocaleString()}</span> 
+        {
+            header: "Commission",
+            accessorKey: "totalCommission",
+            cell: ({ row }) => <span className="font-black text-orange-500 text-sm">₹{(row.original.totalCommission ?? 0).toLocaleString()}</span>
         },
-        { 
-            header: "Orders", 
-            accessorKey: "count", 
-            cell: ({ row }) => <span className="font-black text-gray-400">{row.original.count ?? 0}</span> 
+        {
+            header: "Orders",
+            accessorKey: "count",
+            cell: ({ row }) => <span className="font-black text-gray-400">{row.original.count ?? 0}</span>
         },
     ], []);
 
@@ -378,7 +378,7 @@ export default function MainReport() {
                     <p className="text-[11px] text-gray-400 font-medium">Cross-Module Performance & Financial Intelligence</p>
                 </div>
                 {fetched && (
-                    <div className="flex items-center gap-2 px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-lg text-[#2980B9] text-xs font-bold uppercase">
+                    <div className="flex items-center gap-2 px-4 py-1.5 bg-blue-50 border border-blue-100 rounded-lg text-[#6d99cf] text-xs font-bold uppercase">
                         <Icon icon="mdi:calendar-range" className="text-base" />
                         <span>{fromDate} <span className="mx-1 opacity-40">→</span> {toDate}</span>
                     </div>
@@ -391,7 +391,7 @@ export default function MainReport() {
                     {/* Preset pills */}
                     <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mr-2 flex items-center gap-1">
-                            <Icon icon="mdi:clock-fast" className="text-sm text-[#2980B9]" /> Presets:
+                            <Icon icon="mdi:clock-fast" className="text-sm text-[#6d99cf]" /> Presets:
                         </span>
                         {PRESETS.map((p, i) => (
                             <button
@@ -399,8 +399,8 @@ export default function MainReport() {
                                 onClick={() => applyPreset(i)}
                                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider border transition-all
                                     ${activePreset === i
-                                        ? "bg-[#2980B9] text-white border-[#2980B9] shadow-sm"
-                                        : "bg-white text-gray-600 border-gray-200 hover:border-[#2980B9] hover:text-[#2980B9]"
+                                        ? "bg-[#6d99cf] text-white border-[#6d99cf] shadow-sm"
+                                        : "bg-white text-gray-600 border-gray-200 hover:border-[#6d99cf] hover:text-[#6d99cf]"
                                     }`}
                             >
                                 <Icon icon={p.icon} className="text-sm" />
@@ -416,18 +416,18 @@ export default function MainReport() {
                             <input
                                 type="date" value={fromDate}
                                 onChange={e => { setFromDate(e.target.value); setActivePreset(null); }}
-                                className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-[#2980B9]"
+                                className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-[#6d99cf]"
                             />
                             <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">To</span>
                             <input
                                 type="date" value={toDate}
                                 onChange={e => { setToDate(e.target.value); setActivePreset(null); }}
-                                className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-[#2980B9]"
+                                className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 outline-none focus:border-[#6d99cf]"
                             />
                         </div>
                         <button
                             onClick={() => fetchReport(fromDate, toDate)}
-                            className="w-full sm:w-auto flex items-center justify-center gap-1.5 bg-[#2980B9] hover:bg-[#2471a3] text-white text-xs font-bold uppercase tracking-wider px-5 py-2 rounded-lg transition-all shadow-sm active:scale-95"
+                            className="w-full sm:w-auto flex items-center justify-center gap-1.5 bg-[#6d99cf] hover:bg-[#2471a3] text-white text-xs font-bold uppercase tracking-wider px-5 py-2 rounded-lg transition-all shadow-sm active:scale-95"
                         >
                             <Icon icon="mdi:file-chart-outline" className="text-base" /> Generate
                         </button>
@@ -461,13 +461,13 @@ export default function MainReport() {
                                 Draft: "bg-gray-50 border-gray-100/50"
                             };
                             return (
-                                <TxnPill 
+                                <TxnPill
                                     key={key}
-                                    label={key} 
-                                    count={data?.count} 
-                                    amount={data?.totalAmount} 
-                                    icon={icons[key] || "mdi:chart-bar"} 
-                                    colorClass={colors[key] || "bg-gray-50 border-gray-100/50"} 
+                                    label={key}
+                                    count={data?.count}
+                                    amount={data?.totalAmount}
+                                    icon={icons[key] || "mdi:chart-bar"}
+                                    colorClass={colors[key] || "bg-gray-50 border-gray-100/50"}
                                 />
                             );
                         })

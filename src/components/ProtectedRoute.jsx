@@ -60,7 +60,7 @@ const ProtectedRoute = ({ page, children }) => {
     // 1. Not logged in
     if (!user) return <Navigate to={PATHS.LOGIN} replace />;
 
-    // 2. TENANTS page (Wholesaler Tenant Management) — strictly PLATFORM_OWNER only!
+    // 2. TENANTS page (Manufacturer Tenant Management) — strictly PLATFORM_OWNER only!
     if (page === 'TENANTS') {
         return isPlatformOwner ? children : <Navigate to={PATHS.UNAUTHORIZED} replace />;
     }
