@@ -358,33 +358,17 @@ const Registration = () => {
                 .min(10, 'Must be exactly 10 digits')
                 .max(10, 'Must be exactly 10 digits')
                 .required('Phone is required'),
-            address: Yup.string().required('Address is required'),
-            pincode: Yup.string().required('Pincode is required'),
-            // lab: Yup.string().required('Lab is required'), // Commented out for now
-            zoneRefId: Yup.string().when('department', {
-                is: (val) => {
-                    const dept = configs.departments.find(d => d._id === val);
-                    return dept?.name?.toUpperCase() === 'SALES';
-                },
-                then: (schema) => schema.required('Zone is required for Sales department'),
-                otherwise: (schema) => schema.notRequired()
-            }),
+            address: Yup.string().notRequired().nullable(),
+            pincode: Yup.string().notRequired().nullable(),
+            zoneRefId: Yup.string().notRequired().nullable(),
             department: Yup.string().required('Department is required'),
             role: Yup.string().when('employeeType', {
                 is: (val) => val?.toUpperCase() !== 'ADMIN',
                 then: (schema) => schema.required('Role is required'),
                 otherwise: (schema) => schema.notRequired()
             }),
-            aadharCard: Yup.string().when('employeeType', {
-                is: (val) => val?.toUpperCase() !== 'SUPERADMIN',
-                then: (schema) => schema.required('Aadhar Card image is required'),
-                otherwise: (schema) => schema.notRequired()
-            }),
-            panCard: Yup.string().when('employeeType', {
-                is: (val) => val?.toUpperCase() !== 'SUPERADMIN',
-                then: (schema) => schema.required('PAN Card image is required'),
-                otherwise: (schema) => schema.notRequired()
-            }),
+            aadharCard: Yup.string().notRequired().nullable(),
+            panCard: Yup.string().notRequired().nullable(),
             username: Yup.string()
                 .required('Username is required')
                 .matches(/^\S+$/, "Username cannot contain spaces")
@@ -434,11 +418,13 @@ const Registration = () => {
                         // lab: values.lab,
                     };
 
-                    // Specific handling for SALES zone hierarchy
-                    if (isSales) {
+                    // Specific handling for SALES zone hierarchy (optional)
+                    if (isSales && values.zoneRefId) {
                         const selectedZone = (locationData.zones || []).find(z => z._id === values.zoneRefId);
-                        payload.zone = selectedZone?.name || selectedZone?.zone || '';
-                        payload.zoneRefId = values.zoneRefId;
+                        if (selectedZone) {
+                            payload.zone = selectedZone?.name || selectedZone?.zone || '';
+                            payload.zoneRefId = values.zoneRefId;
+                        }
                     }
                 }
 
@@ -827,7 +813,7 @@ const Registration = () => {
                         </div>
                         <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                             <Input
-                                label="Address *"
+                                label="Address"
                                 name="address"
                                 placeholder="Enter Address"
                                 value={formik.values.address}
@@ -836,7 +822,7 @@ const Registration = () => {
                                 error={formik.touched.address && formik.errors.address ? { message: formik.errors.address } : null}
                             />
                             <Input
-                                label="Country *"
+                                label="Country"
                                 name="country"
                                 placeholder="Enter Country"
                                 value={formik.values.country}
@@ -847,7 +833,7 @@ const Registration = () => {
                             {isSalesDept ? (
                                 <>
                                     <Select
-                                        label="Region *"
+                                        label="Region"
                                         name="zoneRefId"
                                         value={formik.values.zoneRefId}
                                         onChange={handleZoneChange}
@@ -858,7 +844,7 @@ const Registration = () => {
                                         disabled={loadingLocation}
                                     />
                                     <Select
-                                        label="State *"
+                                        label="State"
                                         name="state"
                                         value={formik.values.state}
                                         onChange={handleStateChange}
@@ -868,7 +854,7 @@ const Registration = () => {
                                         disabled={!formik.values.zoneRefId || loadingLocation}
                                     />
                                     <Select
-                                        label="City *"
+                                        label="City"
                                         name="city"
                                         value={formik.values.city}
                                         onChange={handleCityChange}
@@ -878,7 +864,7 @@ const Registration = () => {
                                         disabled={!formik.values.state || loadingLocation}
                                     />
                                     <Select
-                                        label="Pincode *"
+                                        label="Pincode"
                                         name="pincode"
                                         value={formik.values.pincode}
                                         onChange={(e) => { formik.handleChange(e); }}
@@ -891,7 +877,7 @@ const Registration = () => {
                                 </>
                             ) : (
                                 <Input
-                                    label="Pincode *"
+                                    label="Pincode"
                                     name="pincode"
                                     placeholder="Enter Pincode"
                                     value={formik.values.pincode}
@@ -915,7 +901,7 @@ const Registration = () => {
                             <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Aadhar Upload */}
                                 <div className="flex flex-col gap-3">
-                                    <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500">Aadhar Card * <span className="text-[10px] text-gray-400 font-normal lowercase">(max 5 MB)</span></span>
+                                    <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500">Aadhar Card (Optional) <span className="text-[10px] text-gray-400 font-normal lowercase">(max 5 MB)</span></span>
                                     <input type="file" hidden ref={aadharInputRef} onChange={(e) => handleFileSelect(e, 'aadhar')} accept="image/*" />
                                     <div
                                         onClick={() => aadharInputRef.current.click()}
@@ -948,13 +934,13 @@ const Registration = () => {
                                         )}
                                     </div>
                                     {formik.touched.aadharCard && formik.errors.aadharCard && (
-                                        <p className="text-[10px] text-red-500 font-bold">Aadhar card image is required</p>
+                                        <p className="text-[10px] text-red-500 font-bold">{formik.errors.aadharCard}</p>
                                     )}
                                 </div>
 
                                 {/* PAN Upload */}
                                 <div className="flex flex-col gap-3">
-                                    <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500">PAN Card * <span className="text-[10px] text-gray-400 font-normal lowercase">(max 5 MB)</span></span>
+                                    <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500">PAN Card (Optional) <span className="text-[10px] text-gray-400 font-normal lowercase">(max 5 MB)</span></span>
                                     <input type="file" hidden ref={panInputRef} onChange={(e) => handleFileSelect(e, 'pan')} accept="image/*" />
                                     <div
                                         onClick={() => panInputRef.current.click()}
@@ -987,7 +973,7 @@ const Registration = () => {
                                         )}
                                     </div>
                                     {formik.touched.panCard && formik.errors.panCard && (
-                                        <p className="text-[10px] text-red-500 font-bold">PAN card image is required</p>
+                                        <p className="text-[10px] text-red-500 font-bold">{formik.errors.panCard}</p>
                                     )}
                                 </div>
                             </div>

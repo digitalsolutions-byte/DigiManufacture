@@ -1261,8 +1261,16 @@ const OrderWizard = () => {
 
                 if (custRes.success) setCustomers(custRes.data.customers || []);
 
+                const isExcludedCategory = (name) => {
+                    const n = (name || '').toUpperCase().trim();
+                    return n === 'FRAME' || n === 'FRAMES' || n === 'SUNGLASS' || n === 'SUNGLASSES';
+                };
+
+                const cleanCategories = (prodConfigs.category || []).filter(c => !isExcludedCategory(c.name || c.value));
+
                 setConfigs({
                     ...prodConfigs,
+                    category: cleanCategories,
                     tints,
                     frameTypes,
                     vendors: vendorRes.vendors || []
@@ -2296,7 +2304,12 @@ const OrderWizard = () => {
                                 value: product.categoryId || product.category,
                                 label: product.category || (configs.category?.find(c => c._id === product.categoryId)?.name) || product.categoryId || ''
                             },
-                            options: (Array.isArray(configs.category) ? configs.category : []).map(c => ({ value: c._id, label: c.name })),
+                            options: (Array.isArray(configs.category) ? configs.category : [])
+                                .filter(c => {
+                                    const n = (c.name || c.value || '').toUpperCase().trim();
+                                    return n !== 'FRAME' && n !== 'FRAMES' && n !== 'SUNGLASS' && n !== 'SUNGLASSES';
+                                })
+                                .map(c => ({ value: c._id, label: c.name })),
                             placeholder: "Select category",
                             disabled: isStockInhouse || isReadOnly,
                             onChange: (e) => {
@@ -2976,10 +2989,15 @@ const OrderWizard = () => {
                                                                     onClick={(e) => e.stopPropagation()}
                                                                 >
                                                                     <option value="">Category</option>
-                                                                    {(Array.isArray(configs.category) ? configs.category : []).map(c => (
-                                                                        <option key={c._id || c.name} value={c._id}>{c.name}</option>
-                                                                    ))}
-                                                                    {product.category && !(configs.category || []).some(c => c._id === product.categoryId || c.name?.toUpperCase() === product.category?.toUpperCase()) && (
+                                                                    {(Array.isArray(configs.category) ? configs.category : [])
+                                                                        .filter(c => {
+                                                                            const n = (c.name || c.value || '').toUpperCase().trim();
+                                                                            return n !== 'FRAME' && n !== 'FRAMES' && n !== 'SUNGLASS' && n !== 'SUNGLASSES';
+                                                                        })
+                                                                        .map(c => (
+                                                                            <option key={c._id || c.name} value={c._id}>{c.name}</option>
+                                                                        ))}
+                                                                    {product.category && !['FRAME', 'FRAMES', 'SUNGLASS', 'SUNGLASSES'].includes(product.category.toUpperCase().trim()) && !(configs.category || []).some(c => c._id === product.categoryId || c.name?.toUpperCase() === product.category?.toUpperCase()) && (
                                                                         <option value={product.category}>{product.category}</option>
                                                                     )}
                                                                 </select>
@@ -3481,9 +3499,14 @@ const OrderWizard = () => {
                                                     disabled={isReadOnly}
                                                 >
                                                     <option value="">Category</option>
-                                                    {(Array.isArray(configs.category) ? configs.category : []).map(c => (
-                                                        <option key={c._id || c.name} value={c._id}>{c.name}</option>
-                                                    ))}
+                                                    {(Array.isArray(configs.category) ? configs.category : [])
+                                                        .filter(c => {
+                                                            const n = (c.name || c.value || '').toUpperCase().trim();
+                                                            return n !== 'FRAME' && n !== 'FRAMES' && n !== 'SUNGLASS' && n !== 'SUNGLASSES';
+                                                        })
+                                                        .map(c => (
+                                                            <option key={c._id || c.name} value={c._id}>{c.name}</option>
+                                                        ))}
                                                 </select>
                                             </div>
 

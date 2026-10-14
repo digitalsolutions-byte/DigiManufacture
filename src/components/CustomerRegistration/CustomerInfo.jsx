@@ -58,7 +58,7 @@ export const CustomerInfo = ({ wrapInput, configs, formik, aadharRef, panRef, gs
         {formik.values.gstType?.toLowerCase() === 'unregistered' ? (
             <>
                 <FileUploadField
-                    label="Aadhar Card No.*"
+                    label="Aadhar Card No."
                     name="AadharCard"
                     placeholder="Enter Aadhar No."
                     fileRef={aadharRef}
@@ -71,7 +71,7 @@ export const CustomerInfo = ({ wrapInput, configs, formik, aadharRef, panRef, gs
                     isReadOnlyMode={isReadOnlyMode}
                 />
                 <FileUploadField
-                    label="PAN Card No.*"
+                    label="PAN Card No."
                     name="PANCard"
                     placeholder="Enter PAN No."
                     fileRef={panRef}
@@ -85,7 +85,7 @@ export const CustomerInfo = ({ wrapInput, configs, formik, aadharRef, panRef, gs
                 />
             </>
         ) : <FileUploadField
-            label="GST Number*"
+            label="GST Number"
             name="GSTNumber"
             placeholder="Enter GST No."
             fileRef={gstRef}

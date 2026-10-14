@@ -74,21 +74,9 @@ export default function RegisterCustomer() {
             then: (schema) => schema.required('Shop Name is required'),
             otherwise: (schema) => schema.notRequired()
         }),
-        gstNumber: Yup.string().when('gstType', {
-            is: (val) => val?.toLowerCase() !== 'un-registered' && val?.toLowerCase() !== 'unregistered',
-            then: (schema) => schema.matches(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/, 'Invalid GST format (e.g., 22ABCDE1234F1Z5)').required('GST Number is required'),
-            otherwise: (schema) => schema.notRequired()
-        }),
-        aadharCard: Yup.string().when('gstType', {
-            is: (val) => val?.toLowerCase() === 'un-registered' || val?.toLowerCase() === 'unregistered',
-            then: (schema) => schema.matches(/^\d{12}$/, 'Aadhar No. must be 12 digits').required('Aadhar Card No. is required'),
-            otherwise: (schema) => schema.notRequired()
-        }),
-        panCard: Yup.string().when('gstType', {
-            is: (val) => val?.toLowerCase() === 'un-registered' || val?.toLowerCase() === 'unregistered',
-            then: (schema) => schema.matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN format (e.g., ABCDE1234F)').required('PAN Card No. is required'),
-            otherwise: (schema) => schema.notRequired()
-        }),
+        gstNumber: Yup.string().nullable().notRequired().test('gst-format', 'Invalid GST format (e.g., 22ABCDE1234F1Z5)', val => !val || /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(val)),
+        aadharCard: Yup.string().nullable().notRequired().test('aadhar-format', 'Aadhar No. must be 12 digits', val => !val || /^\d{12}$/.test(val)),
+        panCard: Yup.string().nullable().notRequired().test('pan-format', 'Invalid PAN format (e.g., ABCDE1234F)', val => !val || /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(val)),
         billToAddress: Yup.object().shape({
             branchName: Yup.string().required('Branch Name is required'),
             contactPerson: Yup.string().required('Contact Person is required'),
@@ -119,7 +107,7 @@ export default function RegisterCustomer() {
         mobileNo1: Yup.string().matches(/^\d{10}$/, 'Mobile No. must be 10 digits').required('Mobile No. 1 is required'),
         mobileNo2: Yup.string().matches(/^\d{10}$/, 'Mobile No. must be 10 digits').nullable(),
         businessEmail: Yup.string().email('Invalid email').required('Official Email is required'),
-        zoneRefId: Yup.string().required('Zone is required'),
+        zoneRefId: Yup.string().nullable().notRequired(),
         salesPersonRefId: Yup.string().required('Sales Person is required'),
     }), []);
 
@@ -620,13 +608,13 @@ export default function RegisterCustomer() {
         const getFieldsForStep = (stepIdx) => {
             switch (stepIdx) {
                 case 0:
-                    return ['gstType', 'gstTypeRefId', 'firmName', 'gstNumber', 'gstCertificateImg', 'shopName', 'aadharCard', 'aadharCardImg', 'panCard', 'panCardImg', 'customerpassword'];
+                    return ['gstType', 'gstTypeRefId', 'firmName', 'shopName', 'customerpassword'];
                 case 1:
                     return ['billToAddress', 'customerShipToDetails'];
                 case 2:
                     return ['minSalesValue', 'creditDaysRefId', 'proposedDiscount', 'finalDiscount', 'creditLimit', 'specificLabRefId', 'plantRefId', 'fittingCenterRefId', 'courierNameRefId', 'courierTimeRefId'];
                 case 3:
-                    return ['ownerName', 'mobileNo1', 'mobileNo2', 'businessEmail', 'zoneRefId', 'salesPersonRefId'];
+                    return ['ownerName', 'mobileNo1', 'mobileNo2', 'businessEmail', 'salesPersonRefId'];
                 default:
                     return [];
             }
@@ -774,6 +762,10 @@ export default function RegisterCustomer() {
                 isGSTRegistered: values.gstType?.toLowerCase() !== 'un-registered' && values.gstType?.toLowerCase() !== 'unregistered',
                 proprietorName: values.proprietorName || values.ownerName,
                 currentlyDealtBrands: values.currentlyDealtBrands || '',
+                brands: (values.brands || []).map(b => ({
+                    brandId: b.brandId || b._id,
+                    brandName: b.brandName || b.name
+                })),
                 billToAddress: values.billToAddress ? {
                     ...values.billToAddress,
                     customerContactName: values.billToAddress.contactPerson,
@@ -944,9 +936,9 @@ export default function RegisterCustomer() {
                 const hasSt0Req = st0Req.every(f => !!values[f]);
                 if (!hasSt0Req) return false;
                 if (values.gstType?.toLowerCase() !== 'un-registered' && values.gstType?.toLowerCase() !== 'unregistered') {
-                    return !!values.firmName && !!values.gstNumber && !!values.gstCertificateImg && !errors.firmName && !errors.gstNumber;
+                    return !!values.firmName && !errors.firmName && !errors.gstNumber;
                 }
-                return !!values.shopName && !!values.aadharCard && !!values.aadharCardImg && !!values.panCard && !!values.panCardImg && !errors.shopName && !errors.aadharCard && !errors.panCard;
+                return !!values.shopName && !errors.shopName && !errors.aadharCard && !errors.panCard;
 
             case 1: // Address Details
                 const billFields = ['branchName', 'contactPerson', 'contactNumber', 'city', 'state', 'zipCode'];
@@ -964,8 +956,8 @@ export default function RegisterCustomer() {
                 return bizValid;
 
             case 3: // Contact Information
-                const contactFields = ['ownerName', 'mobileNo1', 'zoneRefId', 'salesPersonRefId'];
-                return contactFields.every(f => !!values[f]) && !errors.ownerName && !errors.mobileNo1 && !errors.zoneRefId && !errors.salesPersonRefId;
+                const contactFields = ['ownerName', 'mobileNo1', 'salesPersonRefId'];
+                return contactFields.every(f => !!values[f]) && !errors.ownerName && !errors.mobileNo1 && !errors.salesPersonRefId;
 
             case 4: // Overview
                 return true;

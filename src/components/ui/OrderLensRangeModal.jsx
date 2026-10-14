@@ -552,7 +552,12 @@ export default function OrderLensRangeModal({ isOpen, onClose, configs, onAddPro
                                 <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Category *</label>
                                 <select name="categoryId" className={selectCls} value={form.categoryId} onChange={handleFormChange}>
                                     <option value="">Select Category</option>
-                                    {categories.map(c => <option key={c._id || c.name} value={c._id || c.name}>{c.name}</option>)}
+                                    {categories
+                                        .filter(c => {
+                                            const n = (c.name || c.value || '').toUpperCase().trim();
+                                            return n !== 'FRAME' && n !== 'FRAMES' && n !== 'SUNGLASS' && n !== 'SUNGLASSES';
+                                        })
+                                        .map(c => <option key={c._id || c.name} value={c._id || c.name}>{c.name}</option>)}
                                 </select>
                             </div>
                             <div>

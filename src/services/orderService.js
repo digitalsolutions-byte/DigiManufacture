@@ -67,6 +67,13 @@ export const getOrderProductConfigs = async (brand = '', category = '') => {
             api.get('/api/product/specific-labs').catch(() => ({ data: { data: [] } })),
         ]);
 
+        const filterOutFrameAndSunglass = (arr) => {
+            return (Array.isArray(arr) ? arr : []).filter(item => {
+                const val = (typeof item === 'string' ? item : item?.name || item?.value || item?._id || '').toUpperCase().trim();
+                return val !== 'FRAME' && val !== 'FRAMES' && val !== 'SUNGLASS' && val !== 'SUNGLASSES';
+            });
+        };
+
         const formatOptions = (arr) => (Array.isArray(arr) ? arr : []).map(item =>
             typeof item === 'string'
                 ? { _id: item, name: item, value: item }
@@ -77,7 +84,7 @@ export const getOrderProductConfigs = async (brand = '', category = '') => {
             tints: formatOptions(tintsRes?.data?.data || tintsRes?.data),
             frameTypes: formatOptions(frameTypesRes?.data?.data || frameTypesRes?.data),
             brand: formatOptions(brandsRes?.data?.data || brandsRes?.data),
-            category: formatOptions(categoriesRes?.data?.data || categoriesRes?.data),
+            category: formatOptions(filterOutFrameAndSunglass(categoriesRes?.data?.data || categoriesRes?.data)),
             treatment: formatOptions(treatmentsRes?.data?.data || treatmentsRes?.data),
             index: formatOptions(indexesRes?.data?.data || indexesRes?.data),
             productType: formatOptions(productTypesRes?.data?.data || productTypesRes?.data),
@@ -142,7 +149,11 @@ export const getCategoriesByBrand = async (brandName = '') => {
     try {
         const url = brandName ? `/api/order/product-fields/category?brand=${encodeURIComponent(brandName)}` : '/api/order/product-fields/category';
         const response = await api.get(url);
-        return response.data?.data || response.data || [];
+        const data = response.data?.data || response.data || [];
+        return (Array.isArray(data) ? data : []).filter(item => {
+            const val = (typeof item === 'string' ? item : item?.name || item?.value || item?._id || '').toUpperCase().trim();
+            return val !== 'FRAME' && val !== 'FRAMES' && val !== 'SUNGLASS' && val !== 'SUNGLASSES';
+        });
     } catch (error) {
         console.error('Error fetching categories by brand:', error);
         return [];

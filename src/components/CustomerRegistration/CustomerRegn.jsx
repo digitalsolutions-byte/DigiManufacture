@@ -26,7 +26,7 @@ export const CustomerRegn = ({ wrapInput, configs, formValues, formik, dispatch,
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h3 className="text-lg font-bold text-gray-800 uppercase tracking-tight flex items-center gap-2">
-                        <Icon icon="mdi:tag-multiple" className="text-[#6d99cf]" /> Brand Selection*
+                        <Icon icon="mdi:tag-multiple" className="text-[#6d99cf]" /> Brand Selection
                     </h3>
                 </div>
 
@@ -112,7 +112,7 @@ export const CustomerRegn = ({ wrapInput, configs, formValues, formik, dispatch,
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                 {noVerifyWrap(Select, {
-                    label: 'Zone*',
+                    label: 'Zone',
                     name: 'zoneRefId',
                     options: (Array.isArray(configs.zones) ? configs.zones : []).map(z => ({ value: z._id, label: z.zone }))
                 })}

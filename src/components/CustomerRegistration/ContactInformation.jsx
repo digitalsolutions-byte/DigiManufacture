@@ -11,7 +11,7 @@ export const ContactInformation = ({ wrapInput, configs }) => {
             {wrapInput(Input, { label: 'Official Email*', name: 'businessEmail', placeholder: 'Enter Official Email' })}
 
             {wrapInput(Select, {
-                label: 'Zone*',
+                label: 'Zone',
                 name: 'zoneRefId',
                 options: (Array.isArray(configs.zones) ? configs.zones : []).map(z => ({ value: z._id, label: z.zone }))
             })}

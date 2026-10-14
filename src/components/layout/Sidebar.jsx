@@ -48,8 +48,8 @@ const navItems = [
             { label: 'Draft Orders', path: PATHS.CUSTOMER_CARE.DRAFT_ORDERS, page: 'ALL_ORDERS' },
             { label: 'RX Orders', path: PATHS.CUSTOMER_CARE.RX_ORDERS, page: 'ALL_ORDERS' },
             { label: 'Processing Orders', path: PATHS.CUSTOMER_CARE.PENDING_ORDERS, page: 'PENDING_ORDERS' },
-            { label: 'Other Sales', path: PATHS.CUSTOMER_CARE.SERVICE_GOODS, page: 'OTHER_SALES' },
-            { label: 'Sales List', path: PATHS.SALES.LIST, page: 'SALES_LIST' },
+            // { label: 'Other Sales', path: PATHS.CUSTOMER_CARE.SERVICE_GOODS, page: 'OTHER_SALES' },
+            // { label: 'Sales List', path: PATHS.SALES.LIST, page: 'SALES_LIST' },
         ],
     },
     {
@@ -132,7 +132,7 @@ const navItems = [
             { label: 'ARC', path: PATHS.OPERATIONS.ARC },
             { label: 'QC', path: PATHS.OPERATIONS.QC },
             { label: 'Fitting', path: PATHS.OPERATIONS.FITTING },
-            { label: 'Dispatch', path: PATHS.OPERATIONS.DISPATCH },
+            // { label: 'Dispatch', path: PATHS.OPERATIONS.DISPATCH },
         ],
     },
     {
@@ -147,6 +147,7 @@ const navItems = [
             // { label: '30/60/90 Aging Report', path: PATHS.ACCOUNTING.AGING },
         ],
     },
+    { label: 'Dispatch', icon: 'lucide:bus-front', path: PATHS.OPERATIONS.DISPATCH, page: 'DISPATCH' },
     { label: 'Inventory', icon: 'lucide:package-search', path: PATHS.INVENTORY, page: 'INVENTORY' },
     { label: 'Settings', icon: 'lucide:settings', path: PATHS.SETTINGS },
 ];

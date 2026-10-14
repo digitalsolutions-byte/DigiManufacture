@@ -48,7 +48,7 @@ export const BusinessInformation = ({ formik, wrapInput, configs, isReadOnlyMode
 
                 {/* Brand Selection Multi-Select */}
                 <div className="col-span-1 md:col-span-2 bg-gray-50/60 p-5 rounded-xl border border-gray-200 space-y-3">
-                    <span className="text-xs font-bold text-gray-700 uppercase tracking-wider block">Assigned Brands*</span>
+                    <span className="text-xs font-bold text-gray-700 uppercase tracking-wider block">Assigned Brands</span>
                     <Select
                         label="Select Brand to Add"
                         name="brandSelect"
@@ -128,9 +128,9 @@ export const BusinessInformation = ({ formik, wrapInput, configs, isReadOnlyMode
             <div className="space-y-6 pt-6 border-t border-gray-100">
                 <div className="flex items-center justify-between">
                     <h3 className="text-lg font-bold text-gray-800 uppercase tracking-tight flex items-center gap-2">
-                        <Icon icon="mdi:checkbook" className="text-erp-accent" /> 3 Blank Cheques
+                        <Icon icon="mdi:checkbook" className="text-erp-accent" /> Blank Cheques (Optional)
                     </h3>
-                    <span className="text-xs text-gray-500 font-medium">Please provide 3 blank cheques or state the reason.</span>
+                    <span className="text-xs text-gray-500 font-medium">Optional - Provide blank cheques if available.</span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -165,9 +165,9 @@ export const BusinessInformation = ({ formik, wrapInput, configs, isReadOnlyMode
 
                 <div className="pt-4">
                     {wrapInput(Input, {
-                        label: 'Remark (If Cheques Not Submitted)',
+                        label: 'Cheque Remarks (Optional)',
                         name: 'chequeRemark',
-                        placeholder: 'Enter reason for not submitting cheques',
+                        placeholder: 'Enter any remarks regarding cheques (optional)',
                         className: 'bg-yellow-50 focus:bg-white transition-colors'
                     })}
                 </div>

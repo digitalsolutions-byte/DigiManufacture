@@ -44,7 +44,7 @@ export const FirmCompanyDetails = ({ wrapInput, configs, formik, handleFileUploa
                 {wrapInput(Input, { label: 'Year of Establishment', name: 'yearOfEstablishment', placeholder: 'Enter Year of Est.' })}
 
                 <FileUploadField
-                    label="GST Number*"
+                    label="GST Number"
                     name="gstNumber"
                     placeholder="Enter GST No."
                     onFileChange={(e) => handleFileUpload(e, 'gstCertificateImg', 'gst')}
@@ -68,7 +68,7 @@ export const FirmCompanyDetails = ({ wrapInput, configs, formik, handleFileUploa
                 {wrapInput(Input, { label: 'Year of Establishment', name: 'yearOfEstablishment', placeholder: 'Enter Year of Est.' })}
                 <br />
                 <FileUploadField
-                    label="Aadhar Card No.*"
+                    label="Aadhar Card No."
                     name="aadharCard"
                     placeholder="Enter Aadhar No."
                     onFileChange={(e) => handleFileUpload(e, 'aadharCardImg', 'aadhar')}
@@ -85,7 +85,7 @@ export const FirmCompanyDetails = ({ wrapInput, configs, formik, handleFileUploa
                     }}
                 />
                 <FileUploadField
-                    label="PAN Card No.*"
+                    label="PAN Card No."
                     name="panCard"
                     placeholder="Enter PAN No."
                     onFileChange={(e) => handleFileUpload(e, 'panCardImg', 'pan')}
